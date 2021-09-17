@@ -1,6 +1,10 @@
 * xref:index.adoc[Home]
 
 * Tutorials
+
 * How-to guides
+** xref:how-to/list-namespaces.adoc[List Namespaces]
+
 * Technical reference
+
 * Explanation
