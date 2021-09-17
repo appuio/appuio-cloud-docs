@@ -1,0 +1,5 @@
+= List Namespaces
+
+To see all Namespaces you have access to on an {zone}, do that using `oc get project` or `kubectl get project`.
+
+Using `oc get namespaces` or `kubectl get namespaces` isn't supported due to Kubernetes restrictions.
