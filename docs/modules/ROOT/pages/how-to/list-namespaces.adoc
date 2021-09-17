@@ -2,4 +2,4 @@
 
 To see all Namespaces you have access to on an {zone}, do that using `oc get project`.
 
-Using `oc get namespaces` or `kubectl get namespaces` is not supported due to Kubernetes restrictions.
+Using `oc get namespaces` or `kubectl get namespaces` isn't supported due to Kubernetes restrictions.
