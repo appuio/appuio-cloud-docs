@@ -1,6 +1,6 @@
 = {product} for Users
 
-image::appuio.svg[APPUiO,256,link=https://www.appuio.ch]
+image::appuio-cloud.svg[APPUiO Cloud,400,link=https://www.appuio.ch]
 
 Welcome to the {product} for Users documentation site.
 
