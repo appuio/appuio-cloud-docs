@@ -1,0 +1,54 @@
+= Differences to APPUiO Public
+
+{product} is the successor to APPUiO Public.
+This page lists the most notable differences.
+
+Based on OpenShift 4::
+APPUiO Public was based on OpenShift 3.11, which was Kubernetes 1.11 under the hood.
+{product} is based on OpenShift 4 which brings a very recent Kubernetes version.
+
+Login via Keycloak and Two-Factor Authentication::
+Login is now handled via Keycloak which allows for Two-Factor authentication and identity federation.
+It features single-sign-on throughout the whole platform.
+In APPUiO Public login was based on LDAP and didn't allow for more secure login methods as well as no identity federation.
+
+No Docker builds::
+{product} doesn't allow Docker builds for security reasons, as the build process still relies on elevated privileges.
+APPUiO Public featured a self-made build tool called Aedifex which spun-up new virtual machines for image builds.
+This was an error-prone process and caused a lot of operational overhead.
+In {product} we recommend building container images outside the platform and either get the image from a public registry or push the image to the integrated registry.
+We closely monitor the possibilities of OpenShift.
+As soon as image builds are unprivileged we'll revisit this feature and might allow image builds on the platform again.
+
+Let's Encrypt certificates only via Ingress object::
+TLS certificates can only be requested by using the standard Kubernetes Ingress object.
+This is due to the fact that we're using https://cert-manager.io/[cert-manager] on the platform for managing Let's Encrypt certificates.
+Unfortunately cert-manager https://github.com/jetstack/cert-manager/issues/1064[doesn't support the OpenShift `Route` object] and doesn't plan to do so in the future.
+
+No Dedicated Nodes::
+We currently don't offer dedicated nodes on {product} anymore.
+The main reason for the dedicated nodes feature of APPUiO Public was cost, this is no longer a valid reason with {product} as the costs are much lower.
+Another reason was security, which only held partially true, as the control-plane was still shared between all users of the platform.
+
+E-Mail sending via API::
+For sending E-Mails we recommend using a specialized E-Mail provider like https://www.mailgun.com/[mailgun].
+There is no SMTP Gateway available anymore.
+
+Storage via IaaS CSI and Rook / Ceph::
+Persistent storage is provided by what the infrastructure offers via CSI integration and with https://rook.io/[Rook].
+In APPUiO Public, storage was provided via GlusterFS.
+Because of this change, the "Access Mode" for the Persistent Volume now actually matters, RWO provisions a "block storage" with a file system on it, RWX provides a shared file system (CephFS).
+See the https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes[Kubernetes upstream documentation] which explains the storage topic in detail.
+
+Different Quotas::
+In APPUiO Public each project had a Quota assigned, which could be changed by the user.
+For {product} there is a generic Quota applied to all projects which protects the platform from over usage.
+It should allow for most of the normal workloads.
+Should it not be enough, a Quota increase can be requested.
+
+Billing Model::
+In APPUiO Public, the Quota applied to a namespace was billed.
+For {product} we changed that completely, you only pay for what you use (metered billing).
+
+Latest K8up version::
+Thanks to the recent Kubernetes version we offer the latest available K8up version.
