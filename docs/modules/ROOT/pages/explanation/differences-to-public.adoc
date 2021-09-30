@@ -8,9 +8,9 @@ APPUiO Public was based on OpenShift 3.11, which was Kubernetes 1.11 under the h
 {product} is based on OpenShift 4 which brings a very recent Kubernetes version.
 
 Login via Keycloak and Two-Factor Authentication::
-Login is now handled via Keycloak which allows for Two-Factor authentication and identity federation.
+Login is now handled via Keycloak which allows for Two-Factor authentication and identity brokering.
 It features single-sign-on throughout the whole platform.
-In APPUiO Public login was based on LDAP and didn't allow for more secure login methods as well as no identity federation.
+In APPUiO Public login was based on LDAP and didn't allow for more secure login methods as well as no identity brokering.
 
 No Docker builds::
 {product} doesn't allow Docker builds for security reasons, as the build process still relies on elevated privileges.
@@ -42,7 +42,7 @@ See the https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-m
 
 Different Quotas::
 In APPUiO Public each project had a Quota assigned, which could be changed by the user.
-For {product} there is a generic Quota applied to all projects which protects the platform from over usage.
+For {product} there is a generic Quota applied to all projects which protects the platform from resource abuse.
 It should allow for most of the normal workloads.
 Should it not be enough, a Quota increase can be requested.
 
