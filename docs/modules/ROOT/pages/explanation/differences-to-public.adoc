@@ -52,3 +52,9 @@ For {product} we changed that completely, you only pay for what you use (metered
 
 Latest K8up version::
 Thanks to the recent Kubernetes version we offer the latest available K8up version.
+
+Changes to Backups::
+Persistent storage in APPUiO Public was provided via GlusterFS, which was also being backed up automatically by the underlying system.
+Users that needed to restore data could request a data restore via support.
+In APPUiO Cloud persistent volumes aren't automatically stored in backup.
+For having backups of persistent volumes we offer the latest version of https://k8up.io[K8up] on the {zone}s.
