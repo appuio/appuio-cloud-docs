@@ -44,7 +44,7 @@ Different Quotas::
 In APPUiO Public each project had a Quota assigned, which could be changed by the user.
 For {product} there is a generic Quota applied to all projects which protects the platform from resource abuse.
 It should allow for most of the normal workloads.
-Should it not be enough, a Quota increase can be requested.
+Should it not be enough for you, please request a quota increase via the control panel or support@appuio.ch.
 
 Billing Model::
 In APPUiO Public, the Quota applied to a namespace was billed.
