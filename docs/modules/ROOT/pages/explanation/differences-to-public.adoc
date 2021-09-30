@@ -17,6 +17,7 @@ No Docker builds::
 APPUiO Public featured a self-made build tool called Aedifex which spun-up new virtual machines for image builds.
 This was an error-prone process and caused a lot of operational overhead.
 In {product} we recommend building container images outside the platform and either get the image from a public registry or push the image to the integrated registry.
+We recommend using https://docs.gitlab.com/ee/ci/[GitLab CI/CD] or https://github.com/features/actions[GitHub Actions] for automated image building.
 We closely monitor the possibilities of OpenShift.
 As soon as image builds are unprivileged we'll revisit this feature and might allow image builds on the platform again.
 
