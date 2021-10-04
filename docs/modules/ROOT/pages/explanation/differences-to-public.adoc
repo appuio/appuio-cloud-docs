@@ -3,16 +3,36 @@
 {product} is the successor to APPUiO Public.
 This page lists the most notable differences.
 
-Based on OpenShift 4::
+== Product
+
+=== Billing Model
+
+In APPUiO Public, the Quota applied to a namespace was billed.
+For {product} we changed that completely, you only pay for what you use (metered billing).
+
+=== Changes to Backups
+
+Persistent storage in APPUiO Public was provided via GlusterFS, which was also being backed up automatically by the underlying system.
+Users that needed to restore data could request a data restore via support.
+In APPUiO Cloud persistent volumes aren't automatically stored in backup.
+For having backups of persistent volumes we offer the latest version of https://k8up.io[K8up] on the {zone}s.
+
+== Technical
+
+=== Based on OpenShift 4
+
 APPUiO Public was based on OpenShift 3.11, which was Kubernetes 1.11 under the hood.
 {product} is based on OpenShift 4 which brings a very recent Kubernetes version.
+The https://docs.openshift.com/container-platform/4.8/migrating_from_ocp_3_to_4/planning-migration-3-4.html[OpenShift upstream documentation] discusses the differences in more detail.
 
-Login via Keycloak and Two-Factor Authentication::
+=== Login via Keycloak and Two-Factor Authentication
+
 Login is now handled via Keycloak which allows for Two-Factor authentication and identity brokering.
 It features single-sign-on throughout the whole platform.
 In APPUiO Public login was based on LDAP and didn't allow for more secure login methods as well as no identity brokering.
 
-No Docker builds::
+=== No Docker builds
+
 {product} doesn't allow Docker builds for security reasons, as the build process still relies on elevated privileges.
 APPUiO Public featured a self-made build tool called Aedifex which spun-up new virtual machines for image builds.
 This was an error-prone process and caused a lot of operational overhead.
@@ -21,41 +41,37 @@ We recommend using https://docs.gitlab.com/ee/ci/[GitLab CI/CD] or https://githu
 We closely monitor the possibilities of OpenShift.
 As soon as image builds are unprivileged we'll revisit this feature and might allow image builds on the platform again.
 
-Let's Encrypt certificates only via Ingress object::
+=== Let's Encrypt certificates only via Ingress object
+
 TLS certificates can only be requested by using the standard Kubernetes Ingress object.
 This is due to the fact that we're using https://cert-manager.io/[cert-manager] on the platform for managing Let's Encrypt certificates.
 Unfortunately cert-manager https://github.com/jetstack/cert-manager/issues/1064[doesn't support the OpenShift `Route` object] and doesn't plan to do so in the future.
 
-No Dedicated Nodes::
+=== No Dedicated Nodes
+
 We currently don't offer dedicated nodes on {product} anymore.
 The main reason for the dedicated nodes feature of APPUiO Public was cost, this is no longer a valid reason with {product} as the costs are much lower.
 Another reason was security, which only held partially true, as the control-plane was still shared between all users of the platform.
 
-E-Mail sending via API::
+=== E-Mail sending via API
+
 For sending E-Mails we recommend using a specialized E-Mail provider like https://www.mailgun.com/[mailgun].
 There is no SMTP Gateway available anymore.
 
-Storage via IaaS CSI and Rook / Ceph::
+=== Storage via IaaS CSI and Rook / Ceph
+
 Persistent storage is provided by what the infrastructure offers via CSI integration and with https://rook.io/[Rook].
 In APPUiO Public, storage was provided via GlusterFS.
 Because of this change, the "Access Mode" for the Persistent Volume now actually matters, RWO provisions a "block storage" with a file system on it, RWX provides a shared file system (CephFS).
 See the https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes[Kubernetes upstream documentation] which explains the storage topic in detail.
 
-Different Quotas::
+=== Different Quotas
+
 In APPUiO Public each project had a Quota assigned, which could be changed by the user.
 For {product} there is a generic Quota applied to all projects which protects the platform from resource abuse.
 It should allow for most of the normal workloads.
 Should it not be enough for you, please request a quota increase via the control panel or support@appuio.ch.
 
-Billing Model::
-In APPUiO Public, the Quota applied to a namespace was billed.
-For {product} we changed that completely, you only pay for what you use (metered billing).
+=== Latest K8up version
 
-Latest K8up version::
 Thanks to the recent Kubernetes version we offer the latest available K8up version.
-
-Changes to Backups::
-Persistent storage in APPUiO Public was provided via GlusterFS, which was also being backed up automatically by the underlying system.
-Users that needed to restore data could request a data restore via support.
-In APPUiO Cloud persistent volumes aren't automatically stored in backup.
-For having backups of persistent volumes we offer the latest version of https://k8up.io[K8up] on the {zone}s.
