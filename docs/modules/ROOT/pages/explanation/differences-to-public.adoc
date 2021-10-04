@@ -10,6 +10,11 @@ This page lists the most notable differences.
 In APPUiO Public, the Quota applied to a namespace was billed.
 For {product} we changed that completely, you only pay for what you use (metered billing).
 
+=== Support Model
+
+With {product} we have well-defined https://products.docs.vshn.ch/products/appuio/cloud/support_packages.html[Support Packages] available.
+Community support is included by default, whereas additional support by VSHN can be ordered in addition.
+
 === Changes to Backups
 
 Persistent storage in APPUiO Public was provided via GlusterFS, which was also being backed up automatically by the underlying system.
@@ -64,6 +69,11 @@ Persistent storage is provided by what the infrastructure offers via CSI integra
 In APPUiO Public, storage was provided via GlusterFS.
 Because of this change, the "Access Mode" for the Persistent Volume now actually matters, RWO provisions a "block storage" with a file system on it, RWX provides a shared file system (CephFS).
 See the https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes[Kubernetes upstream documentation] which explains the storage topic in detail.
+
+=== Networking with OVN-Kubernetes
+
+We use https://docs.openshift.com/container-platform/4.8/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[OVN-Kubernetes] for networking in {product}.
+In APPUiO Public the OpenShift 3 `ovs-multitenant` plug-in was used which for example didn't allow https://docs.openshift.com/container-platform/4.8/networking/network_policy/about-network-policy.html[Network Policies].
 
 === Different Quotas
 
