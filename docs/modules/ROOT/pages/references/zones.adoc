@@ -5,8 +5,8 @@
 OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
 Console URL:: https://console.cloudscale-lpg-0.appuio.cloud/
-Kubernetes API endpoint:: api.cloudscale-lpg-0.appuio.cloud
-Defaul App Domain:: apps.cloudscale-lpg-0.appuio.cloud
+Kubernetes API endpoint::  https://api.cloudscale-lpg-0.appuio.cloud:6443
+Default App Domain:: apps.cloudscale-lpg-0.appuio.cloud
 SDN:: OVN-Kubernetes
 Outgoing IPs:: TBD
 CNAME:: cname.cloudscale-lpg-0.appuio.cloud
