@@ -12,7 +12,7 @@ For {product} we changed that completely, you only pay for what you use (metered
 
 === Support Model
 
-With {product} we have well-defined https://products.docs.vshn.ch/products/appuio/cloud/support_packages.html[Support Packages] available.
+With {product} we've well-defined https://products.docs.vshn.ch/products/appuio/cloud/support_packages.html[Support Packages] available.
 Community support is included by default, whereas additional support by VSHN can be ordered in addition.
 
 === Changes to Backups
