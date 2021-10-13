@@ -10,5 +10,5 @@ Console URL:: https://console.cloudscale-lpg-0.appuio.cloud/
 Kubernetes API endpoint::  https://api.cloudscale-lpg-0.appuio.cloud:6443
 Default App Domain:: apps.cloudscale-lpg-0.appuio.cloud
 SDN:: OVN-Kubernetes
-Outgoing IPs:: TBD
+Outgoing IP:: 185.98.123.122
 CNAME:: cname.cloudscale-lpg-0.appuio.cloud
