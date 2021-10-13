@@ -2,6 +2,8 @@
 
 == cloudscale.ch LPG 0
 
+WARNING: This is a test zone and could change again before going into production.
+
 OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
 Console URL:: https://console.cloudscale-lpg-0.appuio.cloud/
