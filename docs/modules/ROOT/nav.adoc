@@ -8,9 +8,10 @@
 .Tutorials
 
 .How-to guides
-** xref:how-to/list-namespaces.adoc[List Namespaces]
+* xref:how-to/list-namespaces.adoc[List Namespaces]
 
 .Technical reference
+* xref:references/zones.adoc[Zones]
 
 .Explanation
-** xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
+* xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
