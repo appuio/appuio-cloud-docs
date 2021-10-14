@@ -12,6 +12,7 @@
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
+* xref:references/default-quota.adoc[Default Quota]
 
 .Explanation
 * xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
