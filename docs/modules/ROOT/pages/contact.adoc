@@ -1,0 +1,18 @@
+= Contact APPUiO
+
+You can get in touch with us via the following channels:
+
+* https://appuio.ch/en/#contact[Contact form on our website^]
+* E-Mail: hello@appuio.ch
+* Support: support@appuio.ch (Please see our https://products.docs.vshn.ch/products/appuio/cloud/support_packages.html[support packages])
+* Phone: tel:+41445522240
+* https://discuss.appuio.cloud/[Community Discussions^]
+* https://community.appuio.ch/[Community Chat^]
+
+And we're also on social media:
+
+* https://twitter.com/appuio[Twitter]
+* https://www.instagram.com/appuio[Instagram]
+* https://www.facebook.com/appuio.ch[Facebook]
+* https://www.youtube.com/channel/UCaunplDXgF5NXWwsM4K2mNA[Youtube]
+* https://github.com/appuio[GitHub]
