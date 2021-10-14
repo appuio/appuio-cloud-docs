@@ -8,6 +8,7 @@ The actual numbers can be looked up at the following places:
 
 * Via the CLI:
 +
+[source,bash]
 ----
 oc -n $mynamespace describe quota organization
 oc -n $mynamespace describe limits organization
