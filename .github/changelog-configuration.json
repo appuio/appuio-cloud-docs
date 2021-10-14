@@ -2,24 +2,40 @@
     "pr_template": "- ${{TITLE}} (#${{NUMBER}})",
     "categories": [
         {
-            "title": "## ⚖️ Decisions",
-            "labels": ["decision"]
+            "title": "## ❔ How-To Guides",
+            "labels": [
+                "how-to"
+            ]
         },
         {
-            "title": "## 🧾 Quality Requirements",
-            "labels": ["requirement/quality"]
+            "title": "## 🧩 Tutorials",
+            "labels": [
+                "tutorial"
+            ]
         },
         {
-            "title": "## 📄 Functional Requirements",
-            "labels": ["requirement/functional"]
+            "title": "## 👓 Technical Reference",
+            "labels": [
+                "technical-reference"
+            ]
         },
         {
-            "title": "## 🛠️ Minor Changes",
-            "labels": ["change"]
+            "title": "## 🎓 Explanation",
+            "labels": [
+                "explanation"
+            ]
+        },
+        {
+            "title": "## 🛠️ CI/CD Plumbing",
+            "labels": [
+                "cicd"
+            ]
         },
         {
             "title": "## 🔗 Dependency Updates",
-            "labels": ["dependency"]
+            "labels": [
+                "dependency"
+            ]
         }
     ],
     "template": "${{CATEGORIZED_COUNT}} changes since ${{FROM_TAG}}\n\n${{CHANGELOG}}"
