@@ -1,12 +1,17 @@
 * xref:index.adoc[Home]
 
-* Tutorials
+.About
+* https://discuss.appuio.cloud/[Community Discussions 🔗^]
+* https://community.appuio.ch/[Community Chat 🔗^]
+* https://roadmap.appuio.cloud/[Roadmap 🔗^]
 
-* How-to guides
-** xref:how-to/list-namespaces.adoc[List Namespaces]
+.Tutorials
 
-* Technical reference
-** xref:references/zones.adoc[Zones]
+.How-to guides
+* xref:how-to/list-namespaces.adoc[List Namespaces]
 
-* Explanation
-** xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
+.Technical reference
+* xref:references/zones.adoc[Zones]
+
+.Explanation
+* xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
