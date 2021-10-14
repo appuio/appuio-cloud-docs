@@ -10,7 +10,7 @@ Remove items that do not apply. For completed items, change [ ] to [x].
 
 - [ ] Try to isolate changes into separate PRs (to build a better changelog).
 - [ ] Categorize the PR by setting a good title and adding one of the labels:
-      `how-to`, `tutorial`, `technical-reference`, `explanation`, `cicd`, `dependency`
+      `how-to`, `tutorial`, `reference`, `explanation`, `cicd`, `dependency`
       as they show up in the changelog
 - [ ] Link this PR to related issues if applicable.
 
