@@ -36,6 +36,14 @@ Login is now handled via Keycloak which allows for Two-Factor authentication and
 It features single-sign-on throughout the whole platform.
 In APPUiO Public login was based on LDAP and didn't allow for more secure login methods as well as no identity brokering.
 
+=== Project / Namespace creation via Kubernetes API
+
+In APPUiO Public OpenShift projects had to be created via the VSHN Portal.
+For {product} we changed that so that OpenShift projects and Kubernetes namespaces can be directly created via the Kubernetes API or via the OpenShift Webconsole.
+The is no need anymore to use a third part API or portal for that task.
+
+Just use `oc new-project` or `kubectl create namespace`.
+
 === No Docker builds
 
 {product} doesn't allow Docker builds for security reasons, as the build process still relies on elevated privileges.
