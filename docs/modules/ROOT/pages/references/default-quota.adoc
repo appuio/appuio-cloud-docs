@@ -2,7 +2,7 @@
 
 Every namespace has a default quota configured to protect the {zone} from resource abuse.
 
-TIP: If the default quota blocks you from running your application, please contact {product} support.
+TIP: If the default quota blocks you from running your application, please contact xref:contact.adoc[{product} support].
 
 The actual numbers can be looked up at the following places:
 
