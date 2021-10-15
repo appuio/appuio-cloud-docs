@@ -17,3 +17,4 @@
 
 .Explanation
 * xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
+* xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
