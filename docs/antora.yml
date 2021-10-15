@@ -1,4 +1,4 @@
-name: appuio-cloud-user
+name: user
 title: APPUiO Cloud for Users
 version: master
 start_page: ROOT:index.adoc
