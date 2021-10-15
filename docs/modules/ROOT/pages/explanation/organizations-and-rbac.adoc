@@ -1,0 +1,18 @@
+= Organizations and RBAC
+
+Each OpenShift Project (Kubernetes Namespace) belongs to an organization, indicated by the label `appuio.io/organization` on the `Namespace` and `Project` objects.
+
+The organization is also reflected as a `Group` object in the {zone} and is used to assign default RBAC rules.
+
+== Default RBAC rules
+
+A `RoleBinding` with the name `admin` is created in the `Namespace` which grants the organization Group the `ClusterRole` called `admin`.
+
+== Organization Membership
+
+On the first login to {idp} the default organization membership is assigned.
+
+Membership of organizations and organizations itself are currently being maintained by VSHN.
+
+It is planned to enable self-management of organizations and membership in the https://roadmap.appuio.cloud[upcoming Webportal].
+Please xref:contact[contact] us to manage organization membership for you for the time being.
