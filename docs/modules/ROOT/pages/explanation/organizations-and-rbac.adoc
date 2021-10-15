@@ -7,7 +7,7 @@ The organization is also reflected as a `Group` object in the {zone} and is used
 == Default RBAC rules
 
 A `RoleBinding` with the name `admin` is created in the `Namespace` which grants the creator the `ClusterRole` called `admin`.
-Another `RoleBinding` with the name `organization` is created in the `Namespace` which also grants the organization `admin` cluster role.
+Another `RoleBinding` with the name `organization-admin` is created in the `Namespace` which also grants the organization `admin` cluster role.
 The user is free to modify or delete either.
 
 IMPORTANT: Be sure to not lock yourself out!
