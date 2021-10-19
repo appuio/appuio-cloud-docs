@@ -17,3 +17,21 @@ Supported storage classes:
 * *bulk*: RWO (ext4 filesystem), https://www.cloudscale.ch/en/pricing#upgrade-options[cloudscale.ch Bulk Storage]
 Outgoing IP:: 185.98.123.122
 CNAME:: cname.cloudscale-lpg-0.appuio.cloud
+
+== cloudscale.ch LPG 1
+
+WARNING: This is an experimental zone and could change again before going into production.
+
+OpenShift Version:: 4.8
+Kubernetes Version:: 1.21
+Console URL:: https://console.cloudscale-lpg-1.appuio.cloud/
+Kubernetes API endpoint::  https://api.cloudscale-lpg-1.appuio.cloud:6443
+Default App Domain:: apps.cloudscale-lpg-1.appuio.cloud
+SDN:: Cilium
+Storage::
+Supported storage classes:
++
+* *ssd*: RWO (ext4 filesystem), https://www.cloudscale.ch/en/pricing#upgrade-options[cloudscale.ch SSD Storage]
+* *bulk*: RWO (ext4 filesystem), https://www.cloudscale.ch/en/pricing#upgrade-options[cloudscale.ch Bulk Storage]
+Outgoing IP:: 185.98.123.168
+CNAME:: cname.cloudscale-lpg-1.appuio.cloud
