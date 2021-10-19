@@ -1,13 +1,17 @@
 = APPUiO Cloud Zones
 
-== cloudscale.ch LPG 0
+== LPG 0
 
 WARNING: This is a test zone and could change again before going into production.
 
+____
+Direct link to the https://console.cloudscale-lpg-0.appuio.cloud/[OpenShift Console^]
+____
+
+Cloud Provider:: https://www.cloudscale.ch/[cloudscale.ch] / https://www.cloudscale.ch/en/api/v1#regions[Zone lpg1] / http://map.geo.admin.ch/?zoom=8&X=255362&Y=658250&crosshair=marker[Lupfig (AG)]
 OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
-Console URL:: https://console.cloudscale-lpg-0.appuio.cloud/
-Kubernetes API endpoint::  https://api.cloudscale-lpg-0.appuio.cloud:6443
+Kubernetes API endpoint:: https://api.cloudscale-lpg-0.appuio.cloud:6443
 Default App Domain:: apps.cloudscale-lpg-0.appuio.cloud
 SDN:: OVN-Kubernetes
 Storage::
@@ -18,14 +22,18 @@ Supported storage classes:
 Outgoing IP:: 185.98.123.122
 CNAME:: cname.cloudscale-lpg-0.appuio.cloud
 
-== cloudscale.ch LPG 1
+== LPG 1
 
 WARNING: This is an experimental zone and could change again before going into production.
 
+____
+Direct link to the https://console.cloudscale-lpg-1.appuio.cloud/[OpenShift Console^]
+____
+
+Cloud Provider:: https://www.cloudscale.ch/[cloudscale.ch] / https://www.cloudscale.ch/en/api/v1#regions[Zone lpg1] / http://map.geo.admin.ch/?zoom=8&X=255362&Y=658250&crosshair=marker[Lupfig (AG)]
 OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
-Console URL:: https://console.cloudscale-lpg-1.appuio.cloud/
-Kubernetes API endpoint::  https://api.cloudscale-lpg-1.appuio.cloud:6443
+Kubernetes API endpoint:: https://api.cloudscale-lpg-1.appuio.cloud:6443
 Default App Domain:: apps.cloudscale-lpg-1.appuio.cloud
 SDN:: Cilium
 Storage::
