@@ -60,6 +60,8 @@ TLS certificates can only be requested by using the standard Kubernetes Ingress 
 This is due to the fact that we're using https://cert-manager.io/[cert-manager] on the platform for managing Let's Encrypt certificates.
 Unfortunately cert-manager https://github.com/jetstack/cert-manager/issues/1064[doesn't support the OpenShift `Route` object] and doesn't plan to do so in the future.
 
+Our how-to on xref:how-to/getting-a-certificate.adoc[generating certificates] can give you a closer look at how the new cert-manager based setup works.
+
 === No Dedicated Nodes
 
 We currently don't offer dedicated nodes on {product} anymore.

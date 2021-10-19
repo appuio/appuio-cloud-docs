@@ -10,6 +10,7 @@
 
 .How-to guides
 * xref:how-to/list-namespaces.adoc[List Namespaces]
+* xref:how-to/getting-a-certificate.adoc[Generate Certificates]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
