@@ -1,0 +1,190 @@
+= Getting a Certificate through Let's Encrypt 
+
+https://letsencrypt.org/[Let’s Encrypt] is a certificate authority that provides free SSL/TLS certificates via an automated process. 
+Their certificates are accepted by most of today’s browsers.
+
+On APPUiO Cloud we provide you with a https://cert-manager.io/[cert-manager] setup which you can use to create, sign, install and renew certificates for your domains running on APPUiO Cloud.
+
+To create a certificate for a FQDN in your domain, you need to create a CNAME record in your domain's DNS pointing to your APPUiO Zone's well-defined `cname` record.
+
+For example in BIND:
+
+[source,dns]
+----
+www  IN  CNAME  cname.cloudscale-lpg-0.appuio.cloud. <1>
+----
+<1> The trailing dot is required to stop resolvers trying to resolve the cname with their configured search domains.
+
+You can find the correct target domain in xref:references/zones.adoc[Zones].
+
+[WARNING]
+====
+Always create an `Ingress` object before pointing a DNS entry to APPUiO Cloud and always remove the corresponding DNS entry before deleting an `Ingress` object for a domain of yours. 
+Otherwise someone else could potentially create an `Ingress` object and a Let’s Encrypt certificate for your domain.
+====
+
+== Securing an Ingress
+
+A common use-case for cert-manager is requesting TLS certificates to secure your ingress resources.
+This can be done by simply adding annotations to your ingress resources and cert-manager will facilitate creating the Certificate resource for you. 
+
+The following example will request a certificate for `example.com`.
+
+[source,yaml]
+----
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production <1>
+  name: myIngress
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: myservice
+            port:
+              number: 80
+  tls: <2>
+  - hosts:
+    - example.com
+    secretName: myingress-cert <3>
+----
+<1> Add an annotation indicating the issuer to use.
+<2> Placing a host in the TLS config will determine what ends up in the cert's subjectAltNames.
+<3> The created certificate is stored in this secret.
+
+
+Take a look at the https://cert-manager.io/docs/usage/ingress/[upstream documentation] for further information on how to secure ingresses.
+
+[NOTE]
+====
+We don't support requesting TLS certificates for OpenShift `Route` objects. 
+To use the provided certificate infrastructure, please use the standard Kubernetes `Ingress` object or explicitly create a certificate object.
+====
+
+== Issuing a Certificate
+
+You can also use our cert-manager setup for general purpose certificates not directly linked to an `Ingress` object.
+This can for example be helpful for terminating TLS directly at the pod.
+To do this you'll still need to setup the correct CNAME.
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-cert
+spec:
+  dnsNames: <1> 
+  - 'my-domain.example.com'
+  issuerRef: <2>
+    kind: ClusterIssuer
+    name: letsencrypt-production
+  secretName: my-cert <3>
+----
+<1> For which domains the certificate will be valid for.
+<2> Reference to the issuer to use.
+<3> The created certificate is stored in this secret.
+
+
+The https://cert-manager.io/docs/usage/certificate/[upstream documentation] can give you more details on `Certificate` objects.
+
+== Let's Encrypt Staging Issuer
+
+We highly recommend testing against the Let's Encrypt staging environment and use it for any non-production workloads.
+This will allow you to get things right before issuing trusted certificates and reduce the chance of you running up against rate limits.
+
+You can use this Issuer by referencing the `letsencrypt-staging` `ClusterIssuer`. 
+For  `Ingress` objects this means changing the `cert-manager.io/cluster-issuer` annotation.
+For certificate resources this means changing `.spec.issuerRef.name`.
+
+
+== Using a Custom Issuer
+
+You have the option to configure your own certificate issuer.
+This allows you to securely use a `DNS01 ACME` solver or use any other external issuers. 
+A `DNS01` based solver will for example allow you to request wildcard certificates.
+
+Take a look at the https://cert-manager.io/docs/configuration/[official cert-manager documentation] for an in-depth explanation on issuers.
+We give an example configuration for a `DNS01` based issuer using Cloudflare as provider.
+
+[NOTE]
+====
+If you want to use a `DNS01` solver, the DNS provider for your domain must provide an API which cert-manager can talk to.
+
+See the https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers[cert-manager documentation] for a list of supported DNS providers.
+====
+
+First make a Kubernetes secret containing a Cloudflare API token with the necessary permissions:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: your-namespace
+type: Opaque
+stringData:
+  api-token: <API Token>
+----
+
+Then create a new `Issuer` in your namespace referencing the secret.
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: custom-issuer
+  namespace: your-namespace
+spec:
+  acme:
+    solvers:
+    - dns01:
+        cloudflare:
+          email: my-cloudflare-acc@example.com
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
+----
+
+With this in place you can now create certificates using your custom issuer.
+Similarly to using the default issuer you can do this through an `Ingress` or a `Certificate` object.
+
+NOTE: The API token `Secret`, `Issuer`, and `Ingress` or `Certificate` resources must all be created in the same namespace.
+
+For `Ingress` objects  you need to replace the `cert-manager.io/cluster-issuer` annotation with:
+
+[source]
+----
+cert-manager.io/issuer: custom-issuer
+----
+
+Certificate objects will need to reference the local custom issuer instead of the cluster wide issuer.
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-cert
+spec:
+  dnsNames:
+  - 'my-domain.example.com'
+  issuerRef:
+    kind: Issuer
+    name: custom-issuer
+  secretName: my-cert
+----
+
+[NOTE]
+====
+When setting up a custom `DNS01` issuer, you don't need to create a CNAME pointing to the APPUiO Zone and you won't run into any risk of someone else issuing a certificate for your domain
+====
