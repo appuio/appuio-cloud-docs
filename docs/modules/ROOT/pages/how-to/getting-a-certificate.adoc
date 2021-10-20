@@ -1,6 +1,6 @@
 = Getting a Certificate through Let's Encrypt 
 
-Let’s Encrypt is a certificate authority that provides free SSL/TLS certificates via an automated process. 
+https://letsencrypt.org/[Let’s Encrypt] is a certificate authority that provides free SSL/TLS certificates via an automated process. 
 Their certificates are accepted by most of today’s browsers.
 
 On APPUiO Cloud we provide you with a https://cert-manager.io/[cert-manager] setup, that you can use to create, sign, install and renew certificates for your domains running on APPUiO Cloud.
@@ -18,7 +18,7 @@ You can find the correct target domain in xref:references/zones.adoc[Zones].
 
 [WARNING]
 ====
-Always create an ingress before pointing a DNS entry to APPUiO Cloud and always remove the corresponding DNS entry before deleting an ingress for a domain of yours. 
+Always create an `Ingress` object before pointing a DNS entry to APPUiO Cloud and always remove the corresponding DNS entry before deleting an `Ingress` object for a domain of yours. 
 Otherwise someone else could potentially issue a Let’s Encrypt certificate for your domain.
 ====
 
@@ -63,13 +63,13 @@ Take a look at the https://cert-manager.io/docs/usage/ingress/[upstream document
 
 [NOTE]
 ====
-We don't support requesting TLS certificates for OpenShift route objects. 
-To use the provided certificate infrastructure, please use the standard Kubernetes ingress object or explicitly create a certificate object.
+We don't support requesting TLS certificates for OpenShift `Route` objects. 
+To use the provided certificate infrastructure, please use the standard Kubernetes `Ingress` object or explicitly create a certificate object.
 ====
 
 == Issuing a Certificate
 
-You can also use our cert-manager setup for general purpose certificates not directly linked to an ingress.
+You can also use our cert-manager setup for general purpose certificates not directly linked to an `Ingress` object.
 This can for example be helpful for terminating TLS directly at the pod.
 To do this you'll still need to setup the correct CNAME.
 
@@ -100,7 +100,7 @@ We highly recommend testing against the Let's Encrypt staging environment and us
 This will allow you to get things right before issuing trusted certificates and reduce the chance of you running up against rate limits.
 
 You can use this Issuer by referencing the `letsencrypt-staging` `ClusterIssuer`. 
-For ingress resources this means changing the `cert-manager.io/cluster-issuer` annotation.
+For  `Ingress` objects this means changing the `cert-manager.io/cluster-issuer` annotation.
 For certificate resources this means changing `.spec.issuerRef.name`.
 
 
@@ -148,9 +148,9 @@ spec:
 ----
 
 With this in place you can now create certificates using your custom issuer.
-Similarly to using the default issuer you can do this through an ingress or a certificate object.
+Similarly to using the default issuer you can do this through an `Ingress` or a `Certificate` object.
 
-For ingress resources you need to replace the `cert-manager.io/cluster-issuer` annotation with:
+For `Ingress` objects  you need to replace the `cert-manager.io/cluster-issuer` annotation with:
 
 [source]
 ----
