@@ -3,23 +3,24 @@
 https://letsencrypt.org/[Let’s Encrypt] is a certificate authority that provides free SSL/TLS certificates via an automated process. 
 Their certificates are accepted by most of today’s browsers.
 
-On APPUiO Cloud we provide you with a https://cert-manager.io/[cert-manager] setup, that you can use to create, sign, install and renew certificates for your domains running on APPUiO Cloud.
+On APPUiO Cloud we provide you with a https://cert-manager.io/[cert-manager] setup which you can use to create, sign, install and renew certificates for your domains running on APPUiO Cloud.
 
-To create a certificate for one of your domains you need to add a CNAME record for the FQDN to the DNS of your domain pointing to your APPUiO Zone.
+To create a certificate for a FQDN in your domain, you need to create a CNAME record in your domain's DNS pointing to your APPUiO Zone's well-defined `cname` record.
 
 For example in BIND:
 
-[source]
+[source,dns]
 ----
-www  IN  CNAME  cname.cloudscale-lpg-0.appuio.cloud. (the trailing dot is required)
+www  IN  CNAME  cname.cloudscale-lpg-0.appuio.cloud. <1>
 ----
+<1> The trailing dot is required to stop resolvers trying to resolve the cname with their configured search domains.
 
 You can find the correct target domain in xref:references/zones.adoc[Zones].
 
 [WARNING]
 ====
 Always create an `Ingress` object before pointing a DNS entry to APPUiO Cloud and always remove the corresponding DNS entry before deleting an `Ingress` object for a domain of yours. 
-Otherwise someone else could potentially issue a Let’s Encrypt certificate for your domain.
+Otherwise someone else could potentially create an `Ingress` object and a Let’s Encrypt certificate for your domain.
 ====
 
 == Securing an Ingress
@@ -113,6 +114,13 @@ A `DNS01` based solver will for example allow you to request wildcard certificat
 Take a look at the https://cert-manager.io/docs/configuration/[official cert-manager documentation] for an in-depth explanation on issuers.
 We give an example configuration for a `DNS01` based issuer using Cloudflare as provider.
 
+[NOTE]
+====
+If you want to use a `DNS01` solver, the DNS provider for your domain must provide an API which cert-manager can talk to.
+
+See the https://cert-manager.io/docs/configuration/acme/dns01/#supported-dns01-providers[cert-manager documentation] for a list of supported DNS providers.
+====
+
 First make a Kubernetes secret containing a Cloudflare API token with the necessary permissions:
 
 [source,yaml]
@@ -149,6 +157,8 @@ spec:
 
 With this in place you can now create certificates using your custom issuer.
 Similarly to using the default issuer you can do this through an `Ingress` or a `Certificate` object.
+
+NOTE: The API token `Secret`, `Issuer`, and `Ingress` or `Certificate` resources must all be created in the same namespace.
 
 For `Ingress` objects  you need to replace the `cert-manager.io/cluster-issuer` annotation with:
 
