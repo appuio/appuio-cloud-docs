@@ -9,6 +9,7 @@
 .Tutorials
 
 .How-to guides
+* xref:how-to/use-oc-cli.adoc[oc CLI usage]
 * xref:how-to/list-namespaces.adoc[List Namespaces]
 * xref:how-to/getting-a-certificate.adoc[Generate Certificates]
 

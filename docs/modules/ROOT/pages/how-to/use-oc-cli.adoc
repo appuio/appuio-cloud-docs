@@ -1,0 +1,15 @@
+= How to use the oc CLI client
+
+== Get it
+
+The oc client binary can be downloaded from the OpenShift Web Console by clicking on the question mark (top right) and choose `Command line tools`.
+There you can find various binaries to work with OpenShift from the command line.
+
+== Login
+
+To login to the OpenShift cluster, you need to get the login command from the OpenShift web console by clicking on your name (top right) and choose `Copy login command`.
+
+== Get help
+
+Once you have the oc client binary on your computer and have logged in to OpenShift, you can type `oc help` to get information what you can do with it.
+The upstream documentation also provides good help: https://docs.openshift.com/container-platform/4.8/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the OpenShift CLI].
