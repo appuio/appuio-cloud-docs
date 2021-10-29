@@ -95,3 +95,8 @@ Should it not be enough for you, please request a quota increase via xref:contac
 === Latest K8up version
 
 Thanks to the recent Kubernetes version we offer the latest available K8up version.
+
+=== Timezone of Control Plane
+
+{product} uses UTC as timezone on the control plane which affects for example `CronJobs`.
+In APPUiO Public the timezone was set to `Europe/Zurich`.
