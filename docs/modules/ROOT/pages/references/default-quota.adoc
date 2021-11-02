@@ -1,17 +1,61 @@
 = Default Quota
 
-Every namespace has a default quota configured to protect the {zone} from resource abuse.
+Every namespace has a set of default quotas and limits configured to protect the {zone} from resource abuse.
 
-TIP: If the default quota blocks you from running your application, please contact xref:contact.adoc[{product} support].
+== Resource Quotas
 
-The actual numbers can be looked up at the following places:
+The following quotas are configured:
+
+`organization-objects`:: Quotas for counts of non-compute objects such as ConfigMaps and Services.
+Check the https://kb.vshn.ch/appuio-cloud/references/quality-requirements/performance/resource-quota.html[system documentation] or use the `oc` command below to see all non-compute resources on which quotas are in place.
+`organization-compute`:: Quotas for `NotTerminating` pods.
+This includes the number of `NotTerminating` pods and the cumulative resource requests and limits for `NotTerminating` pods.
+`organization-compute-terminating`:: Quotas for `Terminating` pods.
+This includes the number of `Terminating` pods and the cumulative resource requests and limits for `Terminating` pods.
+
+As described above, we distinguish between `NotTerminating` and `Terminating` pods.
+A pod is considered `Terminating` when it has `.spec.activeDeadlineSeconds >= 0`.
+Generally, it's considered best practice to configure `.spec.activeDeadlineSeconds` in the `PodSpec` of Jobs and CronJobs.
+All other pods are considered `NotTerminating`.
+
+See the Kubernetes xref:https://kubernetes.io/docs/concepts/policy/resource-quotas[Resource Quotas] documentation for more details on how Kubernetes Resource Quotas work.
+
+TIP: If the default quotas block you from running your application, please contact xref:contact.adoc[{product} support].
+
+== Resource Limits and Defaults
+
+Additionally, {product} enforces minimum and maximum values for some configurations.
+These values are checked for each container individually.
+Minimum and maximum values are enforced for the following configurations:
+
+* Container CPU requests and limits
+* Container memory requests and limits
+* Container ephemeral storage requests and limits (only minimum)
+
+NOTE: We enforce minimum values which are greater than zero because Kubernetes interprets zero values for requests and limits as "unlimited"
+
+In addition to enforcing minimum and maximum values, {product} also injects default values for the following configurations if they're not explicitly set:
+
+* Container CPU requests and limits
+* Container memory requests and limits
+* Container ephemeral storage requests
+
+== Checking the Quota and Limit values
+
+You can check the actual quotas as follows:
 
 * Via the CLI:
 +
 [source,bash]
 ----
-oc -n $mynamespace describe quota organization
-oc -n $mynamespace describe limits organization
+oc -n $mynamespace describe quota <1>
+oc -n $mynamespace describe quota organization-objects <2>
+oc -n $mynamespace describe limits organization <3>
 ----
-* https://github.com/appuio/component-appuio-cloud/blob/master/class/defaults.yml#L37[Commodore Component for APPUiO Cloud]
-* https://kb.vshn.ch/appuio-cloud/references/quality-requirements/performance/resource-quota.html[System Documentation]
+<1> Show all configured quotas (`ResourceQuota` objects) in the namespace
+<2> Show a specific quota in the namespace
+<3> Show the configured limits (`LimitRange` object) in the namespace
++
+TIP: The `oc describe quota` command also shows you how much of each quota you're currently consuming (column "Used").
+
+* Check the default values in the https://github.com/appuio/component-appuio-cloud/blob/master/class/defaults.yml#L37[Commodore Component for APPUiO Cloud]
