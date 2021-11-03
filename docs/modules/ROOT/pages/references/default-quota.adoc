@@ -11,7 +11,7 @@ Check the https://kb.vshn.ch/appuio-cloud/references/quality-requirements/perfor
 `organization-compute`:: Quotas for `NotTerminating` pods.
 This includes the number of `NotTerminating` pods and the cumulative resource requests and limits for `NotTerminating` pods.
 `organization-compute-terminating`:: Quotas for `Terminating` pods.
-This includes the number of `Terminating` pods and the cumulative resource requests and limits for `Terminating` pods.
+This includes the number of `Terminating` pods and the cumulative resource limits for `Terminating` pods.
 
 As described above, we distinguish between `NotTerminating` and `Terminating` pods.
 A pod is considered `Terminating` when it has `.spec.activeDeadlineSeconds >= 0`.
