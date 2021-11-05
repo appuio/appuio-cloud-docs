@@ -18,7 +18,7 @@ sh-4.4# date
 Mon Oct 25 14:41:20 UTC 2021
 --
 
-For all time and date information, please change it to conform to UTC, or better yet, beginning with OpenShift 4.9 (based on Kubernetes v1.21) you should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[CronJob].
+For all time and date information in your manifests and commands, please change it to conform to UTC, or better yet, beginning with OpenShift 4.9 (based on Kubernetes v1.21) you should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[Kubernetes CronJob].
 
 == DNS
 
@@ -472,19 +472,23 @@ $ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c CO
 
 == Container Images
 
+Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your container images. This section contains all the required steps for adapting your images to the new environment.
+
 === On OpenShift 3
 
-URL to get an user token: https://<cluster-console>/oauth/token/request
+TIP: This section uses the https://github.com/containers/skopeo[skopeo] tool for managing images and repositories.
 
-Use the generated user token to authenticate to the registry. As the user token has enough privileges to read the image, a service account token is not required.
+. Get a user token at this URL: https://<cluster-console>/oauth/token/request.
 
+. Use the generated user token to authenticate to the registry on the command line. As the user token has enough privileges to read the image, a service account token is not required.
++
 [source,bash]
 --
 $ skopeo login -u openshift -p <token> <registry-url>
 --
-
++
 Skopeo uses the docker auth config. So this should look like:
-
++
 [source,bash]
 --
 $ cat ~/.docker/config.json
@@ -496,21 +500,19 @@ $ cat ~/.docker/config.json
     }
 }
 --
-
++
 Check if the access is working:
-
++
 [source,bash]
 --
 $ skopeo inspect docker://<registry-url>/<namespace>/<image>:<image-tag>
 --
 
-Keep in mind that it's a user token, expires when you logout.
+IMPORTANT: This is a user token, and therefore it expires when you logout.
 
 === On OpenShift 4
 
-It was possible to take the token from https://oauth-openshift.apps.<cluster>/oauth/token/display to get read access.
-
-However there haven't been enough privileges to write images. Therefore I've created a service account, granted access to system:image-builders and got the token from it.
+On OpenShift 4 it is also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token does not grant enough privileges to write images. Therefore it is recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
 
 [source,bash]
 --
@@ -521,8 +523,10 @@ Get the token:
 
 [source,bash]
 --
-oc sa get-token -n <namespace> image-upload
+$ oc sa get-token -n <namespace> image-upload
 --
+
+Inspect the `RoleBinding`:
 
 [source,bash]
 --
@@ -530,7 +534,7 @@ $ oc -n <namespace> get rolebinding system:image-builders -o yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-...
+# ...
   name: system:image-builders
   namespace: <namespace>
 roleRef:
@@ -538,14 +542,13 @@ roleRef:
   kind: ClusterRole
   name: system:image-builder
 subjects:
-...
+# ...
 - kind: ServiceAccount
   name: image-upload
   namespace: <namespace>
 --
 
-Login with the token. The provided user is according the OpenShift documentation regardless:
-
+Login with the token:
 
 [source,bash]
 --
@@ -559,4 +562,4 @@ Copy the image:
 $ skopeo copy docker://<registry-url>/<namespace>/<image>:<image-tag> docker://<registry-url>/<namespace>/<image>:<image-tag>
 --
 
-The service account should be removed after the migration.
+IMPORTANT: Remember to remove the service account after the migration.
