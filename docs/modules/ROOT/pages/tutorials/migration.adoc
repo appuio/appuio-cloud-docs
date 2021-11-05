@@ -26,7 +26,70 @@ TODO: Write this section
 
 == Let's Encrypt
 
-TODO: Write this section, only Ingresses can use them, no Routes.
+In APPUiO Cloud it *is not possible* to request certificates for `Route` objects. In APPUiO Cloud, only `Ingress` objects can request certificates.
+
+[source,yaml]
+--
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true" # <1>
+    nginx.ingress.kubernetes.io/auth-response-headers: x-auth-request-user, x-auth-request-email
+    nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+  name: ${DEPLOYMENT_NAME}
+  namespace: oauth-test
+spec:
+  rules:
+  - host: ${ROUTE_HOST}
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - ${ROUTE_HOST}
+    secretName: ${ROUTE_HOST}
+--
+
+<1> Annotation providing automatic provisioning of certificates on APPUiO Cloud.
+
+For reference, in APPUiO Public it was possible to configure TLS certificates in `Route` objects, using a manifest similar to the following:
+
+[source,yaml]
+--
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: ${DEPLOYMENT_NAME}
+    labels:
+      app: ${CI_ENVIRONMENT_SLUG}
+    annotations:
+      kubernetes.io/tls-acme: "${ROUTE_TLS_ACME}" # <1>
+  spec:
+    host: ${ROUTE_HOST}
+    port:
+      targetPort: http
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+        kind: Service
+        name: ${DEPLOYMENT_NAME}
+        weight: 100
+    wildcardPolicy: None
+--
+
+<1> Annotation providing automatic provisioning of certificates on APPUiO Public.
+
 
 == Storage
 
@@ -173,8 +236,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
-    app.kubernetes.io/name: rsync-source
+    app.kubernetes.io/name: rsync-source # <1>
   name: rsync-source
   namespace: rsync-test
 spec:
@@ -214,7 +276,7 @@ spec:
         persistentVolumeClaim:
           claimName: rsync-source
 ---
-apiVersion: batch/v1beta1 # batch/v1 for OpenShift 4
+apiVersion: batch/v1beta1 # <2>
 kind: CronJob
 metadata:
   labels:
@@ -284,6 +346,9 @@ spec:
   successfulJobsHistoryLimit: 1
 --
 
+<1> Please refer to https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[the Kubernetes documentation] on common labels.
+<2> Use `batch/v1` for OpenShift 4 instead.
+
 Use the commands below to create a new job based on the definition above:
 
 [source,bash]
@@ -332,7 +397,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: rsync-source # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    app.kubernetes.io/name: rsync-source # <1>
   name: rsync-source
   namespace: rsync-test
 spec:
@@ -376,7 +441,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: rsync-continuous-sync # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    app.kubernetes.io/name: rsync-continuous-sync # <1>
   name: rsync-continuous-sync
   namespace: rsync-test
 spec:
@@ -436,6 +501,9 @@ spec:
         persistentVolumeClaim:
           claimName: rsync-source
 --
+
+<1> Please refer to https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[the Kubernetes documentation] on common labels.
+
 
 IMPORTANT: Be aware that `oc rsync` has different options than `rsync` itself.
 
