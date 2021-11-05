@@ -89,10 +89,6 @@ APPUiO Cloud has different requirements regarding storage. This section provides
 
 === Access the RWO volumes from different pods
 
-On APPUiO Public the default was RWX storage. At the moment, *APPUiO Cloud only features RWO storage*. Former deployments using RWX volumes can't run anymore without modification.
-
-NOTE: APPUiO Cloud will feature RWX volumes in the future, please refer to https://github.com/appuio/appuio-cloud-community/projects/1[this issue] for updates.
-
 When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 
 . The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with common used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
