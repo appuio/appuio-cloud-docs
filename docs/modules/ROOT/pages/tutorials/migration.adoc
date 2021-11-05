@@ -4,13 +4,13 @@ This document provides an overview of all the tasks required to move your applic
 
 == Main Differences
 
-TODO: Point to https://docs.appuio.cloud/user/explanation/differences-to-public.html[differences].
+Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the https://docs.appuio.cloud/user/explanation/differences-to-public.html[document explaining all the major differences] between both platforms.
 
-== Timezone
+=== Timezone
 
-On APPUiO Public the timezone was *Europe/Zurich*. With APPUiO Cloud/OpenShift 4 the control plane runs on *UTC* instead.
+As a reminder, please keep in mind that in APPUiO Public the timezone was *Europe/Zurich*; however, in APPUiO Cloud (based on OpenShift 4) the control plane runs on *UTC* instead.
 
-Time on a control plane:
+Example of getting the current time on a control plane:
 
 [source,bash]
 --
@@ -18,7 +18,7 @@ sh-4.4# date
 Mon Oct 25 14:41:20 UTC 2021
 --
 
-Either the time schedule is changed to UTC or beginning with OpenShift 4.9/Kubernetes v1.21 you can and should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[CronJob].
+For all time and date information, please change it to conform to UTC, or better yet, beginning with OpenShift 4.9 (based on Kubernetes v1.21) you should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[CronJob].
 
 == DNS
 
@@ -26,22 +26,28 @@ TODO: Write this section
 
 == Let's Encrypt
 
-TODO: Write this section
+TODO: Write this section, only Ingresses can use them, no Routes.
 
 == Storage
 
+APPUiO Cloud has different requirements regarding storage. This section provides more information.
+
 === Access the RWO volumes from different pods
 
-On APPUiO Public we had RWX storage by default. At the moment we do have RWO with APPUiO Cloud. Former deployments using RWX volumes can't run anymore without being modified. (Remark: APPUiO Cloud will have RWX volumes again, see https://github.com/appuio/appuio-cloud-community/projects/1)
+On APPUiO Public the default was RWX storage. At the moment, *APPUiO Cloud only features RWO storage*. Former deployments using RWX volumes can't run anymore without modification.
 
-The rollout strategy must be changed from "RollingUpdate" to "Recreate", because mounting the volume at different nodes simultaneously isn't possible. At least not with common used filesystems as ext4 and xfs. https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+NOTE: APPUiO Cloud will feature RWX volumes in the future, please refer to https://github.com/appuio/appuio-cloud-community/projects/1[this issue] for updates.
 
-Add an affinity rule to run on the same node as the worker pod. This allows to access the same RWO/block volume, because the filesystem is mounted on the node level and allows a safe access to the same filesystem because it's the same kernel.
+When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 
-This might be used for jobs, but in the case of independent application parts this should be prevented.
+. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with common used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
-Having a affinity rule for all the pods on in once, you might use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ app.kubernetes.io/component label.
-
+. Add an affinity rule to run on the same node as the worker pod. This allows to access the same RWO/block volume, because the filesystem is mounted on the node level, and allows a safe access to the same filesystem, because it's the same kernel.
++
+IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
++
+To create a affinity rule for all the pods at once, you can use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[app.kubernetes.io/component label].
++
 [source,yaml]
 --
 affinity:
@@ -56,9 +62,16 @@ affinity:
       topologyKey: kubernetes.io/hostname
 --
 
-### Copy files with Rsync
+. Perform the migration itself. There are three major mechanisms for this:
+.. Migration with `rsync`
+.. Migration through jobs
+.. Using continuous sync
 
-Created a "empty" pod just requires to run as a target:
+The following sections provide information about each strategy.
+
+### Migration with `rsync`
+
+The first option to migrate your storage from APPUiO Public to APPUiO Cloud consists in using `rsync`. The manifests below create the required objects.
 
 [source,yaml]
 --
@@ -136,7 +149,9 @@ spec:
           claimName: rsync-destination
 --
 
-=== Job based
+=== Job-Based Migration
+
+The second option for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs. The manifest below defines the objects required for this strategy.
 
 [source,yaml]
 --
@@ -158,7 +173,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: rsync-source # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    app.kubernetes.io/name: rsync-source
   name: rsync-source
   namespace: rsync-test
 spec:
@@ -198,7 +214,7 @@ spec:
         persistentVolumeClaim:
           claimName: rsync-source
 ---
-apiVersion: batch/v1beta1 #batch/v1 for OpenShift 4
+apiVersion: batch/v1beta1 # batch/v1 for OpenShift 4
 kind: CronJob
 metadata:
   labels:
@@ -268,7 +284,7 @@ spec:
   successfulJobsHistoryLimit: 1
 --
 
-Create a new job:
+Use the commands below to create a new job based on the definition above:
 
 [source,bash]
 --
@@ -283,14 +299,18 @@ rsync-source-957bf555c-68jmn         1/1     Running     0          5m5s
 $ oc -n rsync-test delete job $JOB_NAME
 --
 
-Check the job status:
+Check the job status with the following command:
 
 [source,bash]
 --
 $ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
 --
 
-### Continuous sync
+### Continuous Sync
+
+The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they are created. If the destination pod dies, the sync pod also crashes, but is automatically restarted.
+
+Use the manifests below to create the required objects.
 
 [source,yaml]
 --
@@ -417,9 +437,7 @@ spec:
           claimName: rsync-source
 --
 
-Big benefit is, that files are replicated immediately after they are created. If the destination pod dies, the sync pod also crashes, but automatically restarts.
-
-Be aware that oc rsync has different options than rsync itself.
+IMPORTANT: Be aware that `oc rsync` has different options than `rsync` itself.
 
 [source,bash]
 --
@@ -436,17 +454,17 @@ Options:
  -w, --watch=false: Watch directory for changes and resync automatically
 --
 
-=== File integrity log
+=== File Integrity Check
 
-==== Calculate the checksum for all files per directory
+After the migration, you should check the integrity of your data with the following commands:
 
+.Calculate the checksum for all files at the origin
 [source,bash]
 --
 $ find . -type d -exec sh -c "cd '{}' && find . -maxdepth 1 -type f ! -name COPYSHA1SUMS -printf '%P\0' | xargs -r0 sha1sum -- > COPYSHA1SUMS" \;
 --
 
-==== Create a log with all the verifies of files
-
+.Create a log with a verification of all files at the destination
 [source,bash]
 --
 $ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c COPYSHA1SUMS" \; > sha1sums-verify-log-$(date +%F-%H-%M).log 2>&1
