@@ -40,6 +40,24 @@ In addition to enforcing minimum and maximum values, {product} also injects defa
 * Container memory requests and limits
 * Container ephemeral storage requests
 
+[#activedeadlineseconds]
+== Default value for `activeDeadlineSeconds` for "run-once" pods
+
+{product} sets a default value of 30 minutes for `.spec.activeDeadlineSeconds` for "run-once" pods.
+"Run-once" pods are pods which have `.spec.restartPolicy` of `Never` or `OnFailure`.
+Generally, that's pods created by Jobs, CronJobs, or OpenShift Builds.
+
+Notably, {product} only applies the default value for `.spec.activeDeadlineSeconds` for pods which don't have a value for that field already.
+Therefore, if you need a job to run longer than the default 30 minutes, simply set `.spec.activeDeadlineSeconds` accordingly in the Job's pod template.
+
+Additionally, the default value for `activeDeadlineSeconds` can be adjusted per namespace by adding annotation `appuio.io/active-deadline-seconds-override` to the namespace.
+
+[NOTE]
+====
+This mechanism ensures that all pods created by Jobs, CronJobs and OpenShift builds are considered `Terminating` by the Kubernetes resource quota management.
+That means that the `organization-compute-terminating` quota is relevant for pods created by Jobs, CronJobs and OpenShift builds.
+====
+
 == Checking the Quota and Limit values
 
 You can check the actual quotas as follows:
