@@ -26,7 +26,11 @@ TODO: Write this section
 
 == Let's Encrypt
 
-In APPUiO Cloud it *is not possible* to request certificates for `Route` objects. In APPUiO Cloud, only `Ingress` objects can request certificates.
+In APPUiO Cloud only `Ingress` objects can request certificates.
+
+IMPORTANT: It is not possible to request certificates in `Route` objects.
+
+The manifest below specifies an `Ingress` object with such requirement:
 
 [source,yaml]
 --
@@ -59,7 +63,7 @@ spec:
 
 <1> Annotation providing automatic provisioning of certificates on APPUiO Cloud.
 
-For reference, in APPUiO Public it was possible to configure TLS certificates in `Route` objects, using a manifest similar to the following:
+For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following. This is no longer valid in APPUiO Cloud.
 
 [source,yaml]
 --
@@ -86,7 +90,6 @@ For reference, in APPUiO Public it was possible to configure TLS certificates in
 --
 
 <1> Annotation providing automatic provisioning of certificates on APPUiO Public.
-
 
 == Storage
 
