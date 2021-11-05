@@ -15,8 +15,11 @@ This roles allows the creator to create, get, or modify nearly every resource in
 
 The user is free to modify or delete any of the `Roles` or `RoleBindings` and handle access control themselves.
 
-IMPORTANT: Be sure to not lock yourself out!
+[IMPORTANT]
+====
+Be sure to not lock yourself out!
 Nothing will stop you from removing access to created projects.
+====
 
 == Organization Membership
 
@@ -37,10 +40,13 @@ This needs to be done by someone in the target organization with the permission 
 Let `foo` be a namespace that belongs to the organization `purple-fox`.
 Let user `john` be part of the organization `carbon-fund`.
 To transfer the namespace `foo` to organization `carbon-fund`, the user `john` needs to have the permission to edit the namespace `foo`.
-With the default RBAC rules, this means he needs to have the role `namespace-owner`.
+With the default RBAC rules, this means `john` needs to have the role `namespace-owner`.
 With that the user `john` can move the project `foo` to the organization `carbon-fund`, by setting the label `appuio.io/organization` on the namespace `foo` to `carbon-fund`.
 This can't be done by a user in organization `purple-fox`.
 
-IMPORTANT: This will transfer to project to the new organization and update, among other things, billing.
+[IMPORTANT]
+====
+This will transfer to project to the new organization and affect, among other things, billing.
 It will however not update any RBAC rules.
 You will need to manually change these.
+====
