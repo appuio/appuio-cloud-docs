@@ -4,7 +4,7 @@ This document provides an overview of all the tasks required to move your applic
 
 == Main Differences
 
-Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the xref:differences-to-public.adoc[document explaining all the major differences] between both platforms.
+Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the xref:explanation/differences-to-public.adoc[document explaining all the major differences] between both platforms.
 
 === Timezone
 
@@ -38,7 +38,7 @@ $ dig @localhost example.com # <3>
 +
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
 
-. There are different `CNAME` to point to depending on your current zone; please refer to xref:zones.adoc[the APPUiO Cloud Zones] reference document, where the corresponding `CNAME` entry is specified.
+. There are different `CNAME` to point to depending on your current zone; please refer to xref:references/zones.adoc[the APPUiO Cloud Zones] reference document, where the corresponding `CNAME` entry is specified.
 
 == Let's Encrypt
 
@@ -77,6 +77,8 @@ spec:
     secretName: ${ROUTE_HOST}
 --
 <1> Annotation providing automatic provisioning of certificates on APPUiO Cloud.
+
+You can find more information in the xref:how-to/getting-a-certificate.adoc[Getting a Certificate through Let’s Encrypt] page.
 
 For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following. This is no longer valid in APPUiO Cloud.
 
