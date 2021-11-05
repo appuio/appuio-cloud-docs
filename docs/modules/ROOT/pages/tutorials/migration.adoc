@@ -24,7 +24,7 @@ For all time and date information in your manifests and commands, please change 
 
 Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
 
-. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. You can limit downtime by lowering that value, so the caching servers will check back more frequently. Typically, 300 seconds (5 minutes) instead of the default of 14400 (4 hours) is a good idea.
+. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. You can limit downtime by lowering that value, so the caching servers will check back more frequently. Typically, 60 seconds (1 minute) is a good idea.
 +
 [source,bash]
 --
