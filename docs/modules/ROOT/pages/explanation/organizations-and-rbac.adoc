@@ -6,11 +6,17 @@ The organization is also reflected as a `Group` object in the {zone} and is used
 
 == Default RBAC rules
 
-A `RoleBinding` with the name `admin` is created in the `Namespace` which grants the creator the `ClusterRole` called `admin`.
-Another `RoleBinding` with the name `organization-admin` is created in the `Namespace` which also grants the organization `admin` cluster role.
-The user is free to modify or delete either.
+On `Namespace` creation, a number of RBAC rules are created.
+
+* A `RoleBinding` called `admin` which grants the creator of the `Namespace` the `ClusterRole` called `admin`.
+This roles allows the creator to create, get, or modify nearly every resource in the `Namespace`.
+* A `RoleBinding` called `organization-admin` which also grants the organization the `admin` role.
+* A `RoleBinding` and `Role` called `namespace-owner` which gives the organization the permission to edit the created `Namespace`.
+
+The user is free to modify or delete any of the `Roles` or `RoleBindings` and handle access control themselves.
 
 IMPORTANT: Be sure to not lock yourself out!
+Nothing will stop you from removing access to created projects.
 
 == Organization Membership
 
@@ -20,3 +26,21 @@ Membership of organizations and organizations itself are currently being maintai
 
 It's planned to enable self-management of organizations and membership in the https://roadmap.appuio.cloud[upcoming Webportal].
 Please xref:contact[contact] us to manage organization membership for you for the time being.
+
+== Transfer Projects
+
+There is the option to move a project from one organization to another.
+This can be done by setting the label `appuio.io/organization` on the `Namespace` of the project to the name of the target organization.
+This needs to be done by someone in the target organization with the permission to edit the `Namespace`.
+
+.As an example: 
+Let `foo` be a namespace that belongs to the organization `purple-fox`.
+Let user `john` be part of the organization `carbon-fund`.
+To transfer the namespace `foo` to organization `carbon-fund`, the user `john` needs to have the permission to edit the namespace `foo`.
+With the default RBAC rules, this means he needs to have the role `namespace-owner`.
+With that the user `john` can move the project `foo` to the organization `carbon-fund`, by setting the label `appuio.io/organization` on the namespace `foo` to `carbon-fund`.
+This can't be done by a user in organization `purple-fox`.
+
+IMPORTANT: This will transfer to project to the new organization and update, among other things, billing.
+It will however not update any RBAC rules.
+You will need to manually change these.
