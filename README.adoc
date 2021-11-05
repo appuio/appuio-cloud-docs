@@ -21,9 +21,9 @@ The documentation structure is inspired by the https://documentation.divio.com/[
 Tutorials (Learning-oriented):: A lesson which teaches you something.
 Location: `docs/modules/ROOT/pages/tutorials`.
 
-How-to guides (Problem-oriented):: Step-by-step guides to achieve a goal. Location: `docs/modules/ROOT/pages/how-tos`.
+How-to guides (Problem-oriented):: Step-by-step guides to achieve a goal. Location: `docs/modules/ROOT/pages/how-to`.
 
-Technical reference (Information-oriented):: Description about the inner ongoings. Location: `docs/modules/ROOT/pages/tutorials`.
+Technical reference (Information-oriented):: Description about the inner ongoings. Location: `docs/modules/ROOT/pages/references`.
 
 Explanation (Understanding-oriented):: Explains the background. Location: `docs/modules/ROOT/pages/explanations`.
 
