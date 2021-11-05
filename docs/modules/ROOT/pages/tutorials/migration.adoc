@@ -18,7 +18,7 @@ IMPORTANT: Remember to set your TTL back to the previous value after the migrati
 
 == Let's Encrypt
 
-In APPUiO Cloud only `Ingress` objects can request certificates.
+In APPUiO Cloud only `Ingress` and `certificates.cert-manager.io/v1` objects can request certificates.
 
 IMPORTANT: It's not possible to request certificates in `Route` objects.
 
