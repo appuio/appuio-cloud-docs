@@ -478,13 +478,13 @@ Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your 
 
 TIP: This section uses the https://github.com/containers/skopeo[skopeo] tool for managing images and repositories.
 
-. Get a user token at this URL: https://<cluster-console>/oauth/token/request.
+. Get a user token at this URL: https://<origin-cluster-console>/oauth/token/request.
 
 . Use the generated user token to authenticate to the registry on the command line. As the user token has enough privileges to read the image, a service account token is not required.
 +
 [source,bash]
 --
-$ skopeo login -u openshift -p <token> <registry-url>
+$ skopeo login -u openshift -p <token> <origin-url>
 --
 +
 Skopeo uses the docker auth config. So this should look like:
@@ -494,7 +494,7 @@ Skopeo uses the docker auth config. So this should look like:
 $ cat ~/.docker/config.json
 {
     "auths": {
-        "<registry-url>": {
+        "<origin-url>": {
             "auth": "...="
         }
     }
@@ -505,7 +505,7 @@ Check if the access is working:
 +
 [source,bash]
 --
-$ skopeo inspect docker://<registry-url>/<namespace>/<image>:<image-tag>
+$ skopeo inspect docker://<origin-url>/<namespace>/<image>:<image-tag>
 --
 
 IMPORTANT: This is a user token, and therefore it expires when you logout.
@@ -552,14 +552,14 @@ Login with the token:
 
 [source,bash]
 --
-$ skopeo login -u openshift -p $(oc -n <namespace> sa get-token image-upload) <registry-url>
+$ skopeo login -u openshift -p $(oc -n <namespace> sa get-token image-upload) <destination-url>
 --
 
 Copy the image:
 
 [source,bash]
 --
-$ skopeo copy docker://<registry-url>/<namespace>/<image>:<image-tag> docker://<registry-url>/<namespace>/<image>:<image-tag>
+$ skopeo copy docker://<origin-url>/<namespace>/<image>:<image-tag> docker://<destination-url>/<namespace>/<image>:<image-tag>
 --
 
 IMPORTANT: Remember to remove the service account after the migration.
