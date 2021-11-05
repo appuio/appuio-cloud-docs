@@ -92,6 +92,16 @@ For {product} there is a xref:references/default-quota.adoc[generic Quota] appli
 It should allow for most of the normal workloads.
 Should it not be enough for you, please request a quota increase via xref:contact.adoc[{product} support].
 
+=== Default value for `activeDeadlineSeconds` for "run-once" pods
+
+In APPUiO Public, the control plane restricted the execution time of "run-once" pods to 30 minutes by default.
+"Run-once" pods are pods that have a `restartPolicy` of `Never` or `OnFailure`.
+This was implemented using OpenShift 3's mechanism to https://docs.openshift.com/container-platform/3.11/admin_guide/managing_pods.html#manage-pods-limit-run-once-duration[limit run-once pod duration].
+
+On {product}, we don't specify a hard limit on the time such pods can be active.
+Instead, we only apply a limit of 30 minutes to run-once pods which don't have `activeDeadlineSeconds` set already.
+See xref:references/default-quota#activedeadlineseconds[the quota reference docs] for more details on the mechanism.
+
 === Latest K8up version
 
 Thanks to the recent Kubernetes version we offer the latest available K8up version.
