@@ -1,0 +1,544 @@
+= Migration Tutorial: From APPUiO Public to APPUiO Cloud
+
+This document provides an overview of all the tasks required to move your applications from APPUiO Cloud to APPUiO Public.
+
+== Main Differences
+
+TODO: Point to https://docs.appuio.cloud/user/explanation/differences-to-public.html[differences].
+
+== Timezone
+
+On APPUiO Public the timezone was *Europe/Zurich*. With APPUiO Cloud/OpenShift 4 the control plane runs on *UTC* instead.
+
+Time on a control plane:
+
+[source,bash]
+--
+sh-4.4# date
+Mon Oct 25 14:41:20 UTC 2021
+--
+
+Either the time schedule is changed to UTC or beginning with OpenShift 4.9/Kubernetes v1.21 you can and should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[CronJob].
+
+== DNS
+
+TODO: Write this section
+
+== Let's Encrypt
+
+TODO: Write this section
+
+== Storage
+
+=== Access the RWO volumes from different pods
+
+On APPUiO Public we had RWX storage by default. At the moment we do have RWO with APPUiO Cloud. Former deployments using RWX volumes can't run anymore without being modified. (Remark: APPUiO Cloud will have RWX volumes again, see https://github.com/appuio/appuio-cloud-community/projects/1)
+
+The rollout strategy must be changed from "RollingUpdate" to "Recreate", because mounting the volume at different nodes simultaneously isn't possible. At least not with common used filesystems as ext4 and xfs. https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+
+Add an affinity rule to run on the same node as the worker pod. This allows to access the same RWO/block volume, because the filesystem is mounted on the node level and allows a safe access to the same filesystem because it's the same kernel.
+
+This might be used for jobs, but in the case of independent application parts this should be prevented.
+
+Having a affinity rule for all the pods on in once, you might use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ app.kubernetes.io/component label.
+
+[source,yaml]
+--
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/component
+           operator: In
+          values:
+          - backend
+      topologyKey: kubernetes.io/hostname
+--
+
+### Copy files with Rsync
+
+Created a "empty" pod just requires to run as a target:
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rsync-test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rsync-destination
+  namespace: rsync-test
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: rsync-test
+  name: rsync-destination
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: rsync-destination
+  namespace: rsync-test
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-destination
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-destination
+  name: rsync-destination
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-destination
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-destination
+    spec:
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-destination
+          name: rsync-destination
+      volumes:
+      - name: rsync-destination
+        persistentVolumeClaim:
+          claimName: rsync-destination
+--
+
+=== Job based
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-source # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-source
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-source
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - rsync-source
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+---
+apiVersion: batch/v1beta1 #batch/v1 for OpenShift 4
+kind: CronJob
+metadata:
+  labels:
+    app: rsync-copy
+  name: rsync-copy
+  namespace: rsync-test
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 7200
+      backoffLimit: 2
+      completions: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: rsync-source
+        spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - rsync-source
+                topologyKey: kubernetes.io/hostname
+          containers:
+          - image: quay.io/openshift/origin-cli:4.8
+            imagePullPolicy: IfNotPresent
+            name: oc-rsync
+            command:
+              - /bin/bash
+              - -c
+              - |
+                #!/bin/bash
+                oc \
+                --server=$K8S_API \
+                --token=$K8S_TOKEN \
+                --namespace=$K8S_NAMESPACE \
+                rsync \
+                --delete=true \
+                 /rsync-source/ \
+                "$(oc --server=$K8S_API --token=$K8S_TOKEN --namespace=$K8S_NAMESPACE get pod -l app.kubernetes.io/name=rsync-destination -o jsonpath={.items[0].metadata.name}):/rsync-destination/"
+            env:
+            - name: K8S_API
+              value: https://<kubernetes-api>:6443
+            - name: K8S_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rsync-destination-oc-token
+                  key: token
+            - name: K8S_NAMESPACE
+              value: rsync-test
+            volumeMounts:
+            - mountPath: /rsync-source
+              name: rsync-source
+          restartPolicy: Never
+          volumes:
+          - name: rsync-source
+            persistentVolumeClaim:
+              claimName: rsync-source
+  schedule: '@yearly'
+  startingDeadlineSeconds: 86400
+  successfulJobsHistoryLimit: 1
+--
+
+Create a new job:
+
+[source,bash]
+--
+$ JOB_NAME="manual-$(date +%F-%H-%M)" oc -n rsync-test create job --from=cronjob/rsync-copy $JOB_NAME
+
+$ oc -n rsync-test get po
+NAME                                 READY   STATUS      RESTARTS   AGE
+manual1-8975l                        0/1     Completed   0          2m9s
+rsync-destination-6fd76657d8-6fjss   1/1     Running     0          41m
+rsync-source-957bf555c-68jmn         1/1     Running     0          5m5s
+
+$ oc -n rsync-test delete job $JOB_NAME
+--
+
+Check the job status:
+
+[source,bash]
+--
+$ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
+--
+
+### Continuous sync
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-source # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-source
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-source
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - rsync-continuous-sync
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-continuous-sync # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+  name: rsync-continuous-sync
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-continuous-sync
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-continuous-sync
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                 operator: In
+                values:
+                - backend
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: quay.io/openshift/origin-cli:4.8
+        imagePullPolicy: IfNotPresent
+        name: oc-rsync
+        command:
+          - /bin/bash
+          - -c
+          - |
+            #!/bin/bash
+            oc \
+            --server=$K8S_API \
+            --token=$K8S_TOKEN \
+            --namespace=$K8S_NAMESPACE \
+            rsync \
+            --delete=true \
+            --watch=true \
+            /rsync-source/ \
+            "$(oc --server=$K8S_API --token=$K8S_TOKEN --namespace=$K8S_NAMESPACE get pod -l app.kubernetes.io/name=rsync-destination -o jsonpath={.items[0].metadata.name}):/rsync-destination/"
+        env:
+        - name: K8S_API
+          value: https://<kubernetes-api>:6443
+        - name: K8S_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rsync-destination-oc-token
+              key: token
+        - name: K8S_NAMESPACE
+          value: rsync-test
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+--
+
+Big benefit is, that files are replicated immediately after they are created. If the destination pod dies, the sync pod also crashes, but automatically restarts.
+
+Be aware that oc rsync has different options than rsync itself.
+
+[source,bash]
+--
+Options:
+     --compress=false: compress file data during the transfer
+ -c, --container='': Container within the pod
+     --delete=false: If true, delete files not present in source
+     --exclude=[]: When specified, exclude files matching pattern
+     --include=[]: When specified, include files matching pattern
+     --no-perms=false: If true, do not transfer permissions
+     --progress=false: If true, show progress during transfer
+ -q, --quiet=false: Suppress non-error messages
+     --strategy='': Specify which strategy to use for copy: rsync, rsync-daemon, or tar
+ -w, --watch=false: Watch directory for changes and resync automatically
+--
+
+=== File integrity log
+
+==== Calculate the checksum for all files per directory
+
+[source,bash]
+--
+$ find . -type d -exec sh -c "cd '{}' && find . -maxdepth 1 -type f ! -name COPYSHA1SUMS -printf '%P\0' | xargs -r0 sha1sum -- > COPYSHA1SUMS" \;
+--
+
+==== Create a log with all the verifies of files
+
+[source,bash]
+--
+$ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c COPYSHA1SUMS" \; > sha1sums-verify-log-$(date +%F-%H-%M).log 2>&1
+--
+
+== Container Images
+
+=== On OpenShift 3
+
+URL to get an user token: https://<cluster-console>/oauth/token/request
+
+Use the generated user token to authenticate to the registry. As the user token has enough privileges to read the image, a service account token is not required.
+
+[source,bash]
+--
+$ skopeo login -u openshift -p <token> <registry-url>
+--
+
+Skopeo uses the docker auth config. So this should look like:
+
+[source,bash]
+--
+$ cat ~/.docker/config.json
+{
+    "auths": {
+        "<registry-url>": {
+            "auth": "...="
+        }
+    }
+}
+--
+
+Check if the access is working:
+
+[source,bash]
+--
+$ skopeo inspect docker://<registry-url>/<namespace>/<image>:<image-tag>
+--
+
+Keep in mind that it's a user token, expires when you logout.
+
+=== On OpenShift 4
+
+It was possible to take the token from https://oauth-openshift.apps.<cluster>/oauth/token/display to get read access.
+
+However there haven't been enough privileges to write images. Therefore I've created a service account, granted access to system:image-builders and got the token from it.
+
+[source,bash]
+--
+$ oc -n <namespace> create sa image-upload
+--
+
+Get the token:
+
+[source,bash]
+--
+oc sa get-token -n <namespace> image-upload
+--
+
+[source,bash]
+--
+$ oc -n <namespace> get rolebinding system:image-builders -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+...
+  name: system:image-builders
+  namespace: <namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-builder
+subjects:
+...
+- kind: ServiceAccount
+  name: image-upload
+  namespace: <namespace>
+--
+
+Login with the token. The provided user is according the OpenShift documentation regardless:
+
+
+[source,bash]
+--
+$ skopeo login -u openshift -p $(oc -n <namespace> sa get-token image-upload) <registry-url>
+--
+
+Copy the image:
+
+[source,bash]
+--
+$ skopeo copy docker://<registry-url>/<namespace>/<image>:<image-tag> docker://<registry-url>/<namespace>/<image>:<image-tag>
+--
+
+The service account should be removed after the migration.
