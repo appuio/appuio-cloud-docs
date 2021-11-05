@@ -1,6 +1,6 @@
 = Migration Tutorial: From APPUiO Public to APPUiO Cloud
 
-This document provides an overview of all the tasks required to move your applications from APPUiO Cloud to APPUiO Public.
+This document provides an overview of all the tasks required to move your applications from APPUiO Public to APPUiO Cloud.
 
 == Main Differences
 
