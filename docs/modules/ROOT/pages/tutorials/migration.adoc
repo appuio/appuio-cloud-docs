@@ -6,20 +6,6 @@ This document provides an overview of all the tasks required to move your applic
 
 Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the xref:explanation/differences-to-public.adoc[document explaining all the major differences] between both platforms.
 
-=== Timezone
-
-As a reminder, please keep in mind that in APPUiO Public the timezone was *Europe/Zurich*; however, in APPUiO Cloud (based on OpenShift 4) the control plane runs on *UTC* instead.
-
-Example of getting the current time on a control plane:
-
-[source,bash]
---
-sh-4.4# date
-Mon Oct 25 14:41:20 UTC 2021
---
-
-For all time and date information in your manifests and commands, please change it to conform to UTC, or better yet, beginning with OpenShift 4.9 (based on Kubernetes v1.21) you should define the timezone in a https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/[Kubernetes CronJob].
-
 == DNS
 
 Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
