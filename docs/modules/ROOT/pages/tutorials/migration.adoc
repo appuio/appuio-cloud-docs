@@ -44,7 +44,7 @@ IMPORTANT: Remember to set your TTL back to the previous value after the migrati
 
 In APPUiO Cloud only `Ingress` objects can request certificates.
 
-IMPORTANT: It is not possible to request certificates in `Route` objects.
+IMPORTANT: It's not possible to request certificates in `Route` objects.
 
 The manifest below specifies an `Ingress` object with such requirement:
 
@@ -386,7 +386,7 @@ $ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
 
 ### Continuous Sync
 
-The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they are created. If the destination pod dies, the sync pod also crashes, but is automatically restarted.
+The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created. If the destination pod dies, the sync pod also crashes, but is automatically restarted.
 
 Use the manifests below to create the required objects.
 
@@ -560,7 +560,7 @@ TIP: This section uses the https://github.com/containers/skopeo[skopeo] tool for
 
 . Get a user token at this URL: https://<origin-cluster-console>/oauth/token/request.
 
-. Use the generated user token to authenticate to the registry on the command line. As the user token has enough privileges to read the image, a service account token is not required.
+. Use the generated user token to authenticate to the registry on the command line. As the user token has enough privileges to read the image, a service account token isn't required.
 +
 [source,bash]
 --
@@ -592,7 +592,7 @@ IMPORTANT: This is a user token, and therefore it expires when you logout.
 
 === On OpenShift 4
 
-On OpenShift 4 it is also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token does not grant enough privileges to write images. Therefore it is recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
+On OpenShift 4 it's also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token doesn't grant enough privileges to write images. Therefore it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
 
 [source,bash]
 --
