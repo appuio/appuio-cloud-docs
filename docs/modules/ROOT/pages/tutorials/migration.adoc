@@ -12,16 +12,6 @@ Customers transferring their domains from APPUiO Public to APPUiO Cloud should b
 
 . Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. You can limit downtime by lowering that value, so the caching servers will check back more frequently. Typically, 60 seconds (1 minute) is a good idea.
 +
-[source,bash]
---
-$ vi /var/named/example.com.db # <1>
-$ rndc reload example.com # <2>
-$ dig @localhost example.com # <3>
---
-<1> Edit the zone file
-<2> Make BIND aware of your changes
-<3> Test your changes using https://www.liquidweb.com/kb/how-to-use-dig/[dig]
-+
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
 
 . There are different `CNAME` to point to depending on your current zone; please refer to xref:references/zones.adoc[the APPUiO Cloud Zones] reference document, where the corresponding `CNAME` entry is specified.
