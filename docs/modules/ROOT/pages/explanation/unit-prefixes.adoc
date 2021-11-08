@@ -1,0 +1,105 @@
+= Unit Prefixes
+
+This page describes the differences between binary and metric prefixes for a better understanding.
+
+TIP: {product} uses https://en.wikipedia.org/wiki/Binary_prefix[binary prefixes] throughout the whole system.
+
+There are two well-known unit prefixes which can cause confusion:
+
+* https://en.wikipedia.org/wiki/Binary_prefix[binary prefixes]
+* https://en.wikipedia.org/wiki/Metric_prefix#List_of_SI_prefixes[SI prefixes]
+
+== Binary prefixes
+
+> A binary prefix is a unit prefix to indicate multiplication by a power of 2.
+
+.Example
+[cols=",",options="header"]
+|===
+|Unit of measure
+|Bytes
+
+|Kibibyte (KiB)
+|1'024¹ = 1'024
+
+|Mebibyte (MiB)
+|1'024² = 1'048'576
+
+|Gibibyte (GiB)
+|1'024³ = 1'073'741'824
+
+|Tebibyte (TiB)
+|1'024⁴ = 1'099'511'627'776
+
+|Pebibyte (PiB)
+|1'024⁵ = 1'125'899'906'842'62
+
+|===
+
+These prefixes are also known as IEC prefixes.
+
+== Metric prefixes
+
+> A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a multiple or submultiple of the unit.
+
+.Example
+[cols=",",options="header"]
+|===
+|Unit of measure
+|Bytes
+
+|Kilobyte (KB)
+|1'000¹ = 1'000
+
+|Megabyte (MB)
+|1'000² = 1'000'000
+
+|Gigabyte (GB)
+|1'000³ = 1'000'000'000
+
+|Terabyte (TB)
+|1'000⁴ = 1'000'000'000'000
+
+|Petabyte (PB)
+|1'000⁵ = 1'000'000'000'000'000
+
+|===
+
+== Conversion
+
+GB to GiB::
+Multiply by (1000³ / 1024³), equivalent to 0.931323 +
+Divide by this value to go from GiB to GB
+
+TB to TiB::
+Multiply by (1000⁴ / 1024⁴), equivalent to 0.909495 +
+Divide by this value to go from TiB to TB
+
+GiB to TiB::
+Divide by 1024 +
+Multiply by 1024 to go from TiB to GiB
+
+GiB to TB::
+Convert into GB by dividing by 0.931323, then divide by 1000 to get into TB
+
+.Example
+.Example
+[cols=",",options="header"]
+|===
+|Unit
+|Is equal to
+
+|1 GB
+|0.93 GiB
+
+|1 TB 
+|0.91 TiB
+
+|1 TiB 
+|931 GiB
+
+|1 TiB 
+|1.1 TB
+|===
+
+TIP: We measure and store everything in bytes and convert to binary prefixes for better human readability.
