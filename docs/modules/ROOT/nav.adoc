@@ -12,6 +12,7 @@
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
 * xref:how-to/list-namespaces.adoc[List Namespaces]
 * xref:how-to/getting-a-certificate.adoc[Generate Certificates]
+* xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]

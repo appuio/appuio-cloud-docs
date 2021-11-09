@@ -1,0 +1,85 @@
+= How to use the OpenShift integrated container registry
+
+The OpenShift integrated registry of each {product} zone is exposed outside the cluster at `registry.<zone>.appuio.cloud`.
+
+== Prerequisites
+
+To pull from the registry, your account needs the `registry-viewer` role.
+To push to the registry, your account needs the `registry-editor` role.
+These permissions are generally project-scoped.
+Both of these permissions are part of the `edit` and `admin` project roles.
+The `registry-viewer` role is also part of the `view` project role.
+
+See the https://docs.openshift.com/container-platform/latest/registry/accessing-the-registry.html#prerequisites[OpenShift docs] for details on how to configure those roles for your user.
+
+== Accessing the registry with your {product} user
+
+You can access the registry with your {product} credentials with the following steps:
+
+. Login to the desired zone and create docker credentials for the zone registry
++
+[source,bash]
+----
+zone=cloudscale-lpg-0 <1>
+oc login https://api.${zone}.appuio.cloud:6443 <2>
+oc whoami -t | docker login -u $(oc whoami) --password-stdin \
+  registry.${zone}.appuio.cloud
+----
+<1> Select the zone for which you want to access the registry
+<2> You may be asked to obtain an API token from `oauth-openshift` on the zone.
+If that's the case, simply follow the link and copy the resulting login command from the browser before executing the next command.
+
+. Push an image to the zone registry
++
+[source,bash]
+----
+project=MYPROJECT <1>
+docker pull busybox <2>
+docker tag busybox registry.${zone}.appuio.cloud/${project}/busybox
+docker push registry.${zone}.appuio.cloud/${project}/busybox
+----
+<1> Select the project to which you want to push the image.
+<2> The example uses the latest `busybox` image to illustrate pushing an image to the registry.
+If you build your own images, just make sure you tag them as shown in the `docker tag` command.
+
+. Check that the image has been pushed to the project
++
+[source,console]
+----
+$ oc -n ${project} get is
+NAME      IMAGE REPOSITORY                                 TAGS     UPDATED
+busybox   registry.<zone>.appuio.cloud/MYPROJECT/busybox   latest   25 seconds ago
+----
+
+== Accessing the registry with a service account
+
+To access the registry with a service account token, you need to grant the service account the `registry-editor` role.
+We recommend that you create a service account which you only use to access the registry per project.
+This way, you can be sure that your CI pipelines can only push images to the intended project.
+
+. Create service account and add `registry-editor` to service account
++
+[source,bash]
+----
+oc project MYPROJECT <1>
+oc create serviceaccount image-pusher
+oc policy add-role-to-user registry-editor -z image-pusher
+----
+<1> Select the project in which you want to create the service account.
+
+. Extract the service account token
++
+[source,bash]
+----
+token=$(oc sa get-token image-pusher)
+----
+
+. Use the extracted token to login to the registry
++
+[source,bash]
+----
+echo "${token}" | docker login -u serviceaccount --password-stdin \
+  registry.${zone}.appuio.cloud
+----
+
+You can use the extracted token and the command shown in the last step to push images to the zone's registry from arbitrary CI pipelines.
