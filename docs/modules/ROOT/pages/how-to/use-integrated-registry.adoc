@@ -4,13 +4,14 @@ The OpenShift integrated registry of each {product} zone is exposed outside the 
 
 == Prerequisites
 
-To pull from the registry, your account needs the `registry-viewer` role.
-To push to the registry, your account needs the `registry-editor` role.
-These permissions are generally namespace-scoped.
-Both of these permissions are part of the `edit` and `admin` project roles.
-The `registry-viewer` role is also part of the `view` project role.
+In general, all users who have access to a namespace are allowed to
 
-See the https://docs.openshift.com/container-platform/latest/registry/accessing-the-registry.html#prerequisites[OpenShift docs] for details on how to configure those roles for your user.
+* Pull images associated with the namespace from the registry.
+* Push images associated with the namespace to the registry.
+
+TIP: Images associated with a namespace are stored in the registry under `registry.<zone>.appuio.cloud/<namespace>`.
+
+If you need more fine-grained access control, see section <<Advanced user access configuration>> below.
 
 == Accessing the registry with your {product} user
 
@@ -83,3 +84,15 @@ echo "${token}" | docker login -u serviceaccount --password-stdin \
 ----
 
 You can use the extracted token and the command shown in the last step to push images to the zone's registry from arbitrary CI pipelines.
+
+== Advanced user access configuration
+
+If you want to implement more fine-grained control for registry access in your namespaces you can use the following:
+
+* To pull from the registry, accounts need the `registry-viewer` role.
+* To push to the registry, accounts need the `registry-editor` role.
+
+Please be aware that users with role `edit` or `admin` for a namespace are granted both the `registry-viewer` and `registry-editor` roles.
+Additionally, users with role `view` for a namespace are granted the `registry-viewer` role.
+
+See the https://docs.openshift.com/container-platform/latest/registry/accessing-the-registry.html#prerequisites[OpenShift docs] for details on how to configure those roles for users.
