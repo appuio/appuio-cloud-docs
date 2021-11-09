@@ -21,12 +21,13 @@ You can access the registry with your {product} credentials with the following s
 +
 [source,bash]
 ----
-zone=cloudscale-lpg-0 <1>
+zone=ZONE-ID <1>
 oc login https://api.${zone}.appuio.cloud:6443 <2>
 oc whoami -t | docker login -u $(oc whoami) --password-stdin \
   registry.${zone}.appuio.cloud
 ----
-<1> Select the zone for which you want to access the registry
+<1> Replace `ZONE-ID` with the zone on which you want to access the registry.
+See the xref:references/zones.adoc[list of zones] for available {product} zones.
 <2> You may be asked to obtain an API token from `oauth-openshift` on the zone.
 If that's the case, simply follow the link and copy the resulting login command from the browser before executing the next command.
 
