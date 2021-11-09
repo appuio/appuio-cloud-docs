@@ -6,7 +6,7 @@ The OpenShift integrated registry of each {product} zone is exposed outside the 
 
 To pull from the registry, your account needs the `registry-viewer` role.
 To push to the registry, your account needs the `registry-editor` role.
-These permissions are generally project-scoped.
+These permissions are generally namespace-scoped.
 Both of these permissions are part of the `edit` and `admin` project roles.
 The `registry-viewer` role is also part of the `view` project role.
 
