@@ -13,6 +13,7 @@ OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
 Kubernetes API endpoint:: https://api.cloudscale-lpg-0.appuio.cloud:6443
 Default App Domain:: apps.cloudscale-lpg-0.appuio.cloud
+Integrated Cluster Registry Domain:: registry.cloudscale-lpg-0.appuio.cloud
 SDN:: OVN-Kubernetes
 Storage::
 Supported storage classes:
@@ -35,6 +36,7 @@ OpenShift Version:: 4.8
 Kubernetes Version:: 1.21
 Kubernetes API endpoint:: https://api.cloudscale-lpg-1.appuio.cloud:6443
 Default App Domain:: apps.cloudscale-lpg-1.appuio.cloud
+Integrated Cluster Registry Domain:: registry.cloudscale-lpg-1.appuio.cloud
 SDN:: Cilium
 Storage::
 Supported storage classes:
