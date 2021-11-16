@@ -1,0 +1,39 @@
+= Remove Default NetworkPolicies
+
+In every namespace 2 `NetworkPolicies` are created and maintained by {product}:
+
+. `allow-from-other-namespaces`: This policy allows the Router and other system components to connect to the pods.
+. `allow-from-same-namespace`: This policy allows connections between pods in the same namespace.
+
+NOTE: {product} automatically reverts any changes made in these policy objects.
+
+If you have the need to customize the default policies, you can remove them and provide your own policies.
+You can disable the automatic network policy management of {product} by adding labels to a namespace as shown below.
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/description: ""
+    openshift.io/display-name: My cool project
+    openshift.io/requester: my-username
+  labels:
+    appuio.io/organization: my-company
+    kubernetes.io/metadata.name: my-namespace
+    network-policies.syn.tools/no-defaults: 'true' <1>
+    network-policies.syn.tools/purge-defaults: 'true' <2>
+  name: my-namespace
+----
+<1> Add this label to prevent {product} from reverting changes to the default network policies.
+Note that {product} won't recreate the default network policies (for example if they're accidentally deleted) if this label is set to `true`.
+Also note that {product} won't create the default network policies if this label is set to `true` when the namespace is created.
+<2> Add this label only if you want to completely remove the default network policies.
+Note that {product} will remove any network policy which matches the name of one of the default policies if this label is set to `true`.
+
+[WARNING]
+====
+Removing or modifying the default policies from a namespace without having appropriate replacement policies in place will prevent system components (such as the OpenShift Router) from connecting to applications in the namespace.
+Only do this if you know what you are doing.
+====
