@@ -14,7 +14,7 @@ Customers transferring their domains from APPUiO Public to APPUiO Cloud should b
 +
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
 
-. There are different `CNAME` resource records to point to depending on which {zone} you migrated the application to; please refer to xref:zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
+. There are different `CNAME` resource records to point to depending on which {zone} you migrate the application to; please refer to xref:zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
 
 == Let's Encrypt
 
@@ -30,9 +30,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true" # <1>
+    cert-manager.io/cluster-issuer: letsencrypt-production <1>
   name: ${DEPLOYMENT_NAME}
   namespace: oauth-test
 spec:
@@ -56,7 +54,8 @@ spec:
 
 You can find more information in the xref:how-to/getting-a-certificate.adoc[Getting a Certificate through Let’s Encrypt] page.
 
-For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following. This is no longer valid in APPUiO Cloud.
+For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following. 
+This is no longer valid in APPUiO Cloud.
 
 [source,yaml]
 --
@@ -85,13 +84,15 @@ For reference, it was possible to configure TLS certificates in `Route` objects 
 
 == Storage
 
-APPUiO Cloud has different requirements regarding storage. This section provides more information.
+APPUiO Cloud has different requirements regarding storage.
+This section provides more information.
 
 === Access the RWO volumes from different pods
 
 When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 
-. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with common used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
+. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. 
+  https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
 . Add an affinity rule to run on the same node as the worker pod. This allows to access the same RWO/block volume, because the filesystem is mounted on the node level, and allows a safe access to the same filesystem, because it's the same kernel.
 +
@@ -202,7 +203,8 @@ spec:
 
 === Job-Based Migration
 
-The second option for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs. The manifest below defines the objects required for this strategy.
+The second option for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs.
+The manifest below defines the objects required for this strategy.
 
 [source,yaml]
 --
@@ -360,7 +362,8 @@ $ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
 
 ### Continuous Sync
 
-The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created. If the destination pod dies, the sync pod also crashes, but is automatically restarted.
+The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created.
+If the destination pod dies, the sync pod also crashes, but is automatically restarted.
 
 Use the manifests below to create the required objects.
 
@@ -526,7 +529,8 @@ $ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c CO
 
 == Container Images
 
-Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your container images. This section contains all the required steps for adapting your images to the new environment.
+Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your container images.
+This section contains all the required steps for adapting your images to the new environment.
 
 === On OpenShift 3
 
