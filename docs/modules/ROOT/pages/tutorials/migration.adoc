@@ -61,26 +61,26 @@ This is no longer valid in APPUiO Cloud.
 
 [source,yaml]
 --
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    name: ${DEPLOYMENT_NAME}
-    labels:
-      app: ${CI_ENVIRONMENT_SLUG}
-    annotations:
-      kubernetes.io/tls-acme: "${ROUTE_TLS_ACME}" # <1>
-  spec:
-    host: ${ROUTE_HOST}
-    port:
-      targetPort: http
-    tls:
-      insecureEdgeTerminationPolicy: Redirect
-      termination: edge
-    to:
-        kind: Service
-        name: ${DEPLOYMENT_NAME}
-        weight: 100
-    wildcardPolicy: None
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ${DEPLOYMENT_NAME}
+  labels:
+    app: ${CI_ENVIRONMENT_SLUG}
+  annotations:
+    kubernetes.io/tls-acme: "${ROUTE_TLS_ACME}" # <1>
+spec:
+  host: ${ROUTE_HOST}
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+      kind: Service
+      name: ${DEPLOYMENT_NAME}
+      weight: 100
+  wildcardPolicy: None
 --
 <1> Annotation providing automatic provisioning of certificates on APPUiO Public.
 
