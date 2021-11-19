@@ -10,8 +10,8 @@ Before starting the migration of your applications from APPUiO Public to APPUiO 
 
 Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
 
-. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. 
-  You can limit downtime by lowering that value, so the caching servers will check back more frequently. 
+. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate.
+  You can limit downtime by lowering that value, so the caching servers will check back more frequently.
   Typically, 60 seconds (1 minute) is a good idea.
 +
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
@@ -56,7 +56,7 @@ spec:
 
 You can find more information in the xref:how-to/getting-a-certificate.adoc[Getting a Certificate through Let’s Encrypt] page.
 
-For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following. 
+For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following.
 This is no longer valid in APPUiO Cloud.
 
 [source,yaml]
@@ -93,10 +93,10 @@ This section provides more information.
 
 When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 
-. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used file systems, such as https://en.wikipedia.org/wiki/Ext4[ext4].
+. The deployment strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used file systems, such as https://en.wikipedia.org/wiki/Ext4[ext4].
   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
-. Add an affinity rule to run on the same node as the worker pod. 
+. Add an affinity rule to run on the same node as the worker pod.
   This allows to access the same RWO/block volume, because the file system is mounted on the node level, and allows a safe access to the same file system, because it's the same kernel.
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
@@ -130,6 +130,7 @@ The first option to migrate your storage from APPUiO Public to APPUiO Cloud cons
 The manifests below create the required objects.
 This part has to be installed on the destination side.
 Overall a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
+This part has to be installed on the destination side. In general a pod must be running with the RWO volume mounted, so that `oc rsync` can connect to it.
 
 [source,yaml]
 --
