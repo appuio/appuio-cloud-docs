@@ -126,13 +126,12 @@ spec:
 
 The following sections provide information about each strategy.
 
-### Migration with `rsync`
+### Migration with `oc rsync`
 
-The first option to migrate your storage from APPUiO Public to APPUiO Cloud consists in using `rsync`.
-The manifests below create the required objects.
-This part has to be installed on the destination side.
-Overall a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
-This part has to be installed on the destination side. In general a pod must be running with the RWO volume mounted, so that `oc rsync` can connect to it.
+The first variant to migrate your application storage from APPUiO Public to APPUiO Cloud consists in using `oc rsync`.
+Rsync is an often used and well tested tool synchronizing files between systems.
+The manifests below create the required objects on the destination side.
+If you are you are using your own, at least a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
 
 [source,yaml]
 --
@@ -212,8 +211,8 @@ spec:
 
 === Job-Based Migration
 
-The second option for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs.
-The manifest below defines the objects required for this strategy.
+The second variant for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs.
+The manifest below defines the objects required on a destination side.
 
 [source,yaml]
 --
