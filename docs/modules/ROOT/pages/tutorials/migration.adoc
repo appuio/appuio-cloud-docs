@@ -10,7 +10,9 @@ Before starting the migration of your applications from APPUiO Public to APPUiO 
 
 Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
 
-. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. You can limit downtime by lowering that value, so the caching servers will check back more frequently. Typically, 60 seconds (1 minute) is a good idea.
+. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate. 
+  You can limit downtime by lowering that value, so the caching servers will check back more frequently. 
+  Typically, 60 seconds (1 minute) is a good idea.
 +
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
 
@@ -32,7 +34,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production <1>
   name: ${DEPLOYMENT_NAME}
-  namespace: oauth-test
+  namespace: ${NAMESPACE}
 spec:
   rules:
   - host: ${ROUTE_HOST}
@@ -94,7 +96,8 @@ When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 . The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. 
   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
-. Add an affinity rule to run on the same node as the worker pod. This allows to access the same RWO/block volume, because the filesystem is mounted on the node level, and allows a safe access to the same filesystem, because it's the same kernel.
+. Add an affinity rule to run on the same node as the worker pod. 
+  This allows to access the same RWO/block volume, because the filesystem is mounted on the node level, and allows a safe access to the same filesystem, because it's the same kernel.
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
 +
@@ -538,7 +541,8 @@ TIP: This section uses the https://github.com/containers/skopeo[skopeo] tool for
 
 . Get a user token at this URL: https://<origin-cluster-console>/oauth/token/request.
 
-. Use the generated user token to authenticate to the registry on the command line. As the user token has enough privileges to read the image, a service account token isn't required.
+. Use the generated user token to authenticate to the registry on the command line.
+  As the user token has enough privileges to read the image, a service account token isn't required.
 +
 [source,bash]
 --
@@ -570,7 +574,8 @@ IMPORTANT: This is a user token, and therefore it expires when you logout.
 
 === On OpenShift 4
 
-On OpenShift 4 it's also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token doesn't grant enough privileges to write images. Therefore it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
+On OpenShift 4 it's also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token doesn't grant enough privileges to write images.
+  Therefore it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
 
 [source,bash]
 --
