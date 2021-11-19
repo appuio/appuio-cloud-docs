@@ -93,11 +93,11 @@ This section provides more information.
 
 When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 
-. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used filesystems, such as https://en.wikipedia.org/wiki/Ext4[ext4] and https://en.wikipedia.org/wiki/XFS[XFS]. 
+. The rollout strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used file systems, such as https://en.wikipedia.org/wiki/Ext4[ext4].
   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
 . Add an affinity rule to run on the same node as the worker pod. 
-  This allows to access the same RWO/block volume, because the filesystem is mounted on the node level, and allows a safe access to the same filesystem, because it's the same kernel.
+  This allows to access the same RWO/block volume, because the file system is mounted on the node level, and allows a safe access to the same file system, because it's the same kernel.
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
 +
