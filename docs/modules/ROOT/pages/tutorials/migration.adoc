@@ -22,7 +22,7 @@ IMPORTANT: Remember to set your TTL back to the previous value after the migrati
 
 In APPUiO Cloud only `Ingress` and `certificates.cert-manager.io/v1` objects can request certificates.
 
-IMPORTANT: It's not possible to request certificates in `Route` objects.
+IMPORTANT: It's not possible to request Let's Encrypt certificates in `Route` objects.
 
 The manifest below specifies an `Ingress` object with such requirement:
 
@@ -101,7 +101,7 @@ When migrating your volumes to APPUiO Cloud, please follow these guidelines:
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
 +
-To create a affinity rule for all the pods at once, you can use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[app.kubernetes.io/component label].
+To create an affinity rule for all the pods at once, you can use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[app.kubernetes.io/component label].
 +
 [source,yaml]
 --
@@ -126,7 +126,10 @@ The following sections provide information about each strategy.
 
 ### Migration with `rsync`
 
-The first option to migrate your storage from APPUiO Public to APPUiO Cloud consists in using `rsync`. The manifests below create the required objects.
+The first option to migrate your storage from APPUiO Public to APPUiO Cloud consists in using `rsync`.
+The manifests below create the required objects.
+This part has to be installed on the destination side.
+Overall a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
 
 [source,yaml]
 --
