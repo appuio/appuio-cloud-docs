@@ -97,7 +97,7 @@ When migrating your volumes to APPUiO Cloud, please follow these guidelines:
   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
 
 . Add an affinity rule to run on the same node as the worker pod.
-  This allows to access the same RWO/block volume, because the file system is mounted on the node level, and allows a read-after-write consistent access to the same file system, because it's using the same kernel.
+  This allows to access the same RWO/block volume, because the file system is mounted on the node level, and ensures a read-after-write consistent access to the same file system, because it's using the same kernel.
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
 +
@@ -105,16 +105,17 @@ To create an affinity rule for all the pods at once, you can use the https://kub
 +
 [source,yaml]
 --
-affinity:
-  podAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-    - labelSelector:
-        matchExpressions:
-        - key: app.kubernetes.io/component
-           operator: In
-          values:
-          - backend
-      topologyKey: kubernetes.io/hostname
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - backend
+        topologyKey: kubernetes.io/hostname
 --
 
 . Perform the migration itself. There are three major mechanisms for this:
