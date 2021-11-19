@@ -1,0 +1,63 @@
+= Storage Performance
+
+This page presents representative performance numbers for the different storage classes available per {product} zone.
+All benchmarks have been done with `kubestr` and were orchestrated with https://github.com/vshn/k8s-storage-bench/[vshn/k8s-storage-bench].
+
+We always show the write performance numbers with no calls to `fsync` during the benchmark run.
+
+== cloudscale.ch
+
+[cols="25%,8%,12%,9%,9%,9%,9%"]
+|===
+.2+.>|Storage class .2+.>|Access Modes .2+.>| Write `fsync` footnote:[This column indicates how many write operations the benchmark performs between each call to `fsync()`. Value `none` indicates that no `fsync()` calls were issued during the benchmark run.] 2+^|Bandwidth (MiB/s) 2+^|IOPS
+  |Read |Write          |Read|Write
+
+.4+|`ssd`
+.4+|`RWO`
+|`none`
+.4+|2133
+|1763
+.4+|22748
+|20909
+
+|`1`
+|44
+|490
+
+|`32`
+|571
+|6721
+
+|`128`
+|868
+|11683
+
+.4+|`bulk` footnote:[cloudscale.ch bulk storage is rate-limited to approximately 500 IOPS]
+.4+|`RWO`
+|`none`
+.4+|60
+|60
+.4+|491
+|485
+
+|`1`
+|19
+|162
+
+|`32`
+|56
+|464
+
+|`128`
+|59
+|485
+
+|`cephfs-fspool-cluster`
+|`RWX`
+|`none`
+|1450
+|195
+|28632
+|5688
+
+|===
