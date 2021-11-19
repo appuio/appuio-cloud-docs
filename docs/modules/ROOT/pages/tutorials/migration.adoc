@@ -100,6 +100,7 @@ When migrating your volumes to APPUiO Cloud, please follow these guidelines:
   This allows to access the same RWO/block volume, because the file system is mounted on the node level, and ensures a read-after-write consistent access to the same file system, because it's using the same kernel.
 +
 IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
+Check the Kubernetes documentation https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity[Inter-pod affinity and anti-affinity] for the reasons.
 +
 To create an affinity rule for all the pods at once, you can use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[app.kubernetes.io/component label].
 +
