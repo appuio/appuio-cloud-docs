@@ -574,12 +574,12 @@ Check if the access is working:
 $ skopeo inspect docker://<origin-url>/<namespace>/<image>:<image-tag>
 --
 
-IMPORTANT: This is a user token, and therefore it expires when you logout.
+IMPORTANT: This is a user token, and therefore it expires when you log out.
 
 === On OpenShift 4
 
 On OpenShift 4 it's also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token doesn't grant enough privileges to write images.
-  Therefore it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
+  Therefore, it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
 
 [source,bash]
 --
