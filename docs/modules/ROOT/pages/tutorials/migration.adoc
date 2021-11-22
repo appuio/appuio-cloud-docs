@@ -1,0 +1,633 @@
+= Migration Tutorial: From APPUiO Public to APPUiO Cloud
+
+This document provides an overview of all the tasks required to move your applications from APPUiO Public to APPUiO Cloud.
+
+== Main Differences
+
+Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the xref:explanation/differences-to-public.adoc[document explaining all the major differences] between both platforms.
+
+== DNS
+
+Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
+
+. Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate.
+  You can limit downtime by lowering that value, so the caching servers will check back more frequently.
+  Typically, 60 seconds (1 minute) is a good idea.
++
+IMPORTANT: Remember to set your TTL back to the previous value after the migration.
+
+. There are different `CNAME` resource records to point to depending on which {zone} you migrate the application to; please refer to xref:zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
+
+== Let's Encrypt
+
+In APPUiO Cloud only `Ingress` and `certificates.cert-manager.io/v1` objects can request certificates.
+
+IMPORTANT: It's not possible to request Let's Encrypt certificates in `Route` objects.
+
+The manifest below specifies an `Ingress` object with such requirement:
+
+[source,yaml]
+--
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production <1>
+  name: ${DEPLOYMENT_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  rules:
+  - host: ${ROUTE_HOST}
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - ${ROUTE_HOST}
+    secretName: ${ROUTE_HOST}
+--
+<1> Annotation providing automatic provisioning of certificates on APPUiO Cloud.
+
+You can find more information in the xref:how-to/getting-a-certificate.adoc[Getting a Certificate through Let’s Encrypt] page.
+
+For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following.
+This is no longer valid in APPUiO Cloud.
+
+[source,yaml]
+--
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ${DEPLOYMENT_NAME}
+  labels:
+    app: ${CI_ENVIRONMENT_SLUG}
+  annotations:
+    kubernetes.io/tls-acme: "${ROUTE_TLS_ACME}" # <1>
+spec:
+  host: ${ROUTE_HOST}
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+      kind: Service
+      name: ${DEPLOYMENT_NAME}
+      weight: 100
+  wildcardPolicy: None
+--
+<1> Annotation providing automatic provisioning of certificates on APPUiO Public.
+
+== Storage
+
+APPUiO Cloud has different requirements regarding storage.
+This section provides more information.
+
+=== Access the RWO volumes from different pods
+
+When migrating your volumes to APPUiO Cloud, please follow these guidelines:
+
+. The deployment strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used file systems, such as https://en.wikipedia.org/wiki/Ext4[ext4].
+  https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
+
+. Add an affinity rule to run on the same node as the worker pod.
+  This allows to access the same RWO/block volume, because the file system is mounted on the node level, and ensures a read-after-write consistent access to the same file system, because it's using the same kernel.
++
+IMPORTANT: This could be used for jobs, but in the case of independent application parts this should be prevented.
+Check the Kubernetes documentation https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity[Inter-pod affinity and anti-affinity] for the reasons.
++
+To create an affinity rule for all the pods at once, you can use the https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[app.kubernetes.io/component label].
++
+[source,yaml]
+--
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - backend
+        topologyKey: kubernetes.io/hostname
+--
+
+. Perform the migration itself. There are three major mechanisms for this:
+.. Migration with `rsync`
+.. Migration through jobs
+.. Using continuous sync
+
+The following sections provide information about each strategy.
+
+### Migration with `oc rsync`
+
+The first variant to migrate your application storage from APPUiO Public to APPUiO Cloud consists in using `oc rsync`.
+Rsync is an often used and well tested tool synchronizing files between systems.
+The manifests below create the required objects on the destination side.
+If you are you are using your own, at least a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rsync-test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rsync-destination
+  namespace: rsync-test
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: rsync-test
+  name: rsync-destination
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: rsync-destination
+  namespace: rsync-test
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-destination
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-destination
+  name: rsync-destination
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-destination
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-destination
+    spec:
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-destination
+          name: rsync-destination
+      volumes:
+      - name: rsync-destination
+        persistentVolumeClaim:
+          claimName: rsync-destination
+--
+
+=== Job-Based Migration
+
+The second variant for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs.
+The manifest below defines the objects required on a destination side.
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-source # <1>
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-source
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-source
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - rsync-source
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+---
+apiVersion: batch/v1beta1 # <2>
+kind: CronJob
+metadata:
+  labels:
+    app: rsync-copy
+  name: rsync-copy
+  namespace: rsync-test
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 7200
+      backoffLimit: 2
+      completions: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: rsync-source
+        spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - rsync-source
+                topologyKey: kubernetes.io/hostname
+          containers:
+          - image: quay.io/openshift/origin-cli:4.8
+            imagePullPolicy: IfNotPresent
+            name: oc-rsync
+            command:
+              - /bin/bash
+              - -c
+              - |
+                #!/bin/bash
+                oc \
+                --server=$K8S_API \
+                --token=$K8S_TOKEN \
+                --namespace=$K8S_NAMESPACE \
+                rsync \
+                --delete=true \
+                 /rsync-source/ \
+                "$(oc --server=$K8S_API --token=$K8S_TOKEN --namespace=$K8S_NAMESPACE get pod -l app.kubernetes.io/name=rsync-destination -o jsonpath={.items[0].metadata.name}):/rsync-destination/"
+            env:
+            - name: K8S_API
+              value: https://<kubernetes-api>:6443
+            - name: K8S_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: rsync-destination-oc-token
+                  key: token
+            - name: K8S_NAMESPACE
+              value: rsync-test
+            volumeMounts:
+            - mountPath: /rsync-source
+              name: rsync-source
+          restartPolicy: Never
+          volumes:
+          - name: rsync-source
+            persistentVolumeClaim:
+              claimName: rsync-source
+  schedule: '@yearly'
+  startingDeadlineSeconds: 86400
+  successfulJobsHistoryLimit: 1
+--
+<1> Please refer to https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[the Kubernetes documentation] on common labels.
+<2> Use `batch/v1` for OpenShift 4 instead.
+
+Use the commands below to create a new job based on the definition above:
+
+[source,bash]
+--
+$ JOB_NAME="manual-$(date +%F-%H-%M)" oc -n rsync-test create job --from=cronjob/rsync-copy $JOB_NAME
+
+$ oc -n rsync-test get po
+NAME                                 READY   STATUS      RESTARTS   AGE
+manual1-8975l                        0/1     Completed   0          2m9s
+rsync-destination-6fd76657d8-6fjss   1/1     Running     0          41m
+rsync-source-957bf555c-68jmn         1/1     Running     0          5m5s
+
+$ oc -n rsync-test delete job $JOB_NAME
+--
+
+Check the job status with the following command:
+
+[source,bash]
+--
+$ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
+--
+
+### Continuous Sync
+
+The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created.
+If the destination pod dies, the sync pod also crashes, but is automatically restarted.
+
+Use the manifests below to create the required objects.
+
+[source,yaml]
+--
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-source # <1>
+  name: rsync-source
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-source
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-source
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - rsync-continuous-sync
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: registry.access.redhat.com/rhel7/rhel-tools
+        imagePullPolicy: IfNotPresent
+        name: rhel-tools
+        command:
+          - tail
+          - -f
+          - /dev/null
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: rsync-continuous-sync # <1>
+  name: rsync-continuous-sync
+  namespace: rsync-test
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rsync-continuous-sync
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rsync-continuous-sync
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                 operator: In
+                values:
+                - backend
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: quay.io/openshift/origin-cli:4.8
+        imagePullPolicy: IfNotPresent
+        name: oc-rsync
+        command:
+          - /bin/bash
+          - -c
+          - |
+            #!/bin/bash
+            oc \
+            --server=$K8S_API \
+            --token=$K8S_TOKEN \
+            --namespace=$K8S_NAMESPACE \
+            rsync \
+            --delete=true \
+            --watch=true \
+            /rsync-source/ \
+            "$(oc --server=$K8S_API --token=$K8S_TOKEN --namespace=$K8S_NAMESPACE get pod -l app.kubernetes.io/name=rsync-destination -o jsonpath={.items[0].metadata.name}):/rsync-destination/"
+        env:
+        - name: K8S_API
+          value: https://<kubernetes-api>:6443
+        - name: K8S_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rsync-destination-oc-token
+              key: token
+        - name: K8S_NAMESPACE
+          value: rsync-test
+        volumeMounts:
+        - mountPath: /rsync-source
+          name: rsync-source
+      volumes:
+      - name: rsync-source
+        persistentVolumeClaim:
+          claimName: rsync-source
+--
+<1> Please refer to https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/[the Kubernetes documentation] on common labels.
+
+
+IMPORTANT: Be aware that `oc rsync` has different options than `rsync` itself.
+
+[source,bash]
+--
+Options:
+     --compress=false: compress file data during the transfer
+ -c, --container='': Container within the pod
+     --delete=false: If true, delete files not present in source
+     --exclude=[]: When specified, exclude files matching pattern
+     --include=[]: When specified, include files matching pattern
+     --no-perms=false: If true, do not transfer permissions
+     --progress=false: If true, show progress during transfer
+ -q, --quiet=false: Suppress non-error messages
+     --strategy='': Specify which strategy to use for copy: rsync, rsync-daemon, or tar
+ -w, --watch=false: Watch directory for changes and resync automatically
+--
+
+=== File Integrity Check
+
+After the migration, you should check the integrity of your data with the following commands:
+
+.Calculate the checksum for all files at the origin
+[source,bash]
+--
+$ find . -type d -exec sh -c "cd '{}' && find . -maxdepth 1 -type f ! -name COPYSHA1SUMS -printf '%P\0' | xargs -r0 sha1sum -- > COPYSHA1SUMS" \;
+--
+
+.Create a log with a verification of all files at the destination
+[source,bash]
+--
+$ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c COPYSHA1SUMS" \; > sha1sums-verify-log-$(date +%F-%H-%M).log 2>&1
+--
+
+== Container Images
+
+Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your container images.
+This section contains all the required steps for adapting your images to the new environment.
+
+=== On OpenShift 3
+
+TIP: This section uses the https://github.com/containers/skopeo[skopeo] tool for managing images and repositories.
+
+. Get a user token at this URL: https://<origin-cluster-console>/oauth/token/request.
+
+. Use the generated user token to authenticate to the registry on the command line.
+  As the user token has enough privileges to read the image, a service account token isn't required.
++
+[source,bash]
+--
+$ skopeo login -u openshift -p <token> <origin-url>
+--
++
+Skopeo uses the docker auth config. So this should look like:
++
+[source,bash]
+--
+$ cat ~/.docker/config.json
+{
+    "auths": {
+        "<origin-url>": {
+            "auth": "...="
+        }
+    }
+}
+--
++
+Check if the access is working:
++
+[source,bash]
+--
+$ skopeo inspect docker://<origin-url>/<namespace>/<image>:<image-tag>
+--
+
+IMPORTANT: This is a user token, and therefore it expires when you log out.
+
+=== On OpenShift 4
+
+On OpenShift 4 it's also possible to find the token from https://oauth-openshift.apps.<cluster>/oauth/token/display and get read access; but this token doesn't grant enough privileges to write images.
+  Therefore, it's recommended to create a service account, and to grant access to `system:image-builders`, and finally to get the token from this service account.
+
+[source,bash]
+--
+$ oc -n <namespace> create sa image-upload
+--
+
+Get the token:
+
+[source,bash]
+--
+$ oc sa get-token -n <namespace> image-upload
+--
+
+Inspect the `RoleBinding`:
+
+[source,bash]
+--
+$ oc -n <namespace> get rolebinding system:image-builders -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+# ...
+  name: system:image-builders
+  namespace: <namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:image-builder
+subjects:
+# ...
+- kind: ServiceAccount
+  name: image-upload
+  namespace: <namespace>
+--
+
+Login with the token:
+
+[source,bash]
+--
+$ skopeo login -u openshift -p $(oc -n <namespace> sa get-token image-upload) <destination-url>
+--
+
+Copy the image:
+
+[source,bash]
+--
+$ skopeo copy docker://<origin-url>/<namespace>/<image>:<image-tag> docker://<destination-url>/<namespace>/<image>:<image-tag>
+--
+
+IMPORTANT: Remember to remove the service account after the migration.
