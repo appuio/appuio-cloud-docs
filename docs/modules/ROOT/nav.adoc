@@ -24,3 +24,4 @@
 * xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
 * xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
 * xref:explanation/unit-prefixes.adoc[Unit Prefixes]
+* xref:explanation/storage-classes.adoc[Storage Classes]

@@ -1,0 +1,49 @@
+= Available Storage Classes
+
+This page describes the different storage classes which are available on {product} zones.
+
+NOTE: The available storage classes differ depending on the cloud provider hosting the {product} zone.
+
+== cloudscale.ch
+
+On cloudscale.ch we provide RWO storage using the https://github.com/cloudscale-ch/csi-cloudscale[csi-cloudscale] CSI driver.
+Additionally, we provide RWX storage on CephFS managed via https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
+
+The following storage classes are available on cloudscale.ch:
+
+[cols="30%,15%,55%"]
+|===
+| Storage Class | Access Modes | Description
+
+| `ssd`
+| `RWO`
+| This storage class provides cloudscale.ch `ssd` volumes.
+
+If you don't require `RWX` storage, we recommend using the `ssd` storage class.
+
+| `bulk`
+| `RWO`
+| This storage class provides cloudscale.ch `bulk` volumes.
+
+You may want to consider using the `bulk` storage class, if you're working with very large amounts of data but read/write performance isn't critical.
+
+| `cephfs-fspool-cluster`
+| `RWX`
+| This storage class provides CephFS volumes.
+
+Use this storage class if your application requires `RWX` storage.
+
+|===
+
+=== Performance
+
+We show representative performance numbers (IOPS and bandwidth) for each storage class below.
+Please note that we show the best case for write performance here.
+
+Please see the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster_performance_cloudscale.html[APPUiO Managed Storage Cluster] product documentation for an explanation of the benchmarking methodology and a more detailed breakdown of performance numbers.
+
+image::storage_performance/cloudscale_read_iops.png[]
+image::storage_performance/cloudscale_read_bandwidth.png[]
+
+image::storage_performance/cloudscale_write_iops.png[]
+image::storage_performance/cloudscale_write_bandwidth.png[]
