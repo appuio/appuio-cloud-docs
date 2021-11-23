@@ -83,6 +83,7 @@ Those tools help in checking this rapidly:
 
 * https://github.com/rikatz/kubepug[Kubepug]
 * https://github.com/doitintl/kube-no-trouble[Kubent]
+* `kubectl apply --dry-run=server -f ...` does warn on deprecated and fail on removed APIs
 
 
 == DNS
