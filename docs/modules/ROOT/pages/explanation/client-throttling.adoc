@@ -1,0 +1,22 @@
+= Client Throttling
+
+You may see a similar error message to the one below when interacting with {product} on the command line, especially when using `kubectl` instead of `oc`:
+
+----
+I1123 16:51:06.257182   77654 request.go:665] Waited for 1.118997154s due to client-side throttling, not priority and fairness, request: GET:https://api.zone.appuio.cloud:6443/apis/apps.openshift.io/v1?timeout=32s
+----
+
+The cause is described very well in https://access.redhat.com/solutions/5587221[Throttling request took messages reported when running oc commands on OCP 4].
+Here is an excerpt:
+
+[quote, Red Hat Customer Portal, Solution 5587221: Throttling request took messages reported when running oc commands on OCP 4]
+____
+The `oc` client caches a list of resources from the API server, which matches more or less the list of Custom Resource Definitions available from the API server.
+
+It's possible to inspect this cache in `$HOME/.kube/cache/discovery/${API_END_POINT}`. Entries in this cache directory are refreshed when they're 10 minutes old.
+To build this cache, `oc` queries each apigroup end point to get a list of Resources Definitions for that apigroup.
+
+When the cluster has a large number of operators installed, this implies a large number of endpoints to query, and such a large number of request to the API server that the client will throttle itself when doing API discovery, to avoid overloading the API server.
+____
+
+This behaviour has been tweaked in `oc` version 4.6.16 or later, but not in `kubectl`.
