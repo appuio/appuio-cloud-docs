@@ -9,9 +9,9 @@ Before starting the migration of your applications from APPUiO Public to APPUiO 
 == Removed API versions
 
 Several Kubernetes API versions have been removed since Kubernetes 1.11, on which version APPUiO Public was based on.
-This means the manifests from APPUiO Public can be exported, but needs to be updated, before applicable on APPUiO Cloud.
-Often just the API of the object has to be changed.
-For some new API versions, a different structure and other default values apply.
+This means that manifests from APPUiO Public can be exported, but need to be updated before being applied on APPUiO Cloud.
+Often just the API version or group of an object has to be changed.
+For some new API versions however, a different structure or other default values apply.
 This has to be considered, when changing the API version in a manifest object.
 A non complete, but selected list of API changes related to the deployment migration:
 
