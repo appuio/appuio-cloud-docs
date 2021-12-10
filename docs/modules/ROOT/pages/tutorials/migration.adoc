@@ -711,3 +711,72 @@ $ skopeo copy docker://<origin-url>/<namespace>/<image>:<image-tag> docker://<de
 --
 
 IMPORTANT: Remember to remove the service account after the migration.
+
+
+== OpenShift internal docker registry path
+
+The OpenShift 4 internal docker registry is deployed in the namespace `openshift-image-registry`.
+This differs from OpenShift 3, where the internal docker registry was running in the `default` namespace.
+As a reason of that, the internal service name changed from `docker-registry.default.svc:5000` to `image-registry.openshift-image-registry.svc:5000`.
+
+How it did look look like on APPUiO Public:
+
+[source,yaml]
+--
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: ${CONTAINERNAME}
+  namespace: ${NAMESPACE}
+spec:
+  template:
+...
+    spec:
+      containers:
+...
+      - image: docker-registry.default.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA}
+...
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - ${CONTAINERNAME}
+      from:
+        kind: ImageStreamTag
+        name: ${IMAGE}:${IMAGE_TAG}
+        namespace: ${NAMESPACE}
+      lastTriggeredImage: docker-registry.default.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA}
+    type: ImageChange
+--
+
+And an example, how it should look like on APPUiO Cloud:
+
+[source,yaml]
+--
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: ${CONTAINER_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  template:
+...
+    spec:
+      containers:
+...
+      - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA} <1>
+...
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - ${CONTAINERNAME}
+      from:
+        kind: ImageStreamTag
+        name: ${IMAGE}:${IMAGE_TAG}
+        namespace: ${NAMESPACE}
+      lastTriggeredImage: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA} <2>
+    type: ImageChange
+--
+<1> Replace in `spec.template.spec.containers[].image` the string `docker-registry.default.svc:5000` with `image-registry.openshift-image-registry.svc:5000`.
+<2> Replace in `spec.triggers.imageChangeParams[].lastTriggeredImage` the string `docker-registry.default.svc:5000` with `image-registry.openshift-image-registry.svc:5000`.
