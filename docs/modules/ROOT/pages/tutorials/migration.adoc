@@ -717,7 +717,7 @@ IMPORTANT: Remember to remove the service account after the migration.
 
 The OpenShift 4 internal docker registry is deployed in the namespace `openshift-image-registry`.
 This differs from OpenShift 3, where the internal docker registry was running in the `default` namespace.
-As a reason of that, the internal service name changed from `docker-registry.default.svc:5000` to `image-registry.openshift-image-registry.svc:5000`.
+Due to that, the internal service name changed from `docker-registry.default.svc:5000` to `image-registry.openshift-image-registry.svc:5000`.
 
 How it did look look like on APPUiO Public:
 
@@ -730,12 +730,12 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   template:
-...
+…
     spec:
       containers:
-...
+…
       - image: docker-registry.default.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA}
-...
+…
   triggers:
   - imageChangeParams:
       automatic: true
@@ -760,12 +760,12 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   template:
-...
+…
     spec:
       containers:
-...
+…
       - image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${IMAGE}@sha256:${IMAGE_SHA} <1>
-...
+…
   triggers:
   - imageChangeParams:
       automatic: true
