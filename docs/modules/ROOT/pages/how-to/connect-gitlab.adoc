@@ -74,7 +74,7 @@ Follow these steps to create a new deploy token in your GitLab project:
 . Provide a name, an (optional) expiration date, and a an (optional) usename.
 . Check the `read_registry` checkbox.
 . Click the btn:[Create deploy token] button.
-. Copy the token immediately; it will not be shown ever again.
+. Copy the token immediately; it won't be shown ever again.
 
 image::gitlab-registry.png[]
 
