@@ -43,9 +43,9 @@ $ oc get secret $TOKEN -o jsonpath="{['data']['token']}" | base64 --decode | pbc
 The final step consists of the following:
 
 . In your GitLab project, select the menu:Infrastructure[Kubernetes clusters] menu item, and scroll to the bottom to select the btn:[Connect existing cluster] button.
-** You can also select the menu:Actions[Connect with a certificate] menu entry, avilable at the right side of the btn:[Actions] button.
+** You can also select the menu:Actions[Connect with a certificate] menu entry, available at the right side of the btn:[Actions] button.
 . Fill the form with the following information:
-** Kubernetes cluster name: "APPUiO Cloud."
+** Kubernetes cluster name: "APPUiO Cloud [ZONE NAME]."
 ** API URL: Use the xref:references/zones.adoc[URL corresponding to your chosen zone].
 ** CA Certificate: leave empty.
 ** Service Token: paste the value copied in the `oc get secret` command above.
