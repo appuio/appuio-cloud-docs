@@ -71,7 +71,7 @@ To configure your GitLab container registry in your APPUiO Cloud project, follow
 Follow these steps to create a new deploy token in your GitLab project:
 
 . In your GitLab project, select and expand the menu:Settings[Repository > Deploy Tokens] item, and scroll to the bottom to select the btn:[Connect existing cluster] button.
-. Provide a name, an (optional) expiration date, and a an (optional) usename.
+. Provide a name, an (optional) expiration date, and a an (optional) username.
 . Check the `read_registry` checkbox.
 . Click the btn:[Create deploy token] button.
 . Copy the token immediately; it won't be shown ever again.
