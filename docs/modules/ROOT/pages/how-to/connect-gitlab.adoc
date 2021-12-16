@@ -48,7 +48,7 @@ The final step consists of the following:
 ** Kubernetes cluster name: "APPUiO Cloud [ZONE NAME]."
 ** API URL: Use the xref:references/zones.adoc[URL corresponding to your chosen zone].
 ** CA Certificate: leave empty.
-** Service Token: paste the value copied in the `oc get secret` command above.
+** Service Token: paste the value copied in the `oc sa get-token` command above.
 ** Check the "RBAC-enabled cluster" option.
 ** Uncheck "GitLab-managed cluster" and "Namespace per environment."
 ** Leave the "Project namespace prefix (optional, unique)" empty.
