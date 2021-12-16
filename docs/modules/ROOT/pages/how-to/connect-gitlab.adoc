@@ -82,7 +82,9 @@ NOTE: If no name is provided, GitLab provides a default username of the form `gi
 
 === Create a Secret
 
-The `oc` command below creates a secret with the required values. Replace the `--docker-username` and `--docker-password` values with those used in the previous step. Also replace the `--docker-server` parameter with the URL of your own GitLab instance if you have one.
+The `oc` command below creates a secret with the required values.
+Replace the `--docker-username` and `--docker-password` values with those used in the previous step.
+Also replace the `--docker-server` parameter with the URL of your own GitLab instance if you have one.
 
 [source,shell]
 ----
