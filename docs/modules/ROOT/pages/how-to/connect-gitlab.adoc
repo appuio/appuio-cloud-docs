@@ -31,9 +31,9 @@ The following commands show the first three steps in detail:
 
 [source,shell]
 ----
-$ oc project [PROJECT-NAME]
-$ oc create sa gitlab-ci
-$ oc adm policy add-role-to-user edit -z gitlab-ci
+oc project [PROJECT-NAME]
+oc create sa gitlab-ci
+oc adm policy add-role-to-user edit -z gitlab-ci
 oc sa get-token gitlab-ci
 ----
 
