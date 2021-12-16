@@ -34,8 +34,7 @@ The following commands show the first three steps in detail:
 $ oc project [PROJECT-NAME]
 $ oc create sa gitlab-ci
 $ oc adm policy add-role-to-user edit -z gitlab-ci
-$ TOKEN=$(oc get secrets | grep gitlab-ci-token | tail -n 1 | awk '{ print $1 }')
-$ oc get secret $TOKEN -o jsonpath="{['data']['token']}" | base64 --decode | pbcopy
+oc sa get-token gitlab-ci
 ----
 
 === On GitLab (via Certificates)
