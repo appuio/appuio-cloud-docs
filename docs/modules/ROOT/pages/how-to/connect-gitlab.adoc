@@ -52,7 +52,7 @@ The final step consists of the following:
 ** Check the "RBAC-enabled cluster" option.
 ** Uncheck "GitLab-managed cluster" and "Namespace per environment."
 ** Leave the "Project namespace prefix (optional, unique)" empty.
-. Click the btn[Add Kubernetes cluster]
+. Click the button btn:[Add Kubernetes cluster]
 
 image::gitlab-kubernetes.png[]
 
