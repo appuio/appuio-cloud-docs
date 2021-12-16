@@ -100,22 +100,15 @@ Use the YAML below to specify your new secret.
 
 [source,yaml]
 ----
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: deployment-name
 spec:
   template:
-    metadata:
-      labels:
-        app: app-name
     spec:
       imagePullSecrets:
         - name: gitlab-pull-secret # <1>
-      containers:
-        - name: xxxx
-          image: xxxxxxxxxx
-          # …
+      ...
 ----
-
 <1> Name of the secret created in the previous step.
