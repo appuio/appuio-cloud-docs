@@ -18,7 +18,7 @@ NOTE: Linux users might want to `alias pbcopy="xclip -selection clipboard"` to c
 
 == Configuring APPUiO Cloud as a Kubernetes cluster in GitLab
 
-To configure your APPUiO Cloud project as a Kubernetes cluster in GitLab, follow these steps:
+To configure your APPUiO Cloud project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
 
 . Create a service account in your project.
 . Add the `edit` role to the new service account.
