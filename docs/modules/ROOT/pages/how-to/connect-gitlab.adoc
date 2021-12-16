@@ -14,8 +14,6 @@ For this guide, it's assumed that:
 * You have a GitLab project (either on https://gitlab.com or in a private instance).
 * You are logged in to your APPUiO Cloud project using the `oc login` command.
 
-NOTE: Linux users might want to `alias pbcopy="xclip -selection clipboard"` to copy output directly from the terminal to the clipboard.
-
 == Configuring APPUiO Cloud as a Kubernetes cluster in GitLab
 
 To configure your APPUiO Cloud project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
