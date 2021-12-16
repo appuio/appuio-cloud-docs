@@ -56,7 +56,9 @@ The final step consists of the following:
 
 image::gitlab-kubernetes.png[]
 
-IMPORTANT: If the token is invalid, the message _"There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid"_ will appear. Check that the pasted token value is correct.
+[IMPORTANT]
+If the token is invalid, the message `There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid` will appear.
+Check that the pasted token value is correct.
 
 == Connecting APPUiO Cloud to the GitLab Container Registry
 
