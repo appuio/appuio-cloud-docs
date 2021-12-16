@@ -59,6 +59,9 @@ spec:
 <2> Placing a host in the TLS config will determine what ends up in the cert's subjectAltNames.
 <3> The created certificate is stored in this secret.
 
+The TLS certificate `Secret` is automatically created by the `Ingress` with `type` set to `kubernetes.io/tls`.
+If you need to create the `Secret` yourself, you will have to set the same `type` and set the `data` field with `tls.crt` and `tls.key` values.
+If the `Secret` is not defined with the type `kubernetes.io/tls`, the `Ingress` won't be able to automatically create the corresponding `Route`.
 
 Take a look at the https://cert-manager.io/docs/usage/ingress/[upstream documentation] for further information on how to secure ingresses.
 
