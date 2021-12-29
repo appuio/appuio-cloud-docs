@@ -15,6 +15,7 @@
 * xref:how-to/getting-a-certificate.adoc[Generate Certificates]
 * xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
 * xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
+* xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
