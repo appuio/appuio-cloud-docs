@@ -1,27 +1,27 @@
-= Connect GitLab to APPUiO Cloud
+= Connect GitLab to {product}
 
-This page explains how to connect your GitLab project to APPUiO Cloud for your GitOps operations.
+This page explains how to connect your GitLab project to {product} for your GitOps operations.
 
 This integration has two major aspects:
 
-. Configuring APPUiO Cloud as a Kubernetes cluster for your GitLab project.
-. Connecting APPUiO Cloud to access your GitLab project's container registry.
+. Configuring {product} as a Kubernetes cluster for your GitLab project.
+. Connecting {product} to access your GitLab project's container registry.
 
 == Prerequisites
 
 For this guide, it's assumed that:
 
 * You have a GitLab project (either on https://gitlab.com or in a private instance).
-* You are logged in to your APPUiO Cloud project using the `oc login` command.
+* You are logged in to your {product} project using the `oc login` command.
 
-== Configuring APPUiO Cloud as a Kubernetes cluster in GitLab
+== Configuring {product} as a Kubernetes cluster in GitLab
 
-To configure your APPUiO Cloud project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
+To configure your {product} project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
 
 . Create a service account in your project.
 . Add the `edit` role to the new service account.
 . Copy the generated secret associated with the service account in your clipboard.
-. Configure APPUiO Cloud in GitLab.
+. Configure {product} in GitLab.
 
 === On APPUiO
 
@@ -42,7 +42,7 @@ The final step consists of the following:
 . In your GitLab project, select the menu:Infrastructure[Kubernetes clusters] menu item, and scroll to the bottom to select the btn:[Connect existing cluster] button.
 ** You can also select the menu:Actions[Connect with a certificate] menu entry, available at the right side of the btn:[Actions] button.
 . Fill the form with the following information:
-** Kubernetes cluster name: "APPUiO Cloud [ZONE NAME]."
+** Kubernetes cluster name: "{product} [ZONE NAME]."
 ** API URL: Use the xref:references/zones.adoc[URL corresponding to your chosen zone].
 ** CA Certificate: leave empty.
 ** Service Token: paste the value copied in the `oc sa get-token` command above.
@@ -54,15 +54,16 @@ The final step consists of the following:
 image::gitlab-kubernetes.png[]
 
 [IMPORTANT]
-If the token is invalid, the message `There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid` will appear.
+If the token is invalid, the message `There was a problem authenticating with your cluster.
+Please ensure your CA Certificate and Token are valid` will appear.
 Check that the pasted token value is correct.
 
-== Connecting APPUiO Cloud to the GitLab Container Registry
+== Connecting {product} to the GitLab Container Registry
 
-To configure your GitLab container registry in your APPUiO Cloud project, follow these steps:
+To configure your GitLab container registry in your {product} project, follow these steps:
 
 . Create a deploy token in GitLab.
-. Create a secret in APPUiO Cloud.
+. Create a secret in {product}.
 . Specify the secret in your deployment.
 
 === Create a Deploy Token in GitLab
