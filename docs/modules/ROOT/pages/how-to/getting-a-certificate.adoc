@@ -37,7 +37,8 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production <1>
-  name: myIngress
+  name: myingress
+  namespace: mynamespace <2>
 spec:
   rules:
   - host: example.com
@@ -50,15 +51,19 @@ spec:
             name: myservice
             port:
               number: 80
-  tls: <2>
+  tls: <3>
   - hosts:
     - example.com
-    secretName: myingress-cert <3>
+    secretName: myingress-cert <4>
 ----
 <1> Add an annotation indicating the issuer to use.
-<2> Placing a host in the TLS config will determine what ends up in the cert's subjectAltNames.
-<3> The created certificate is stored in this secret.
+<2> Change this to the name of the namespace you want that object to be created in.
+<3> Placing a host in the TLS config will determine what ends up in the cert's subjectAltNames.
+<4> The created certificate is stored in this secret.
 
+The TLS certificate `Secret` is automatically created by the `Ingress` with `type` set to `kubernetes.io/tls`.
+If you need to create the `Secret` yourself, you will have to set the same `type` and set the `data` field with `tls.crt` and `tls.key` values.
+If the `Secret` isn't defined with the type `kubernetes.io/tls`, the `Ingress` won't be able to automatically create the corresponding `Route`.
 
 Take a look at the https://cert-manager.io/docs/usage/ingress/[upstream documentation] for further information on how to secure ingresses.
 

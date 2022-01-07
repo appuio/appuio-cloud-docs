@@ -14,4 +14,4 @@ Default App Domain:: apps.cloudscale-lpg-2.appuio.cloud
 Integrated Cluster Registry Domain:: registry.cloudscale-lpg-2.appuio.cloud
 SDN:: https://cilium.io/[Cilium]
 Outgoing IPv4:: 185.98.123.195
-CNAME:: cname.cloudscale-lpg-2.appuio.cloud
+CNAME:: cname.cloudscale-lpg-2.appuio.cloud.

@@ -1,0 +1,35 @@
+= Access Logs Through Kibana
+
+This guide describes how to view logs through the Kibana visualization tool.
+
+[TIP]
+The index patterns must be configured on first use.
+
+== Accessing the Kibana GUI
+
+. Navigate to https://logging.apps.<zone>.appuio.cloud or click **Logging** in the console app drawer.
+
+. If using the GUI for the first time acknowledge the single sign-on page.
+
+== Configure Kibana Index Patterns
+
+. Enter `app*` under **Index pattern** and click **Next Step**.
++
+image:kibana/add-index-pattern-step-1.png[]
+
+. Choose `@timestamp` under **Time Filter field name** and click **Create index pattern**.
++
+image:kibana/add-index-pattern-step-2.png[]
+
+. A new index pattern should have been created and the result should look like this:
++
+image:kibana/add-index-pattern-result.png[]
+
+== Discover view
+
+. Click **Discover** in the sidebar
++
+You should be presented with the discovery view.
+Select `message` from **Available fields** to see the log message.
++
+image:kibana/discover-view.png[]

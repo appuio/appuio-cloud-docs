@@ -80,10 +80,10 @@ In APPUiO Public, storage was provided via GlusterFS.
 Because of this change, the "Access Mode" for the Persistent Volume now actually matters, RWO provisions a "block storage" with a file system on it, RWX provides a shared file system (CephFS).
 See the https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes[Kubernetes upstream documentation] which explains the storage topic in detail.
 
-=== Networking with OVN-Kubernetes
+=== Networking with Cilium
 
-We use https://docs.openshift.com/container-platform/4.8/networking/ovn_kubernetes_network_provider/about-ovn-kubernetes.html[OVN-Kubernetes] for networking in {product}.
-In APPUiO Public the OpenShift 3 `ovs-multitenant` plug-in was used which for example didn't allow https://docs.openshift.com/container-platform/4.8/networking/network_policy/about-network-policy.html[Network Policies].
+We use https://isovalent.com/product[Isovalent Cilium Enterprise] for networking in {product}.
+In APPUiO Public the OpenShift 3 `ovs-multitenant` plug-in was used which for example didn't allow https://docs.openshift.com/container-platform/4.9/networking/network_policy/about-network-policy.html[Network Policies].
 
 === Different Quotas
 
