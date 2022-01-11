@@ -21,11 +21,23 @@ The following storage classes are available on cloudscale.ch:
 
 If you don't require `RWX` storage, we recommend using the `ssd` storage class.
 
+| `ssd-encrypted`
+| `RWO`
+| This storage class provides encrypted cloudscale.ch `ssd` volumes.
+
+See the xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes] guide.
+
 | `bulk`
 | `RWO`
 | This storage class provides cloudscale.ch `bulk` volumes.
 
 You may want to consider using the `bulk` storage class, if you're working with very large amounts of data but read/write performance isn't critical.
+
+| `bulk-encrypted`
+| `RWO`
+| This storage class provides encrypted cloudscale.ch `bulk` volumes.
+
+See the xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes] guide.
 
 | `cephfs-fspool-cluster`
 | `RWX`
