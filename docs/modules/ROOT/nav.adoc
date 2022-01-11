@@ -19,6 +19,7 @@
 * xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
 * xref:how-to/connect-gitlab.adoc[Connect GitLab]
 * xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
+* xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
