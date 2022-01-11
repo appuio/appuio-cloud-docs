@@ -30,5 +30,5 @@ The APPUiO Cloud documentation consists of the following pieces:
 * The https://kb.vshn.ch/appuio-cloud/[Technical documentation], available at the VSHN Knowledge Base, and containing important technical details of interest for DevOps engineers.
 * The https://products.docs.vshn.ch/products/appuio/cloud/[Product information], with feature and pricing descriptions.
 * The https://roadmap.appuio.cloud/[Roadmap], with a sneak peek into the work planned for future versions of APPUiO Cloud.
-* The https://discuss.appuio.cloud/[Discussions Forum], moderated by VSHN engineers, where you can ask and answer questions about APPUiO Cloud.
+* The https://discuss.appuio.cloud/[Discussions Forum], moderated by VSHN engineers and the community, where you can ask and answer questions about APPUiO Cloud.
 * And the https://community.appuio.ch/[Community Chat], for real-time conversations with other users and engineers.
