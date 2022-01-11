@@ -96,7 +96,7 @@ Customers transferring their domains from APPUiO Public to APPUiO Cloud should b
 +
 IMPORTANT: Remember to set your TTL back to the previous value after the migration.
 
-. There are different `CNAME` resource records to point to depending on which {zone} you migrate the application to; please refer to xref:zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
+. There are different `CNAME` resource records to point to depending on which {zone} you migrate the application to; please refer to xref:references/zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
 
 == Let's Encrypt
 
