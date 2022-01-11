@@ -21,7 +21,7 @@ Namespaces can be created in two ways:
 . With the command line `kubectl create namespace` (or `oc create namespace`)
 . Through the API, using the `Namespace` resource.
 
-WARNING: You can't create namespaces through the web console.
+NOTE: You can't create namespaces through the web console.
 
 Namespaces created with any of these mechanisms can be managed just like any other OpenShift projects.
 
