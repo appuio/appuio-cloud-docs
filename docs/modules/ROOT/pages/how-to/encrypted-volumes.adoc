@@ -1,0 +1,41 @@
+= Setup Encrypted Volumes
+
+This page explains how to configure encryption for persistent volumes where encrypted volume support is enabled.
+
+== Prerequisites
+
+For this guide, it's assumed that:
+
+* You have `pwgen` or a similar password generator installed.
+* You are logged in to your {product} project using the `oc login` command.
+
+== On cloudscale.ch
+
+. Ensure the `PersistentVolumeClaim` has set `spec.storageClassName=ssd-encrypted` (or `bulk-encrypted`).
+
+. Create a `Secret` that contains the encryption key.
++
+[source,bash]
+----
+oc create secret generic my-pvc-luks-key \ <1>
+    --from-literal luksKey=$(pwgen -c -s 64 1) <2>
+----
+<1> The name _must_ be composed with the `PersistentVolumeClaim` name and `-luks-key` as suffix
+<2> Key within `Secret` must be named `luksKey`
++
+[TIP]
+====
+* You can also create the encryption key using files.
+* If you need to manage the `Secret` via Helm you can also use the https://github.com/appuio/charts/tree/master/appuio/secret[`secret`] Helm chart.
+====
+
+[IMPORTANT]
+====
+Don't loose the encryption key!
+You can't change it.
+====
+
+[NOTE]
+====
+See more details in https://github.com/cloudscale-ch/csi-cloudscale[csi-cloudscale].
+====
