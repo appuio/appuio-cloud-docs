@@ -1,0 +1,38 @@
+= Manage Projects and Namespaces
+
+This page explains the various mechanisms available to create OpenShift Projects in APPUiO Cloud.
+
+== Creating Projects
+
+Through the web console:: Click on the btn:[Create Project] button and fill the form to create a new project.
+
+Through the Command Line:: Use the `oc new-project` command.
+
+Through the API:: Use the `ProjectRequest` resource to create a new project.
+
+== Project Ownership
+
+OpenShift Projects will always be assigned to the default organization specified by the `appuio.io/organization` label. Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
+
+== Namespaces
+
+Namespaces can be created in two ways:
+
+. With the command line `kubectl create namespace` (or `oc create namespace`)
+. Through the API, using the `Namespace` resource.
+
+WARNING: You can't create namespaces through the web console.
+
+Namespaces created with any of these mechanisms can be managed just like any other OpenShift projects.
+
+Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label. Namespaces without such label will be assigned to the default organization.
+
+CAUTION: If the user doesn't have a default organization set, creating a namespace without specifying an explicit organization will fail.
+
+Projects and namespaces can be used interchangeably, except when listing them. Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
+
+== More Information
+
+* https://kb.vshn.ch/appuio-cloud/references/architecture/namespace-ownership.html[Namespace Ownership] in the https://kb.vshn.ch/appuio-cloud/index.html[APPUiO Cloud for System Engineers Knowledge Base]
+* xref:how-to/list-namespaces.adoc[List Namespaces]
+* xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
