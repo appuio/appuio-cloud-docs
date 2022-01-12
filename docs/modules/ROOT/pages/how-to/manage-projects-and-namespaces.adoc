@@ -2,6 +2,8 @@
 
 This page explains the various mechanisms available to create OpenShift Projects in APPUiO Cloud.
 
+In Red Hat OpenShift, Projects and namespaces can be used interchangeably, except when listing them. Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
+
 == Creating Projects
 
 Through the web console:: Click on the btn:[Create Project] button and fill the form to create a new project.
@@ -28,8 +30,6 @@ Namespaces created with any of these mechanisms can be managed just like any oth
 Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label. Namespaces without such label will be assigned to the default organization.
 
 CAUTION: If the user doesn't have a default organization set, creating a namespace without specifying an explicit organization will fail.
-
-Projects and namespaces can be used interchangeably, except when listing them. Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
 
 == More Information
 
