@@ -16,7 +16,7 @@ Through the API:: Use the `ProjectRequest` resource to create a new project.
 
 OpenShift Projects will always be assigned to the default organization specified by the `appuio.io/organization` label. Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
 
-NOTE: If your user does not have a default organization, you must specify the label when creating the namespace or project.
+NOTE: If your user doesn't have a default organization, you must specify the label when creating the namespace or project.
 
 == Namespaces
 
@@ -29,7 +29,12 @@ NOTE: You can't create namespaces through the web console.
 
 Namespaces created with any of these mechanisms can be managed just like any other OpenShift projects.
 
-Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label. Namespaces without such label will be assigned to the default organization.
+Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label. Namespaces without such label will be assigned to the default organization. The code snippet below shows the YAML required to add the label to a new namespace request:
+
+[source,yaml]
+----
+
+----
 
 CAUTION: If the user doesn't have a default organization set, creating a namespace without specifying an explicit organization will fail.
 
