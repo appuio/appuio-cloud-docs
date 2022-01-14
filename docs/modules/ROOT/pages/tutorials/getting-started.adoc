@@ -1,0 +1,34 @@
+= Getting Started with APPUiO Cloud
+
+This tutorial describes your first steps with APPUiO Cloud, from signup to your first deployment.
+
+== Step 1: Create an Account
+
+To create your APPUiO Cloud account, fill the form https://www.appuio.ch/en/offering/cloud/[in this page]. You will receive an e-mail inviting you to create a password for your newly created account.
+
+== Step 2: Login
+
+Login to the https://control.vshn.net/[VSHN Control Panel] following the instructions in your welcome e-mail. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
+
+== Step 3: Choose a Zone
+
+In the https://control.vshn.net/appuio-cloud[APPUiO Cloud] page, select the link that corresponds to your preferred zone.
+
+image::getting-started/zones.png[]
+
+== Step 4: Get Started with OpenShift
+
+Follow the "Getting Started" instructions of OpenShift; download the command line tools if you haven't already, create a new project, and deploy your first application in just a few steps.
+
+image::getting-started/openshift-welcome.png[]
+
+== Step 5: Learn More
+
+The APPUiO Cloud documentation consists of the following pieces:
+
+* The https://docs.appuio.cloud/[User documentation], which you are reading right now;
+* The https://kb.vshn.ch/appuio-cloud/[Technical documentation], available at the VSHN Knowledge Base, and containing important technical details of interest for DevOps engineers.
+* The https://products.docs.vshn.ch/products/appuio/cloud/[Product information], with feature and pricing descriptions.
+* The https://roadmap.appuio.cloud/[Roadmap], with a sneak peek into the work planned for future versions of APPUiO Cloud.
+* The https://discuss.appuio.cloud/[Discussions Forum], moderated by VSHN engineers and the community, where you can ask and answer questions about APPUiO Cloud.
+* And the https://community.appuio.ch/[Community Chat], for real-time conversations with other users and engineers.
