@@ -2,7 +2,8 @@
 
 This page explains the various mechanisms available to create OpenShift Projects in APPUiO Cloud.
 
-In Red Hat OpenShift, projects and namespaces can be used interchangeably, except when listing them. Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
+In Red Hat OpenShift, projects and namespaces can be used interchangeably, except when listing them.
+Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
 
 == Creating Projects
 
@@ -12,12 +13,16 @@ Through the Command Line:: Use the `oc new-project` command.
 
 Through the API:: Use the `ProjectRequest` resource to create a new project.
 
-TIP: In all cases, the new Project is automatically assigned to the default organization of your user. See also <<Project Ownership>>.
+[TIP]
+====
+In all cases, the new Project is automatically assigned to the default organization of your user.
+See also <<Project Ownership>>.
+====
 
 [CAUTION]
 ====
 If the user doesn't have a default organization set, creating a project isn't possible.
-See <<Project and Namespace Ownership>>
+See <<Project and Namespace Ownership>>.
 ====
 
 == Creating Namespaces
@@ -31,7 +36,9 @@ NOTE: You can't create namespaces through the web console.
 
 Namespaces created with any of these mechanisms can be managed just like any other OpenShift projects.
 
-Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label. Namespaces without such label will be assigned to the default organization. The code snippet below shows the YAML required to add the label to a new namespace request:
+Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label.
+Namespaces without such label will be assigned to the default organization.
+The code snippet below shows the YAML required to add the label to a new namespace request:
 
 [source,yaml]
 ----
@@ -49,11 +56,16 @@ CAUTION: If the user doesn't have a default organization set, creating a namespa
 
 == Project and Namespace Ownership
 
-OpenShift Projects and Namespaces are always assigned to an organization, specified by the `appuio.io/organization` label. Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
+OpenShift Projects and Namespaces are always assigned to an organization, specified by the `appuio.io/organization` label.
+Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
 
-If your user doesn't have a default organization configured, you must specify the label when creating the namespace. In this case, creating projects won't be possible. If you don't know your default organization name, try this:
+If your user doesn't have a default organization configured, you must specify the label when creating the namespace.
+In this case, creating projects won't be possible.
+If you don't know your default organization name, try this:
 
-. Create a new project with a random name. If you get an error, you have no default organization. If you don't get an error, the `appuio.io/organization` label contains the name of your default organization.
+. Create a new project with a random name.
+  If you get an error, you have no default organization.
+  If you don't get an error, the `appuio.io/organization` label contains the name of your default organization.
 . Try the command below to see your default organization name:
 +
 [source,shell]
