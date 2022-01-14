@@ -16,7 +16,7 @@ Through the API:: Use the `ProjectRequest` resource to create a new project.
 [TIP]
 ====
 In all cases, the new Project is automatically assigned to the default organization of your user.
-See also <<Project Ownership>>.
+See also <<Project and Namespace Ownership>>.
 ====
 
 [CAUTION]
