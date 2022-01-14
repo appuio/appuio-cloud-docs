@@ -11,15 +11,21 @@
 * xref:tutorials/migration.adoc[Migrating to APPUiO Cloud]
 
 .How-to guides
+* Projects and Namespaces
+** xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
+** xref:how-to/list-namespaces.adoc[List Namespaces]
+* Networking
+** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
+* Storage
+** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
+* Security
+** xref:how-to/getting-a-certificate.adoc[Generate Certificates]
+* Logging
+** xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
+* Image Registry
+** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
-* xref:how-to/list-namespaces.adoc[List Namespaces]
-* xref:how-to/getting-a-certificate.adoc[Generate Certificates]
-* xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
-* xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
-* xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
 * xref:how-to/connect-gitlab.adoc[Connect GitLab]
-* xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
-* xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
