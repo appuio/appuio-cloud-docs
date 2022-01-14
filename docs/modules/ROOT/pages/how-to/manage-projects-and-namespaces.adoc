@@ -16,7 +16,15 @@ Through the API:: Use the `ProjectRequest` resource to create a new project.
 
 OpenShift Projects will always be assigned to the default organization specified by the `appuio.io/organization` label. Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
 
-NOTE: If your user doesn't have a default organization, you must specify the label when creating the namespace or project.
+If your user doesn't have a default organization, you must specify the label when creating the namespace or project. If you do not know your default organization name, try this:
+
+. Create a new project with a random name. If you get an error, you have no default organization. If you do not get an error, the `appuio.io/organization` label contains the name of your default organization.
+. Try the command below to see your default organization name:
++
+[source,shell]
+--
+$ oc get user "~" -ojsonpath="{.metadata.annotations['appuio\.io/default-organization']}"
+--
 
 == Namespaces
 
