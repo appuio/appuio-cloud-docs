@@ -14,6 +14,12 @@ Through the API:: Use the `ProjectRequest` resource to create a new project.
 
 TIP: In all cases, the new Project is automatically assigned to the default organization of your user. See also <<Project Ownership>>.
 
+[CAUTION]
+====
+If the user doesn't have a default organization set, creating a project isn't possible.
+See <<Project and Namespace Ownership>>
+====
+
 == Creating Namespaces
 
 Namespaces can be created in two ways:
@@ -45,7 +51,7 @@ CAUTION: If the user doesn't have a default organization set, creating a namespa
 
 OpenShift Projects and Namespaces are always assigned to an organization, specified by the `appuio.io/organization` label. Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
 
-If your user doesn't have a default organization configured, you must specify the label when creating the namespace or project. If you don't know your default organization name, try this:
+If your user doesn't have a default organization configured, you must specify the label when creating the namespace. In this case, creating projects won't be possible. If you don't know your default organization name, try this:
 
 . Create a new project with a random name. If you get an error, you have no default organization. If you don't get an error, the `appuio.io/organization` label contains the name of your default organization.
 . Try the command below to see your default organization name:
