@@ -8,7 +8,7 @@ To create your APPUiO Cloud account, fill the form https://www.appuio.ch/en/offe
 
 == Step 2: Login
 
-Login to the https://control.vshn.net/[VSHN Control Panel] following the instructions in your welcome e-mail. You will be asked to
+Login to the https://control.vshn.net/[VSHN Control Panel] following the instructions in your welcome e-mail. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
 
 == Step 3: Choose a Zone
 
