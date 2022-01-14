@@ -1,0 +1,80 @@
+= Manage Projects and Namespaces
+
+This page explains the various mechanisms available to create OpenShift Projects in APPUiO Cloud.
+
+In Red Hat OpenShift, projects and namespaces can be used interchangeably, except when listing them.
+Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
+
+== Creating Projects
+
+Through the web console:: Click on the btn:[Create Project] button and fill the form to create a new project.
+
+Through the Command Line:: Use the `oc new-project` command.
+
+Through the API:: Use the `ProjectRequest` resource to create a new project.
+
+[TIP]
+====
+In all cases, the new Project is automatically assigned to the default organization of your user.
+See also <<Project Ownership>>.
+====
+
+[CAUTION]
+====
+If the user doesn't have a default organization set, creating a project isn't possible.
+See <<Project and Namespace Ownership>>.
+====
+
+== Creating Namespaces
+
+Namespaces can be created in two ways:
+
+. With the command line `kubectl create namespace` (or `oc create namespace`)
+. Through the API, using the `Namespace` resource.
+
+NOTE: You can't create namespaces through the web console.
+
+Namespaces created with any of these mechanisms can be managed just like any other OpenShift projects.
+
+Just like projects, namespaces are assigned to a specific organization using the `appuio.io/organization` label.
+Namespaces without such label will be assigned to the default organization.
+The code snippet below shows the YAML required to add the label to a new namespace request:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    appuio.io/organization: my-company # <1>
+  name: my-namespace
+----
+
+<1> The identifier of your organization must be specified here.
+
+CAUTION: If the user doesn't have a default organization set, creating a namespace without specifying an explicit organization will fail.
+
+== Project and Namespace Ownership
+
+OpenShift Projects and Namespaces are always assigned to an organization, specified by the `appuio.io/organization` label.
+Check the xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC] page for more information.
+
+If your user doesn't have a default organization configured, you must specify the label when creating the namespace.
+In this case, creating projects won't be possible.
+If you don't know your default organization name, try this:
+
+. Create a new project with a random name.
+  If you get an error, you have no default organization.
+  If you don't get an error, the `appuio.io/organization` label contains the name of your default organization.
+. Try the command below to see your default organization name:
++
+[source,shell]
+--
+$ oc get user "~" -ojsonpath="{.metadata.annotations['appuio\.io/default-organization']}"
+--
+
+== More Information
+
+* https://kb.vshn.ch/appuio-cloud/references/architecture/namespace-ownership.html[Namespace Ownership] in the https://kb.vshn.ch/appuio-cloud/index.html[APPUiO Cloud for System Engineers Knowledge Base]
+* xref:how-to/list-namespaces.adoc[List Namespaces]
+* xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
