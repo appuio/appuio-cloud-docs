@@ -57,7 +57,7 @@ CAUTION: If the user doesn't have a default organization set, creating a namespa
 [TIP]
 ====
 You can also create a new namespace programmatically or in a CI/CD pipeline using a service account.
-The created namespace will automatically be assigned to the organization owning the namspace in which the service account is located.
+The created namespace will automatically be assigned to the organization owning the namespace in which the service account is located.
 Check the https://docs.openshift.com/container-platform/4.9/authentication/using-service-accounts-in-applications.html[OpenShift Service Account] documentation for more information on how to create and use them.
 ====
 
