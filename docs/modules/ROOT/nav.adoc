@@ -1,5 +1,6 @@
 * xref:index.adoc[Home]
 * xref:contact.adoc[Contact]
+* https://status.appuio.cloud[Status 🔗^]
 
 .About
 * https://discuss.appuio.cloud/[Community Discussions 🔗^]
