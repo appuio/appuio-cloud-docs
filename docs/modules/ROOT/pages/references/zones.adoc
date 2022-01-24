@@ -29,5 +29,4 @@ Kubernetes API endpoint:: https://api.exoscale-ch-gva-2-0.appuio.cloud:6443
 Default App Domain:: apps.exoscale-ch-gva-2-0.appuio.cloud
 Integrated Cluster Registry Domain:: registry.exoscale-ch-gva-2-0.appuio.cloud
 SDN:: https://cilium.io/[Cilium]
-Outgoing IPv4:: 89.145.167.35
 CNAME:: cname.exoscale-ch-gva-2-0.appuio.cloud.
