@@ -15,3 +15,18 @@ Integrated Cluster Registry Domain:: registry.cloudscale-lpg-2.appuio.cloud
 SDN:: https://cilium.io/[Cilium]
 Outgoing IPv4:: 185.98.123.195
 CNAME:: cname.cloudscale-lpg-2.appuio.cloud.
+
+== exoscale.com - CH-GVA-2 0
+
+____
+Direct link to the https://console.exoscale-ch-gva-2-0.appuio.cloud/[OpenShift Console^]
+____
+
+Cloud Provider:: https://www.exoscale.com/[exoscale.com] / https://www.exoscale.com/datacenters/switzerland/#ch-gva-2[Zone CH-GVA-2] / https://map.geo.admin.ch/?zoom=10&E=2496579&N=1118315&crosshair=marker[Geneva]
+OpenShift Version:: 4.9
+Kubernetes Version:: 1.22
+Kubernetes API endpoint:: https://api.exoscale-ch-gva-2-0.appuio.cloud:6443
+Default App Domain:: apps.exoscale-ch-gva-2-0.appuio.cloud
+Integrated Cluster Registry Domain:: registry.exoscale-ch-gva-2-0.appuio.cloud
+SDN:: https://cilium.io/[Cilium]
+CNAME:: cname.exoscale-ch-gva-2-0.appuio.cloud.
