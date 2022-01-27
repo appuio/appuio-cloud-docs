@@ -11,7 +11,7 @@ On `Namespace` creation, a number of RBAC rules are created.
 * A `RoleBinding` called `admin` which grants the creator of the `Namespace` the `ClusterRole` called `admin`.
 This roles allows the creator to create, get, or modify nearly every resource in the `Namespace`.
 * A `RoleBinding` called `organization-admin` which also grants the organization the `admin` role.
-* A `RoleBinding` and called `namespace-owner` which gives the organization the permission to edit the created `Namespace` by granting the organization the `ClusterRole` `namespace-owner`.
+* A `RoleBinding` called `namespace-owner` which gives the organization the permission to edit the created `Namespace` by granting the organization the `ClusterRole` `namespace-owner`.
 
 The user is free to modify or delete any of the `RoleBindings` and handle access control themselves.
 
