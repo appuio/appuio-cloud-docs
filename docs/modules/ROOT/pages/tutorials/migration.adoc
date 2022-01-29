@@ -211,7 +211,7 @@ The following sections provide information about each strategy.
 The first variant to migrate your application storage from APPUiO Public to APPUiO Cloud consists in using `oc rsync`.
 Rsync is an often used and well tested tool synchronizing files between systems.
 The manifests below create the required objects on the destination side.
-If you are you are using your own, at least a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
+If you are using your own, at least a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
 
 [source,yaml]
 --
