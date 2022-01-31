@@ -95,7 +95,7 @@ Convert into GB by dividing by 0.931323, then divide by 1000 to get into TB
 |1 TB 
 |0.91 TiB
 
-|1 TiB 
+|1 TB 
 |931 GiB
 
 |1 TiB 
