@@ -9,7 +9,7 @@ There are, however, a few caveats to keep in mind while using them on {product}.
 
 [CAUTION]
 ====
-Templates and Image Streams are OpenShift-specific features, not available in other Kubernetes-based platforms. In all cases, it is recommended to read the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation] for more detailed information.
+Templates and Image Streams are OpenShift-specific features, not available in other Kubernetes-based platforms. In all cases, it's recommended to read the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation] for more detailed information.
 ====
 
 == ImageStream Namespaces
