@@ -90,7 +90,9 @@ Use this storage class if your application requires `RWX` storage.
 We show representative performance numbers (IOPS and bandwidth) for each storage class below.
 Please note that we show the best case for write performance here.
 
-Please see the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster_performance_cloudscale.html[APPUiO Managed Storage Cluster] product documentation for an explanation of the benchmarking methodology and a more detailed breakdown of performance numbers.
+Please see the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster_performance_exoscale.html[APPUiO Managed Storage Cluster] product documentation for an explanation of the benchmarking methodology and a more detailed breakdown of performance numbers.
+
+NOTE: The numbers shown here and the numbers shown in the APPUiO Managed Storage Cluster product documentation were collected on different clusters.
 
 image::storage_performance/exoscale_read_iops.png[]
 image::storage_performance/exoscale_read_bandwidth.png[]
