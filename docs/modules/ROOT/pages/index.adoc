@@ -6,4 +6,18 @@ Welcome to the {product} for Users documentation site.
 
 Use the search field at the top of this page, navigate through topics with the tree on the left or see the links below.
 
-TIP: Contributions to the documentation are welcome. Just click on btn:[Edit this Page] top-right or head over to https://github.com/appuio/appuio-cloud-docs[GitHub] where the content source is stored.
+[TIP]
+====
+Contributions to the documentation are welcome.
+Just click on btn:[Edit this Page] top-right or head over to https://github.com/appuio/appuio-cloud-docs[GitHub] where the content source is stored.
+====
+
+== Disclaimer
+
+{product} is based on https://docs.openshift.com/container-platform/[Red Hat OpenShift], and contains many features not available in other Kubernetes-based platforms.
+As such, {product} includes features and capabilities not explicitly mentioned or explained in this website. In those cases please refer the https://docs.openshift.com/container-platform/[official Red Hat OpenShift documentation].
+And as a general rule, it's recommended to read the official OpenShift documentation for more detailed information.
+
+Didn't find the information you were looking for?
+Would you like to suggest a new help topic?
+xref:contact.adoc[Get in touch with us.]
