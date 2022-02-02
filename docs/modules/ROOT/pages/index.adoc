@@ -14,7 +14,7 @@ Just click on btn:[Edit this Page] top-right or head over to https://github.com/
 
 == Disclaimer
 
-{product} is based on https://docs.openshift.com/container-platform/4.9/welcome/index.html[Red Hat OpenShift 4.9], and contains many features not available in other Kubernetes-based platforms.
+{product} is based on https://docs.openshift.com/container-platform/[Red Hat OpenShift], and contains many features not available in other Kubernetes-based platforms.
 As such, {product} includes features and capabilities not explicitly mentioned or explained in this website. In those cases please refer the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation].
 And as a general rule, it's recommended to read the official OpenShift documentation for more detailed information.
 
