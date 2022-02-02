@@ -40,7 +40,7 @@ Just type `make preview` and open your browser at http://localhost:2020. This ev
 === Adding a New Page
 
 . Create new AsciiDoc (`.adoc`) file in the best matching folder according to the described structure under `docs/modules/ROOT/pages/`.
-. Add the file to the navigation under `docs/modules/ROOT/partials/`
+. Add the file to the navigation under `docs/modules/ROOT/`
 
 For removing pages just do the opposite: Remove the file and remove the entry in the navigation.
 
