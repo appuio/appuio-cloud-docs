@@ -9,11 +9,13 @@ There are, however, a few caveats to keep in mind while using them on {product}.
 
 [CAUTION]
 ====
-Templates and Image Streams are OpenShift-specific features, not available in other Kubernetes-based platforms. In all cases, it's recommended to read the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation] for more detailed information.
+Templates and Image Streams are OpenShift-specific features, not available in other Kubernetes-based platforms.
+In all cases, it's recommended to read the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation] for more detailed information.
 ====
 
 == ImageStream Namespaces
 
-When creating new objects with a template, the form prompts the user for "The OpenShift Namespace where the ImageStream resides." If you are using a standard template provided by OpenShift, as shown in the screenshot below, *you must not change the value of the field*, and leave the `openshift` value by default.
+When creating new objects with a template, the form prompts the user for "The OpenShift Namespace where the ImageStream resides."
+If you are using a standard template provided by OpenShift, as shown in the screenshot below, you must not change the value of the field, and leave the default `openshift` value.
 
 image::how-to/using-templates.png[]
