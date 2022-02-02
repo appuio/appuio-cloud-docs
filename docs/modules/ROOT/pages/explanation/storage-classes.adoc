@@ -62,8 +62,8 @@ image::storage_performance/cloudscale_write_bandwidth.png[]
 
 == Exoscale
 
-On Exoscale we provide RWO storage using the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
-Additionally, we provide RWX storage on CephFS managed via https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
+On Exoscale, we provide both RWO and RWX storage using the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
+In the APPUiO Managed Storage Cluster, RWO storage is backed by Ceph-RBD, and RWX storage is backed by CephFS.
 
 The following storage classes are available:
 
