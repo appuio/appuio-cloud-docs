@@ -59,3 +59,28 @@ image::storage_performance/cloudscale_read_bandwidth.png[]
 
 image::storage_performance/cloudscale_write_iops.png[]
 image::storage_performance/cloudscale_write_bandwidth.png[]
+
+== exoscale.com
+
+On exoscale.com we provide RWO storage using the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
+Additionally, we provide RWX storage on CephFS managed via https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
+
+The following storage classes are available on exoscale.com:
+
+[cols="30%,15%,55%"]
+|===
+| Storage Class | Access Modes | Description
+
+| `rbd-storagepool-cluster`
+| `RWO`
+| This storage class provides RBD volumes.
+
+If you don't require `RWX` storage, we recommend using the `rbd-storagepool-cluster` storage class.
+
+| `cephfs-fspool-cluster`
+| `RWX`
+| This storage class provides CephFS volumes.
+
+Use this storage class if your application requires `RWX` storage.
+
+|===
