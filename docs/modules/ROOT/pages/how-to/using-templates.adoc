@@ -1,0 +1,19 @@
+= Using Templates
+
+The Red Hat OpenShift 4.9 https://docs.openshift.com/container-platform/4.9/openshift_images/using-templates.html[documentation] defines templates as follows:
+
+> A template describes a set of objects that can be parameterized and processed to produce a list of objects for creation by OpenShift Container Platform. A template can be processed to create anything you have permission to create within a project, for example services, build configurations, and deployment configurations. A template can also define a set of labels to apply to every object defined in the template.
+
+{product} allows you to use templates to instantiate new services in your account.
+There are, however, a few caveats to keep in mind while using them on {product}.
+
+[CAUTION]
+====
+Templates and Image Streams are OpenShift-specific features, not available in other Kubernetes-based platforms. In all cases, it is recommended to read the https://docs.openshift.com/container-platform/4.9/welcome/index.html[official Red Hat OpenShift 4.9 documentation] for more detailed information.
+====
+
+== ImageStream Namespaces
+
+When creating new objects with a template, the form prompts the user for "The OpenShift Namespace where the ImageStream resides." If you are using a standard template provided by OpenShift, as shown in the screenshot below, *you must not change the value of the field*, and leave the `openshift` value by default.
+
+image::how-to/using-templates.png[]

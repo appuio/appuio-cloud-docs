@@ -15,6 +15,7 @@
 * Projects and Namespaces
 ** xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
 ** xref:how-to/list-namespaces.adoc[List Namespaces]
+** xref:how-to/using-templates.adoc[Using OpenShift Templates]
 * Networking
 ** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
 * Storage
