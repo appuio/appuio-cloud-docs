@@ -84,3 +84,16 @@ If you don't require `RWX` storage, we recommend using the `rbd-storagepool-clus
 Use this storage class if your application requires `RWX` storage.
 
 |===
+
+=== Performance
+
+We show representative performance numbers (IOPS and bandwidth) for each storage class below.
+Please note that we show the best case for write performance here.
+
+Please see the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster_performance_cloudscale.html[APPUiO Managed Storage Cluster] product documentation for an explanation of the benchmarking methodology and a more detailed breakdown of performance numbers.
+
+image::storage_performance/exoscale_read_iops.png[]
+image::storage_performance/exoscale_read_bandwidth.png[]
+
+image::storage_performance/exoscale_write_iops.png[]
+image::storage_performance/exoscale_write_bandwidth.png[]
