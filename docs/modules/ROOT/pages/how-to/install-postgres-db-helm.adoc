@@ -1,0 +1,111 @@
+= How to install a PostgreSQL via Helm
+
+This page explains how to install a current PostgreSQL database via the Helm tool on the {product} platform.
+
+This guide is based on the older guide documented here: https://docs.appuio.ch/en/latest/app/helmcharts.html
+
+== Step 1: Install helm
+
+You need first to install the `helm` CLI tool: https://helm.sh/docs/intro/quickstart/
+
+Make sure you add the Bitnami Helm Chart Repository, because we will use later the PostgreSQL Helm chart provided by
+Bitnami:
+
+[source,shell]
+----
+helm repo add bitnami https://charts.bitnami.com/bitnami
+----
+
+
+== Step 2: Create an adapted values.yaml file
+
+We use the Bitnami provided PostgreSQL helm chart documented here: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+
+For the usage in {product} it is needed to override some chart parameters, for example the `securityContext` parameter or
+the resource limits.
+
+If users don't explicitly configure limits, {product} platform injects limits of cpu: 200m and memory: 200Mi. 
+(see https://docs.appuio.cloud/user/references/default-quota.html#_resource_limits_and_defaults).
+
+See also the `values.yaml` file of the PostgreSQL Helm chart for more details: 
+https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+
+Create some custom `postgres-values.yaml` (filename does not matter) file to override the needed chart parameters.
+
+See here a full working example of this custom values file:
+
+[source,yaml]
+----
+global:
+  postgresql:
+    postgresqlUsername: YOUR_USERNAME <1>
+
+image:
+  tag: SOME_IMAGE_TAG <2>
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+persistence:
+  size: 1Gi
+
+volumePermissions:
+  enabled: false
+  securityContext:
+    runAsUser: "auto"
+
+securityContext:
+  enabled: false
+
+shmVolume:
+  chmod:
+    enabled: false
+
+containerSecurityContext:
+  enabled: false
+----
+<1> Set your database user name
+<2> Set some valid PostgreSQL image tag
+
+By default the `storageClass` is empty and the {product} platform uses `ssd` as the default storage class.
+
+See also the following link for more details about the available storage classes:
+https://docs.appuio.cloud/user/explanation/storage-classes.html#_cloudscale_ch
+
+
+== Step 3: Install the Helm chart with the custom values.yaml file
+
+Install the PostgreSQL Helm chart with the following command:
+
+[source,shell]
+----
+helm install -f postgresql-values.yaml --set global.postgresql.postgresqlPassword=<DB_PW> <MY_HELM_INSTANCE_NAME> bitnami/postgresql
+----
+
+Just replace the `<DB_PW>` with your database user password.
+
+Replace `<MY_HELM_INSTANCE_NAME>` with some descriptive name for your Helm installation, for example `service-xy-db`.
+
+The `-f postgresql-values.yaml` points to your custom values.yaml file to override the needed Chart parameters.
+
+
+== Step 4: Check your installation
+
+You can check your installation with the following command:
+
+[source,shell]
+----
+helm list
+----
+
+
+== Related Links
+
+Check also for more details here:
+
+* https://github.com/appuio/appuio-cloud-community/discussions/27
+* https://dev.to/tylerauerbeck/deploying-bitnami-s-postgres-helm-chart-on-openshift-1mcl
+* https://github.com/bitnami/charts/issues/1336
+* https://github.com/bitnami/bitnami-docker-postgresql/issues/103
