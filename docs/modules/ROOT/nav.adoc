@@ -26,6 +26,8 @@
 ** xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
 * Image Registry
 ** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
+* Databases
+** xref:how-to/install-postgres-db-helm.adoc[Install PostgreSQL via Helm]
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
 * xref:how-to/connect-gitlab.adoc[Connect GitLab]
 
