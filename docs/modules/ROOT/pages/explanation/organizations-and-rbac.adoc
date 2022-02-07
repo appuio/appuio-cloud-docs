@@ -50,6 +50,6 @@ You will need to manually change these.
 
 [NOTE]
 ====
-The transferring user doesn't necessarily need to be in the source organization, they simply need to have permission to `edit` the namespace and need to be in the target namespace.
-This means namespaces can be transfered between organization, that don't share any users.
+The transferring user doesn't necessarily need to be in the source organization, they simply need to have permission to `edit` the namespace and need to be in the target organization.
+This means namespaces can be transferred between organizations that don't share any users.
 ====
