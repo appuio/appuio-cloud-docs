@@ -21,19 +21,18 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 We use the Bitnami provided PostgreSQL helm chart documented here: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 
-For the usage in {product} it is needed to override some chart parameters, for example the `securityContext` parameter or
-the resource limits.
+To ensure that PostgreSQL works on {product} we need to adjust some chart parameters, for example the `securityContext` parameter and the resource limits.
 
-If users don't explicitly configure limits, {product} platform injects limits of cpu: 200m and memory: 200Mi. 
-(see https://docs.appuio.cloud/user/references/default-quota.html#_resource_limits_and_defaults).
+If users don't explicitly configure limits, the {product} platform injects limits of `cpu: 200m` and `memory: 200Mi`.
+See the reference docs of {product} for more details on xref:references/default-quota.adoc#_resource_limits_and_defaults[default resource limits].
 
-See also the `values.yaml` file of the PostgreSQL Helm chart for more details: 
-https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+See also the https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml[`values.yaml` file of the PostgreSQL Helm chart] for more details on configurable values.
 
-Create some custom `postgres-values.yaml` (filename does not matter) file to override the needed chart parameters.
+Create a custom `postgres-values.yaml` (filename doesn't matter) file to override the needed chart parameters.
 
-See here a full working example of this custom values file:
+Below is a full working example for deploying the Bitnami PostgreSQL chart on {product}.
 
+.postgres-values.yaml
 [source,yaml]
 ----
 global:
@@ -67,12 +66,11 @@ containerSecurityContext:
   enabled: false
 ----
 <1> Set your database user name
-<2> Set some valid PostgreSQL image tag
+<2> Set a valid PostgreSQL image tag
 
 By default the `storageClass` is empty and the {product} platform uses `ssd` as the default storage class.
 
-See also the following link for more details about the available storage classes:
-https://docs.appuio.cloud/user/explanation/storage-classes.html#_cloudscale_ch
+See the xref:explanation/storage-classes.adoc[documentation of available storage classes] on {product} for more details.
 
 
 == Step 3: Install the Helm chart with the custom values.yaml file
@@ -84,9 +82,9 @@ Install the PostgreSQL Helm chart with the following command:
 helm install -f postgresql-values.yaml --set global.postgresql.postgresqlPassword=<DB_PW> <MY_HELM_INSTANCE_NAME> bitnami/postgresql
 ----
 
-Just replace the `<DB_PW>` with your database user password.
+Replace the `<DB_PW>` with your database user password.
 
-Replace `<MY_HELM_INSTANCE_NAME>` with some descriptive name for your Helm installation, for example `service-xy-db`.
+Replace `<MY_HELM_INSTANCE_NAME>` with a descriptive name for your Helm installation, for example `service-xy-db`.
 
 The `-f postgresql-values.yaml` points to your custom values.yaml file to override the needed Chart parameters.
 
