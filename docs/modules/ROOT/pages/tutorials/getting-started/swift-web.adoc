@@ -6,7 +6,7 @@ If you would rather use the command line, you might want to try the xref:tutoria
 
 == Requirements
 
-This tutorial does not require anything else than an {product} account and a modern web browser with JavaScript enabled.
+This tutorial doesn't require anything else than an {product} account and a modern web browser with JavaScript enabled.
 
 == About the Application
 
@@ -21,27 +21,27 @@ You can browse the full source code of this application on GitLab: https://gitla
 Follow these steps to create an OpenShift project and deploy the application:
 
 . Login to {product} and open the "Developer" perspective.
-. Create a new project called "fortune-swift".
+. Create a new project called "fortune-swift."
 . Switch to the "Developer" perspective.
 . Click the "+Add" button on the sidebar.
 . Select the "Container images" option.
 +
-IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page], not all options in this screen are available in {product}. In particular, it is not possible to choose the "Import from Git" option, as this requires image building capabilities that are not yet available in {product}.
+IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page], not all options in this screen are available in {product}. In particular, it's not possible to choose the "Import from Git" option, as this requires image building capabilities that aren't yet available in {product}.
 
 . In the "Image name from external registry" field, enter the URL of the Fortune in Swift container:
 ** `registry.gitlab.com/vshn/applications/fortune-swift:latest`
 . Change the runtime icon to match the Swift programming language or the Vapor Framework framework (if available).
 . Scroll down and uncheck the "Create a route to the Application" checkbox.
-. Click "Create".
+. Click "Create."
 . After a few seconds, you will see in the "Topology" section an icon representing the Fortune in Swift application running. If you click on it, you will see that there is no route to access the object.
 
 == Step 2: Publish your Application
 
-At the moment your container is running but it is not available from the Internet. To be able to access our application, we must create an `Ingress` object.
+At the moment your container is running but it's not available from the Internet. To be able to access our application, we must create an `Ingress` object.
 
 . Switch to the "Developer" perspective.
 . Click the "+Add" button on the sidebar.
-. Select the "From Local Machine – Import YAML" option
+. Select the "From Local Machine–Import YAML" option
 . Paste and customize the code below in the editor:
 +
 [source,yaml]
@@ -82,7 +82,7 @@ The "Fortune in  Swift" application is now running on {product}. Congratulations
 
 What's next? To run your own application written in Swift or using the Vapor Framework application on {product}, follow these steps:
 
-* Containerize the application making sure it is compatible with {product}. The `Dockerfile` above can serve as a starting point.
+* Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Create a deployment (in YAML format) for your application, or better yet, a https://helm.sh/[Helm] chart.
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 * When you're done testing the fortune application, you can open the "Projects" menu in the "Administrator" perspective to delete the `fortune-swift` project.

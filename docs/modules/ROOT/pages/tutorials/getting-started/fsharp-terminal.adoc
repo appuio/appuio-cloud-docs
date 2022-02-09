@@ -2,7 +2,7 @@
 
 image:logos/fsharp.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the F# programming language on {product} using the command line.
 
-If you are not familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/fsharp-web.adoc[Getting Started with F# on the OpenShift Web Console] guide instead.
+If you aren't familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/fsharp-web.adoc[Getting Started with F# on the OpenShift Web Console] guide instead.
 
 == Requirements
 
@@ -126,7 +126,7 @@ Follow these steps to login to {product} on your terminal, create a project, and
 --
 $ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443
 $ oc projects
-You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+You aren't a member of any projects. You can request a project to be created with the 'new-project' command.
 --
 
 . Create a new project called "fortune-fsharp"
@@ -207,7 +207,7 @@ fortune-fsharp-6fbd5484cf-k47gt   1/1     Running   0          11s
 
 == Step 2: Publish your Application
 
-At the moment your container is running but it is not available from the Internet. To be able to access our application, we must create an `Ingress` object.
+At the moment your container is running but it's not available from the Internet. To be able to access our application, we must create an `Ingress` object.
 
 . Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_APP_NAME]` and `[YOUR_PREFERRED_ZONE]` to your liking:
 +
@@ -265,7 +265,7 @@ The "Fortune in  F#" application is now running on {product}. Congratulations!
 
 What's next? To run your own application written in F# or using the Giraffe Framework application on {product}, follow these steps:
 
-* Containerize the application making sure it is compatible with {product}. The `Dockerfile` above can serve as a starting point.
+* Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 * When you're done testing the fortune application, delete the `fortune-fsharp` project with the following command:
