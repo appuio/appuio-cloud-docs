@@ -24,7 +24,73 @@ image::getting-started/openshift-welcome.png[]
 
 == Step 5: Deploy an Application Now!
 
-image::logos/c.svg[role="related thumb right",alt="Programming language logo",width=120,height=120,opts="inline"]
+Select your programming language to get started:
+
+[cols="^1,^1,^1"]
+|===
+| Programming Language | OpenShift Web Console Version | Terminal Version
+
+| image:logos/c.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/cpp.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/csharp.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/elixir.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/fsharp.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/go.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/java.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/kotlin.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/php.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/python.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/ruby.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/rust.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/scala.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/swift.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+| image:logos/typescript.svg[alt="Programming language logo",width=50,height=50]
+| OpenShift Web Console
+| Terminal
+
+|===
 
 == Step 6: Learn More
 

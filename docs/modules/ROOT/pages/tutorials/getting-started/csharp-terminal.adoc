@@ -1,0 +1,242 @@
+= Getting Started on {product} with the Terminal using C#
+
+image:logos/csharp.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the C# programming language on {product} using the command line.
+
+If you are not familiar with issuing commands on a terminal session, you might want to try the xref:csharp-web.adoc[Getting Started with C# on the OpenShift Web Console] guide instead.
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with JavaScript enabled.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+`docker` or `podman`:: You can download them from https://www.docker.com and https://podman.io.
+
+`curl`:: Available from https://curl.se.
+
+== About the Application
+
+To demo how to run applications written in the https://en.wikipedia.org/wiki/C_Sharp_(programming_language)[C#] programming language on {product}, we will use a small demo application using the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+
+You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-csharp
+
+The "Fortune in C#" application does a few simple things:
+
+* When invoked on the browser, it returns a random number and a funny quote.
+* When invoked with an HTTP request including the `Accept: application/json` header, it returns the same information in JSON format.
+* Finally, when invoked with an HTTP request including the `Accept: text/plain` header, it returns the same information in plain text format.
+
+Learn more about the `fortune-csharp` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/README.adoc[project README].
+
+=== The Router
+
+The code below shows the main router of the application in the C# programming language, located at https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Controllers/FortuneController.cs[Controllers/FortuneController.cs], courtesy of the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework].
+
+[source,csharp,indent=0]
+--
+include::https://gitlab.com/vshn/applications/fortune-csharp/-/raw/master/Controllers/FortuneController.cs[tag=router]
+--
+
+=== Run the Container
+
+This step is optional; you can easily test the application locally with Docker or Podman:
+
+[source,shell]
+--
+$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
+$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
+--
+
+Now you can test the application with `curl`:
+
+[source,shell]
+--
+$ curl http://localhost:8080 --header "Accept: application/json"
+$ curl http://localhost:8080 --header "Accept: text/plain"
+--
+
+You can also open a browser and navigate to http://localhost:8080 to get your fortune cookie of the day.
+
+=== Dockerfile
+
+The application includes a https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
+
+[source,dockerfile,indent=0]
+--
+include::https://gitlab.com/vshn/applications/fortune-csharp/-/raw/master/Dockerfile[tag=production]
+--
+<1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
+
+You can use the `Dockerfile` above to build your own copy of the container, which you can then push to the registry of your choice:
+
+[source,shell]
+--
+$ git clone https://gitlab.com/vshn/applications/fortune-csharp.git
+$ cd fortune-csharp
+$ docker build -t fortune-csharp .
+$ podman build -t fortune-csharp .
+--
+
+== Step 1: Create a Project
+
+Follow these steps to login to {product} on your terminal, create a project, and to deploy the application:
+
+. Login to the {product} console with your web browser.
+. Click on your user name on the top right and select "Copy login command"
+. Click "Display token" and copy the login command shown in "Log in with this token"
+. Paste the `oc login` command on the terminal:
++
+[source,shell]
+--
+$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443
+$ oc projects
+You are not a member of any projects. You can request a project to be created with the 'new-project' command.
+--
+
+. Create a new project called "fortune-csharp"
++
+[source,shell]
+--
+$ oc new-project fortune-csharp
+Now using project "fortune-csharp" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+--
+
+. To deploy the application we will use a standard Kubernetes `Deployment` object. Save the following YAML in a file called `deployment.yaml`:
++
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-csharp
+  namespace: fortune-csharp # <1>
+  labels:
+    app: fortune-csharp
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: gitlab-pull-secret
+      containers:
+      - image: registry.gitlab.com/vshn/applications/fortune-csharp:latest
+        imagePullPolicy: Always
+        name: fortune-container
+        ports:
+        - containerPort: 8080
+    metadata:
+      labels:
+        app: fortune-csharp
+  selector:
+    matchLabels:
+      app: fortune-csharp
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortune-csharp
+  namespace: fortune-csharp # <1>
+  labels:
+    app: fortune-csharp
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: fortune-csharp
+  type: ClusterIP
+----
+<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+
+. Then apply the deployment to your {product} project and wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+$ oc -n fortune-csharp apply -f deployment.yaml
+deployment.apps/fortune-csharp created
+service/fortune-csharp created
+$ oc -n fortune-csharp get pods --watch
+NAME                         READY   STATUS    RESTARTS   AGE
+fortune-csharp-6fbd5484cf-k47gt   1/1     Running   0          11s
+--
+
+== Step 2: Publish your Application
+
+At the moment your container is running but it is not available from the Internet. To be able to access our application, we must create an `Ingress` object.
+
+. Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_APP_NAME]` and `[YOUR_PREFERRED_ZONE]` to your liking:
++
+[source,yaml]
+--
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: fortune-csharp-ingress
+  namespace: fortune-csharp # <1>
+spec:
+  rules:
+  - host: [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud # <2>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: fortune-csharp
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud
+    secretName: fortune-csharp-cert
+--
+<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+<2> Replace the placeholders `YOUR_APP_NAME` and `YOUR_PREFERRED_ZONE` with valid values.
+
+. Apply the ingress object to your {product} project and wait until you route shows as available.
++
+[source,shell]
+--
+$ oc -n fortune-csharp apply -f ingress.yaml
+ingress.networking.k8s.io/fortune-csharp-ingress created
+$ oc -n fortune-csharp get routes --watch
+NAME                      HOST/PORT                                         PATH   SERVICES    PORT    TERMINATION     WILDCARD
+fortune-csharp-ingress-4pk2j   fortune-csharp.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-csharp   <all>   edge/Redirect   None
+--
+
+. After a few seconds, you should be able to get your daily fortune message using `curl`!
++
+[source,shell]
+--
+$ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header "Accept: text/plain"
+$ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header "Accept: application/json"
+--
+
+== Step 3: There's no Step 3!
+
+The "Fortune in  C#" application is now running on {product}. Congratulations!
+
+What's next? To run your own application written in C# or using the ASP.NET Framework application on {product}, follow these steps:
+
+* Containerize the application making sure it is compatible with {product}. The `Dockerfile` above can serve as a starting point.
+* Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
+* Configure your CI/CD system to automatically deploy your application to your cluster.
+* When you're done testing the fortune application, delete the `fortune-csharp` project with the following command:
++
+[source,shell]
+--
+$ oc delete project fortune-csharp
+--
