@@ -286,7 +286,7 @@ What's next? To run your own application written in Swift or using the Vapor Fra
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-swift` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-swift

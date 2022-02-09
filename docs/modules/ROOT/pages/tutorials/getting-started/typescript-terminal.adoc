@@ -270,7 +270,7 @@ What's next? To run your own application written in TypeScript or using the Expr
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-typescript` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-typescript

@@ -275,7 +275,7 @@ What's next? To run your own application written in F# or using the Giraffe Fram
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-fsharp` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-fsharp

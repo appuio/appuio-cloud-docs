@@ -326,7 +326,7 @@ What's next? To run your own application written in PHP or using the Slim Framew
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-php` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-php

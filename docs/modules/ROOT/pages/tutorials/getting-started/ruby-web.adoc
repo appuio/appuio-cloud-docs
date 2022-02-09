@@ -38,7 +38,7 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 . Change the runtime icon to match the Ruby programming language or the Sinatra Framework (if available).
 . Click "Create."
 . After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in Ruby" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to the following:
-** http://fortune-ruby-fortune-ruby.apps.[YOUR_PREFERRED_ZONE].appuio.cloud
+** `fortune-ruby-fortune-ruby.apps.[YOUR_PREFERRED_ZONE].appuio.cloud`
 . If you click on it, you will see your daily fortune cookie message!
 
 == Step 2: There's no Step 2!

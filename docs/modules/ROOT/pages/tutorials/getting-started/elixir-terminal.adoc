@@ -288,7 +288,7 @@ What's next? To run your own application written in Elixir or using the Phoenix 
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-elixir` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-elixir

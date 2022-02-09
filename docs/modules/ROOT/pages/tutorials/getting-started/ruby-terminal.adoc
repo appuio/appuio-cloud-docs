@@ -271,7 +271,7 @@ What's next? To run your own application written in Ruby or using the Sinatra Fr
 * Configure your CI/CD system to automatically deploy your application to your cluster.
 
 Finally, when you're done testing the fortune application, delete the `fortune-ruby` project with the following command:
-+
+
 [source,shell]
 --
 $ oc delete project fortune-ruby
