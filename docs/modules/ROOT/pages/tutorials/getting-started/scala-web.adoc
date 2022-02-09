@@ -16,7 +16,7 @@ The "Fortune in Scala" application does one simple thing: when invoked on the br
 
 You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-scala
 
-== Step 1: Create an OpenShift Project
+== Step 1: Deploy a Container
 
 Follow these steps to create an OpenShift project and deploy the application:
 
@@ -30,59 +30,17 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 
 . In the "Image name from external registry" field, enter the URL of the Fortune in Scala container:
 ** `registry.gitlab.com/vshn/applications/fortune-scala:latest`
-. Change the runtime icon to match the Scala programming language or the Scalatra Framework framework (if available).
-. Scroll down and uncheck the "Create a route to the Application" checkbox.
+. Change the runtime icon to match the Scala programming language or the Scalatra Framework (if available).
 . Click "Create."
-. After a few seconds, you will see in the "Topology" section an icon representing the Fortune in Scala application running. If you click on it, you will see that there is no route to access the object.
+. After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in Scala" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to `http://fortune-scala-fortune-scala.apps.[YOUR_PREFERRED_ZONE].appuio.cloud`, and if you click on it, you will see your daily fortune cookie message!
 
-== Step 2: Publish your Application
-
-At the moment your container is running but it's not available from the Internet. To be able to access our application, we must create an `Ingress` object.
-
-. Switch to the "Developer" perspective.
-. Click the "+Add" button on the sidebar.
-. Select the "From Local Machine–Import YAML" option
-. Paste and customize the code below in the editor:
-+
-[source,yaml]
---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-production
-  name: fortune-scala-ingress
-  namespace: fortune-scala # <1>
-spec:
-  rules:
-  - host: [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud # <2>
-    http:
-      paths:
-      - pathType: Prefix
-        path: /
-        backend:
-          service:
-            name: fortune-scala
-            port:
-              number: 8080
-  tls:
-  - hosts:
-    - [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud
-    secretName: fortune-scala-cert
---
-<1> Make sure this annotation matches exactly the name of your project: `fortune-scala`
-<2> Replace the placeholders `YOUR_APP_NAME` and `YOUR_PREFERRED_ZONE` with valid values.
-
-. Click the "Create" button.
-. After a few seconds, go back to the "Topology" screen, and select your container. You should see a "Routes" field now, with the clickable URL `http://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud`, displaying your daily fortune cookie message!
-
-== Step 3: There's no Step 3!
+== Step 2: There's no Step 2!
 
 The "Fortune in  Scala" application is now running on {product}. Congratulations!
 
-What's next? To run your own application written in Scala or using the Scalatra Framework application on {product}, follow these steps:
+What's next? To run your own application written in Scala or using the Scalatra Framework on {product}, follow these steps:
 
-* Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
-* Create a deployment (in YAML format) for your application, or better yet, a https://helm.sh/[Helm] chart.
-* Configure your CI/CD system to automatically deploy your application to your cluster.
-* When you're done testing the fortune application, you can open the "Projects" menu in the "Administrator" perspective to delete the `fortune-scala` project.
+* Check the xref:tutorials/getting-started/scala-terminal.adoc[Getting Started with Scala on the Terminal] guide for more technical information.
+* Make sure your CI/CD system is ready to automatically deploy your application to your cluster.
+
+Finally, when you're done testing the fortune application, you can open the "Projects" menu in the "Administrator" perspective and delete the `fortune-scala` project, by selecting the appropriate entry on the "Actions" menu.

@@ -263,12 +263,13 @@ $ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header 
 
 The "Fortune in  F#" application is now running on {product}. Congratulations!
 
-What's next? To run your own application written in F# or using the Giraffe Framework application on {product}, follow these steps:
+What's next? To run your own application written in F# or using the Giraffe Framework on {product}, follow these steps:
 
 * Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
 * Configure your CI/CD system to automatically deploy your application to your cluster.
-* When you're done testing the fortune application, delete the `fortune-fsharp` project with the following command:
+
+Finally, when you're done testing the fortune application, delete the `fortune-fsharp` project with the following command:
 +
 [source,shell]
 --
