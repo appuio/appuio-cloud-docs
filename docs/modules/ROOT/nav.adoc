@@ -25,6 +25,7 @@
 *** xref:tutorials/getting-started/scala-web.adoc[Scala]
 *** xref:tutorials/getting-started/swift-web.adoc[Swift]
 *** xref:tutorials/getting-started/typescript-web.adoc[TypeScript]
+
 ** On the Terminal
 *** xref:tutorials/getting-started/c-terminal.adoc[C]
 *** xref:tutorials/getting-started/cpp-terminal.adoc[C++]
