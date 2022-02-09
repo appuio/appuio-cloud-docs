@@ -1,8 +1,8 @@
-= Getting Started on {product} with the Terminal using C#
+= Getting Started on {product} with the Terminal using TypeScript
 
-image:logos/csharp.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the C# programming language on {product} using the command line.
+image:logos/typescript.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the TypeScript programming language on {product} using the command line.
 
-If you are not familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/csharp-web.adoc[Getting Started with C# on the OpenShift Web Console] guide instead.
+If you are not familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/typescript-web.adoc[Getting Started with TypeScript on the OpenShift Web Console] guide instead.
 
 == Requirements
 
@@ -18,45 +18,41 @@ A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with J
 
 == About the Application
 
-To demo how to run applications written in the https://en.wikipedia.org/wiki/C_Sharp_(programming_language)[C#] programming language on {product}, we will use a small demo application using the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://www.typescriptlang.org/[TypeScript] programming language on {product}, we will use a small demo application using the https://expressjs.com/[Express Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
-You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-csharp
+You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-typescript
 
-The "Fortune in C#" application does a few simple things:
+The "Fortune in TypeScript" application does a few simple things:
 
 * When invoked on the browser, it returns a random number and a funny quote.
 * When invoked with an HTTP request including the `Accept: application/json` header, it returns the same information in JSON format.
 * Finally, when invoked with an HTTP request including the `Accept: text/plain` header, it returns the same information in plain text format.
 
-Learn more about the `fortune-csharp` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/README.adoc[project README].
+Learn more about the `fortune-typescript` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-typescript/-/blob/master/README.adoc[project README].
 
 === The Router
 
-The code below shows the main router of the application in the C# programming language, located at https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Controllers/FortuneController.cs[Controllers/FortuneController.cs], courtesy of the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework].
+The code below shows the main router of the application in the TypeScript programming language, located at https://gitlab.com/vshn/applications/fortune-typescript/-/blob/master/src/index.ts[src/index.ts], courtesy of the https://expressjs.com/[Express Framework].
 
-[source,csharp,indent=0]
+[source,typescript,indent=0]
 --
-    [HttpGet]
-    public IActionResult GetFortune()
-    {
-        var fortune = MakeFortune();
-        var acceptHeader = Request.Headers.ContainsKey("Accept") ? Request.Headers["Accept"].ToString() : "text/html";
-        if (acceptHeader == MediaTypeNames.Application.Json)
-        {
-            return Ok(fortune);
-        }
-        else if (acceptHeader == MediaTypeNames.Text.Plain)
-        {
-            return Content($@"Fortune {fortune.Version} cookie of the day #{fortune.Number}:
-
-{fortune.Message}
-Pod: {fortune.Hostname}", "text/plain");
-        }
-        else
-        {
-            return View("index", fortune);
-        }
-    }
+app.get('/', async (req: Request, res: Response) => {
+  const fortune = await shellExec('fortune')
+  const hostname = os.hostname()
+  const random = Math.floor((Math.random() * 1000));
+  const version = "1.0-typescript";
+  const data = new Fortune(fortune, hostname, version, random)
+  const accept = req.headers['accept']
+  if (accept === 'application/json') {
+    res.send(data)
+  }
+  else if (accept === 'text/plain') {
+    res.send(`Fortune ${version} cookie of the day #${random}:\n\n${fortune}`);
+  }
+  else {
+    res.render('index', data)
+  }
+})
 --
 
 === Run the Container
@@ -65,8 +61,8 @@ This step is optional; you can easily test the application locally with Docker o
 
 [source,shell]
 --
-$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
-$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
+$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-typescript:latest
+$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-typescript:latest
 --
 
 Now you can test the application with `curl`:
@@ -81,23 +77,24 @@ You can also open a browser and navigate to http://localhost:8080 to get your fo
 
 === Dockerfile
 
-The application includes a https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
+The application includes a https://gitlab.com/vshn/applications/fortune-typescript/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
 
 [source,dockerfile,indent=0]
 --
-# Stage 2: runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
-RUN apk add fortune
-WORKDIR /dotnetapp
-COPY --from=build /build/out .
-COPY appsettings.json /dotnetapp
+# Step 2: Runtime image
+FROM node:16.9.1-alpine3.14
+RUN apk update && apk add fortune
+WORKDIR /api
+COPY --from=builder /api/node_modules /api/node_modules
+COPY --from=builder /api/dist/ /api/dist
+COPY views /api/views
 
 EXPOSE 8080
 
 # <1>
-USER 1001
+USER 1001:0
 
-ENTRYPOINT ["dotnet", "fortune-dotnet.dll"]
+ENTRYPOINT ["node", "/api/dist/index.js"]
 --
 <1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
 
@@ -105,10 +102,10 @@ You can use the `Dockerfile` above to build your own copy of the container, whic
 
 [source,shell]
 --
-$ git clone https://gitlab.com/vshn/applications/fortune-csharp.git
-$ cd fortune-csharp
-$ docker build -t fortune-csharp .
-$ podman build -t fortune-csharp .
+$ git clone https://gitlab.com/vshn/applications/fortune-typescript.git
+$ cd fortune-typescript
+$ docker build -t fortune-typescript .
+$ podman build -t fortune-typescript .
 --
 
 == Step 1: Create a Project
@@ -127,12 +124,12 @@ $ oc projects
 You are not a member of any projects. You can request a project to be created with the 'new-project' command.
 --
 
-. Create a new project called "fortune-csharp"
+. Create a new project called "fortune-typescript"
 +
 [source,shell]
 --
-$ oc new-project fortune-csharp
-Now using project "fortune-csharp" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
+$ oc new-project fortune-typescript
+Now using project "fortune-typescript" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
 
@@ -150,57 +147,57 @@ to build a new example application in Ruby. Or use kubectl to deploy a simple Ku
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fortune-csharp
-  namespace: fortune-csharp # <1>
+  name: fortune-typescript
+  namespace: fortune-typescript # <1>
   labels:
-    app: fortune-csharp
+    app: fortune-typescript
 spec:
   template:
     spec:
       imagePullSecrets:
       - name: gitlab-pull-secret
       containers:
-      - image: registry.gitlab.com/vshn/applications/fortune-csharp:latest
+      - image: registry.gitlab.com/vshn/applications/fortune-typescript:latest
         imagePullPolicy: Always
         name: fortune-container
         ports:
         - containerPort: 8080
     metadata:
       labels:
-        app: fortune-csharp
+        app: fortune-typescript
   selector:
     matchLabels:
-      app: fortune-csharp
+      app: fortune-typescript
   strategy:
     type: Recreate
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: fortune-csharp
-  namespace: fortune-csharp # <1>
+  name: fortune-typescript
+  namespace: fortune-typescript # <1>
   labels:
-    app: fortune-csharp
+    app: fortune-typescript
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: fortune-csharp
+    app: fortune-typescript
   type: ClusterIP
 ----
-<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+<1> Make sure this annotation matches exactly the name of your project: `fortune-typescript`
 
 . Then apply the deployment to your {product} project and wait until your pod appears with the status "Running":
 +
 [source,shell]
 --
-$ oc -n fortune-csharp apply -f deployment.yaml
-deployment.apps/fortune-csharp created
-service/fortune-csharp created
-$ oc -n fortune-csharp get pods --watch
+$ oc -n fortune-typescript apply -f deployment.yaml
+deployment.apps/fortune-typescript created
+service/fortune-typescript created
+$ oc -n fortune-typescript get pods --watch
 NAME                         READY   STATUS    RESTARTS   AGE
-fortune-csharp-6fbd5484cf-k47gt   1/1     Running   0          11s
+fortune-typescript-6fbd5484cf-k47gt   1/1     Running   0          11s
 --
 
 == Step 2: Publish your Application
@@ -216,8 +213,8 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-  name: fortune-csharp-ingress
-  namespace: fortune-csharp # <1>
+  name: fortune-typescript-ingress
+  namespace: fortune-typescript # <1>
 spec:
   rules:
   - host: [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud # <2>
@@ -227,26 +224,26 @@ spec:
         path: /
         backend:
           service:
-            name: fortune-csharp
+            name: fortune-typescript
             port:
               number: 8080
   tls:
   - hosts:
     - [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud
-    secretName: fortune-csharp-cert
+    secretName: fortune-typescript-cert
 --
-<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+<1> Make sure this annotation matches exactly the name of your project: `fortune-typescript`
 <2> Replace the placeholders `YOUR_APP_NAME` and `YOUR_PREFERRED_ZONE` with valid values.
 
 . Apply the ingress object to your {product} project and wait until you route shows as available.
 +
 [source,shell]
 --
-$ oc -n fortune-csharp apply -f ingress.yaml
-ingress.networking.k8s.io/fortune-csharp-ingress created
-$ oc -n fortune-csharp get routes --watch
+$ oc -n fortune-typescript apply -f ingress.yaml
+ingress.networking.k8s.io/fortune-typescript-ingress created
+$ oc -n fortune-typescript get routes --watch
 NAME                      HOST/PORT                                         PATH   SERVICES    PORT    TERMINATION     WILDCARD
-fortune-csharp-ingress-4pk2j   fortune-csharp.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-csharp   <all>   edge/Redirect   None
+fortune-typescript-ingress-4pk2j   fortune-typescript.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-typescript   <all>   edge/Redirect   None
 --
 
 . After a few seconds, you should be able to get your daily fortune message using `curl`!
@@ -259,16 +256,16 @@ $ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header 
 
 == Step 3: There's no Step 3!
 
-The "Fortune in  C#" application is now running on {product}. Congratulations!
+The "Fortune in  TypeScript" application is now running on {product}. Congratulations!
 
-What's next? To run your own application written in C# or using the ASP.NET Framework application on {product}, follow these steps:
+What's next? To run your own application written in TypeScript or using the Express Framework application on {product}, follow these steps:
 
 * Containerize the application making sure it is compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
 * Configure your CI/CD system to automatically deploy your application to your cluster.
-* When you're done testing the fortune application, delete the `fortune-csharp` project with the following command:
+* When you're done testing the fortune application, delete the `fortune-typescript` project with the following command:
 +
 [source,shell]
 --
-$ oc delete project fortune-csharp
+$ oc delete project fortune-typescript
 --

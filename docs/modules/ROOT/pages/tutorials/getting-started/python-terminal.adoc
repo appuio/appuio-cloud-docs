@@ -1,8 +1,8 @@
-= Getting Started on {product} with the Terminal using C#
+= Getting Started on {product} with the Terminal using Python
 
-image:logos/csharp.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the C# programming language on {product} using the command line.
+image:logos/python.svg[role="related thumb right",alt="Programming language logo",width=120,height=120] This tutorial explains how to run applications written in the Python programming language on {product} using the command line.
 
-If you are not familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/csharp-web.adoc[Getting Started with C# on the OpenShift Web Console] guide instead.
+If you are not familiar with issuing commands on a terminal session, you might want to try the xref:tutorials/getting-started/python-web.adoc[Getting Started with Python on the OpenShift Web Console] guide instead.
 
 == Requirements
 
@@ -18,45 +18,47 @@ A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with J
 
 == About the Application
 
-To demo how to run applications written in the https://en.wikipedia.org/wiki/C_Sharp_(programming_language)[C#] programming language on {product}, we will use a small demo application using the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://www.python.org/[Python] programming language on {product}, we will use a small demo application using the https://flask.palletsprojects.com/en/1.1.x/[Flask Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
-You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-csharp
+You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-python
 
-The "Fortune in C#" application does a few simple things:
+The "Fortune in Python" application does a few simple things:
 
 * When invoked on the browser, it returns a random number and a funny quote.
 * When invoked with an HTTP request including the `Accept: application/json` header, it returns the same information in JSON format.
 * Finally, when invoked with an HTTP request including the `Accept: text/plain` header, it returns the same information in plain text format.
 
-Learn more about the `fortune-csharp` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/README.adoc[project README].
+Learn more about the `fortune-python` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-python/-/blob/master/README.adoc[project README].
 
 === The Router
 
-The code below shows the main router of the application in the C# programming language, located at https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Controllers/FortuneController.cs[Controllers/FortuneController.cs], courtesy of the https://dotnet.microsoft.com/en-us/apps/aspnet[ASP.NET Framework].
+The code below shows the main router of the application in the Python programming language, located at https://gitlab.com/vshn/applications/fortune-python/-/blob/master/app.py[app.py], courtesy of the https://flask.palletsprojects.com/en/1.1.x/[Flask Framework].
 
-[source,csharp,indent=0]
+[source,python,indent=0]
 --
-    [HttpGet]
-    public IActionResult GetFortune()
-    {
-        var fortune = MakeFortune();
-        var acceptHeader = Request.Headers.ContainsKey("Accept") ? Request.Headers["Accept"].ToString() : "text/html";
-        if (acceptHeader == MediaTypeNames.Application.Json)
-        {
-            return Ok(fortune);
-        }
-        else if (acceptHeader == MediaTypeNames.Text.Plain)
-        {
-            return Content($@"Fortune {fortune.Version} cookie of the day #{fortune.Number}:
+@app.route("/")
+def fortune():
+    """
+    Print a random, hopefully interesting, adage
+    """
+    number, fortune = get_fortune()
+    accepts = request.headers['accept']
+    if accepts == 'application/json':
+        resp = jsonify({ 'number': number, 'message': fortune, 'version': version, 'hostname': hostname })
+        return resp
 
-{fortune.Message}
-Pod: {fortune.Hostname}", "text/plain");
-        }
-        else
-        {
-            return View("index", fortune);
-        }
-    }
+    if accepts == 'text/plain':
+        result = 'Fortune %s cookie of the day #%d:\n\n%s' % (version, number, fortune)
+        resp = Response(result, mimetype='text/plain')
+        return resp
+
+    # In all other cases, respond with HTML
+    html = render_template('fortune.html', number=number, message=fortune, version=version, hostname=hostname)
+    resp = Response(html, mimetype='text/html')
+    return resp
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=os.environ.get('listenport', 8080))
 --
 
 === Run the Container
@@ -65,8 +67,8 @@ This step is optional; you can easily test the application locally with Docker o
 
 [source,shell]
 --
-$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
-$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-csharp:latest
+$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-python:latest
+$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-python:latest
 --
 
 Now you can test the application with `curl`:
@@ -81,23 +83,39 @@ You can also open a browser and navigate to http://localhost:8080 to get your fo
 
 === Dockerfile
 
-The application includes a https://gitlab.com/vshn/applications/fortune-csharp/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
+The application includes a https://gitlab.com/vshn/applications/fortune-python/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
 
 [source,dockerfile,indent=0]
 --
-# Stage 2: runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
-RUN apk add fortune
-WORKDIR /dotnetapp
-COPY --from=build /build/out .
-COPY appsettings.json /dotnetapp
+# Inherit from this "empty base image", see https://hub.docker.com/_/python/
+FROM python:3.10-alpine
 
+# Take some responsibility for this container
+MAINTAINER Jane Smith <jane.smith@example.com>
+
+# Install some required software on Alpine Linux
+RUN apk add fortune
+
+# Directory to install the app inside the container
+WORKDIR /usr/src/app
+
+# Install python dependencies (cached if requirements.txt does not change)
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application source code into container
+COPY app.py /usr/src/app
+COPY templates /usr/src/app/templates/
+
+# Expose this TCP-port, same as app.py
 EXPOSE 8080
 
+# Drop root privileges when running the application
 # <1>
 USER 1001
 
-ENTRYPOINT ["dotnet", "fortune-dotnet.dll"]
+# Run this command at run-time
+CMD [ "python", "app.py" ]
 --
 <1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
 
@@ -105,10 +123,10 @@ You can use the `Dockerfile` above to build your own copy of the container, whic
 
 [source,shell]
 --
-$ git clone https://gitlab.com/vshn/applications/fortune-csharp.git
-$ cd fortune-csharp
-$ docker build -t fortune-csharp .
-$ podman build -t fortune-csharp .
+$ git clone https://gitlab.com/vshn/applications/fortune-python.git
+$ cd fortune-python
+$ docker build -t fortune-python .
+$ podman build -t fortune-python .
 --
 
 == Step 1: Create a Project
@@ -127,12 +145,12 @@ $ oc projects
 You are not a member of any projects. You can request a project to be created with the 'new-project' command.
 --
 
-. Create a new project called "fortune-csharp"
+. Create a new project called "fortune-python"
 +
 [source,shell]
 --
-$ oc new-project fortune-csharp
-Now using project "fortune-csharp" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
+$ oc new-project fortune-python
+Now using project "fortune-python" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
 
@@ -150,57 +168,57 @@ to build a new example application in Ruby. Or use kubectl to deploy a simple Ku
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fortune-csharp
-  namespace: fortune-csharp # <1>
+  name: fortune-python
+  namespace: fortune-python # <1>
   labels:
-    app: fortune-csharp
+    app: fortune-python
 spec:
   template:
     spec:
       imagePullSecrets:
       - name: gitlab-pull-secret
       containers:
-      - image: registry.gitlab.com/vshn/applications/fortune-csharp:latest
+      - image: registry.gitlab.com/vshn/applications/fortune-python:latest
         imagePullPolicy: Always
         name: fortune-container
         ports:
         - containerPort: 8080
     metadata:
       labels:
-        app: fortune-csharp
+        app: fortune-python
   selector:
     matchLabels:
-      app: fortune-csharp
+      app: fortune-python
   strategy:
     type: Recreate
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: fortune-csharp
-  namespace: fortune-csharp # <1>
+  name: fortune-python
+  namespace: fortune-python # <1>
   labels:
-    app: fortune-csharp
+    app: fortune-python
 spec:
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: fortune-csharp
+    app: fortune-python
   type: ClusterIP
 ----
-<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+<1> Make sure this annotation matches exactly the name of your project: `fortune-python`
 
 . Then apply the deployment to your {product} project and wait until your pod appears with the status "Running":
 +
 [source,shell]
 --
-$ oc -n fortune-csharp apply -f deployment.yaml
-deployment.apps/fortune-csharp created
-service/fortune-csharp created
-$ oc -n fortune-csharp get pods --watch
+$ oc -n fortune-python apply -f deployment.yaml
+deployment.apps/fortune-python created
+service/fortune-python created
+$ oc -n fortune-python get pods --watch
 NAME                         READY   STATUS    RESTARTS   AGE
-fortune-csharp-6fbd5484cf-k47gt   1/1     Running   0          11s
+fortune-python-6fbd5484cf-k47gt   1/1     Running   0          11s
 --
 
 == Step 2: Publish your Application
@@ -216,8 +234,8 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-  name: fortune-csharp-ingress
-  namespace: fortune-csharp # <1>
+  name: fortune-python-ingress
+  namespace: fortune-python # <1>
 spec:
   rules:
   - host: [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud # <2>
@@ -227,26 +245,26 @@ spec:
         path: /
         backend:
           service:
-            name: fortune-csharp
+            name: fortune-python
             port:
               number: 8080
   tls:
   - hosts:
     - [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud
-    secretName: fortune-csharp-cert
+    secretName: fortune-python-cert
 --
-<1> Make sure this annotation matches exactly the name of your project: `fortune-csharp`
+<1> Make sure this annotation matches exactly the name of your project: `fortune-python`
 <2> Replace the placeholders `YOUR_APP_NAME` and `YOUR_PREFERRED_ZONE` with valid values.
 
 . Apply the ingress object to your {product} project and wait until you route shows as available.
 +
 [source,shell]
 --
-$ oc -n fortune-csharp apply -f ingress.yaml
-ingress.networking.k8s.io/fortune-csharp-ingress created
-$ oc -n fortune-csharp get routes --watch
+$ oc -n fortune-python apply -f ingress.yaml
+ingress.networking.k8s.io/fortune-python-ingress created
+$ oc -n fortune-python get routes --watch
 NAME                      HOST/PORT                                         PATH   SERVICES    PORT    TERMINATION     WILDCARD
-fortune-csharp-ingress-4pk2j   fortune-csharp.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-csharp   <all>   edge/Redirect   None
+fortune-python-ingress-4pk2j   fortune-python.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-python   <all>   edge/Redirect   None
 --
 
 . After a few seconds, you should be able to get your daily fortune message using `curl`!
@@ -259,16 +277,16 @@ $ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header 
 
 == Step 3: There's no Step 3!
 
-The "Fortune in  C#" application is now running on {product}. Congratulations!
+The "Fortune in  Python" application is now running on {product}. Congratulations!
 
-What's next? To run your own application written in C# or using the ASP.NET Framework application on {product}, follow these steps:
+What's next? To run your own application written in Python or using the Flask Framework application on {product}, follow these steps:
 
 * Containerize the application making sure it is compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
 * Configure your CI/CD system to automatically deploy your application to your cluster.
-* When you're done testing the fortune application, delete the `fortune-csharp` project with the following command:
+* When you're done testing the fortune application, delete the `fortune-python` project with the following command:
 +
 [source,shell]
 --
-$ oc delete project fortune-csharp
+$ oc delete project fortune-python
 --
