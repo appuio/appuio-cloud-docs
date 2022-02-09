@@ -20,7 +20,9 @@ A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with J
 
 To demo how to run applications written in the https://www.rust-lang.org/[Rust] programming language on {product}, we will use a small demo application using the https://actix.rs/[Actix Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
-You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-rust
+You can browse the full source code of this application on GitLab:
+
+* https://gitlab.com/vshn/applications/fortune-rust
 
 The "Fortune in Rust" application does a few simple things:
 
@@ -30,7 +32,7 @@ The "Fortune in Rust" application does a few simple things:
 
 Learn more about the `fortune-rust` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-rust/-/blob/master/README.adoc[project README].
 
-=== The Router
+=== The Application Router
 
 The code below shows the main router of the application in the Rust programming language, located at https://gitlab.com/vshn/applications/fortune-rust/-/blob/master/src/main.rs[src/main.rs], courtesy of the https://actix.rs/[Actix Framework].
 

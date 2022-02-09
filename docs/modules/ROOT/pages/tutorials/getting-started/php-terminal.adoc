@@ -20,7 +20,9 @@ A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with J
 
 To demo how to run applications written in the https://www.php.net/[PHP] programming language on {product}, we will use a small demo application using the https://www.slimframework.com/[Slim Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
-You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-php
+You can browse the full source code of this application on GitLab:
+
+* https://gitlab.com/vshn/applications/fortune-php
 
 The "Fortune in PHP" application does a few simple things:
 
@@ -30,7 +32,7 @@ The "Fortune in PHP" application does a few simple things:
 
 Learn more about the `fortune-php` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-php/-/blob/master/README.adoc[project README].
 
-=== The Router
+=== The Application Router
 
 The code below shows the main router of the application in the PHP programming language, located at https://gitlab.com/vshn/applications/fortune-php/-/blob/master/public/index.php[public/index.php], courtesy of the https://www.slimframework.com/[Slim Framework].
 

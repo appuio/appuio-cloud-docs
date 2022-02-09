@@ -14,7 +14,9 @@ To demo how to run applications written in the https://go.dev/[Go] programming l
 
 The "Fortune in Go" application does one simple thing: when invoked on the browser, it returns a random number and a funny quote. That's all!
 
-You can browse the full source code of this application on GitLab: https://gitlab.com/vshn/applications/fortune-go
+You can browse the full source code of this application on GitLab:
+
+* https://gitlab.com/vshn/applications/fortune-go
 
 == Step 1: Deploy a Container
 
@@ -32,7 +34,9 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 ** `registry.gitlab.com/vshn/applications/fortune-go:latest`
 . Change the runtime icon to match the Go programming language or the Gin Framework (if available).
 . Click "Create."
-. After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in Go" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to `http://fortune-go-fortune-go.apps.[YOUR_PREFERRED_ZONE].appuio.cloud`, and if you click on it, you will see your daily fortune cookie message!
+. After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in Go" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to the following:
+** http://fortune-go-fortune-go.apps.[YOUR_PREFERRED_ZONE].appuio.cloud
+. If you click on it, you will see your daily fortune cookie message!
 
 == Step 2: There's no Step 2!
 
