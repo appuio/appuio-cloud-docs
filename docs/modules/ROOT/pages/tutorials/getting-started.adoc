@@ -22,7 +22,11 @@ Follow the "Getting Started" instructions of OpenShift; download the command lin
 
 image::getting-started/openshift-welcome.png[]
 
-== Step 5: Learn More
+== Step 5: Deploy an Application Now!
+
+image::logos/c.svg[role="related thumb right",alt="Programming language logo",width=120,height=120,opts="inline"]
+
+== Step 6: Learn More
 
 The APPUiO Cloud documentation consists of the following pieces:
 
