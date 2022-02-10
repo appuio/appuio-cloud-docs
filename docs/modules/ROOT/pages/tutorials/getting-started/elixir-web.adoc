@@ -26,8 +26,8 @@ You can browse the full source code of this application on GitLab:
 Follow these steps to create an OpenShift project and deploy the application:
 
 . Login to {product} and open the "Developer" perspective.
-. Create a new project called "fortune-elixir."
-. Switch to the "Developer" perspective.
+** You can find the link to the {product} web console of your chosen zone in the xref:references/zones.adoc[{product} Zones] documentation page.
+. Create a new project called "[YOUR_USERNAME]-fortune-elixir."
 . Click the "+Add" button on the sidebar.
 . Select the "Container images" option.
 +
@@ -35,10 +35,10 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 
 . In the "Image name from external registry" field, enter the URL of the Fortune in Elixir container:
 ** `registry.gitlab.com/vshn/applications/fortune-elixir:latest`
-. Change the runtime icon to match the Elixir programming language or the Phoenix Framework (if available).
+. Change the runtime icon to match the Elixir programming language, the Phoenix Framework, or any other icon you'd like to use.
 . Click "Create."
 . After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in Elixir" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to the following:
-** `fortune-elixir-fortune-elixir.apps.[YOUR_PREFERRED_ZONE].appuio.cloud`
+** `fortune-elixir-[YOUR_USERNAME]-fortune-elixir.apps.[YOUR_CHOSEN_ZONE].appuio.cloud`
 . If you click on it, you will see your daily fortune cookie message!
 
 == Step 2: There's no Step 2!
@@ -48,6 +48,6 @@ The "Fortune in  Elixir" application is now running on {product}. Congratulation
 What's next? To run your own application written in Elixir or using the Phoenix Framework on {product}, follow these steps:
 
 * Check the xref:tutorials/getting-started/elixir-terminal.adoc[Getting Started with Elixir on the Terminal] guide for more technical information.
-* Make sure your CI/CD system is ready to automatically deploy your application to your cluster.
+* Make sure your CI/CD system is ready to automatically deploy your application to your preferred {product} zone.
 
 Finally, when you're done testing the fortune application, you can open the "Projects" menu in the "Administrator" perspective and delete the `fortune-elixir` project, by selecting the appropriate entry on the "Actions" menu.

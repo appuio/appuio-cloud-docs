@@ -11,8 +11,6 @@ If you aren't familiar with issuing commands on a terminal session, you might wa
 
 To follow this guide, please make sure that you have the following tools installed:
 
-A web browser:: Google Chrome, Firefox, Microsoft Edge, Safari, or Opera, with JavaScript enabled.
-
 `oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
 
 `docker` or `podman`:: You can download them from https://www.docker.com and https://podman.io.
@@ -173,24 +171,29 @@ $ podman build -t fortune-php .
 
 Follow these steps to login to {product} on your terminal, create a project, and to deploy the application:
 
-. Login to the {product} console with your web browser.
-. Click on your user name on the top right and select "Copy login command"
+. Login to the {product} console:
++
+[source,shell]
+--
+$ oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
+You must obtain an API token by visiting https://oauth-openshift.apps.[YOUR_CHOSEN_ZONE].appuio.cloud/oauth/token/request
+--
+
+. Click on the link above to open it on your browser.
 . Click "Display token" and copy the login command shown in "Log in with this token"
 . Paste the `oc login` command on the terminal:
 +
 [source,shell]
 --
-$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443
-$ oc projects
-You aren't a member of any projects. You can request a project to be created with the 'new-project' command.
+$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
 
-. Create a new project called "fortune-php"
+. Create a new project called "[YOUR_USERNAME]-fortune-php"
 +
 [source,shell]
 --
-$ oc new-project fortune-php
-Now using project "fortune-php" on server "https://api.[YOUR_PREFERRED_ZONE].appuio.cloud:6443".
+$ oc new-project [YOUR_USERNAME]-fortune-php
+Now using project "[YOUR_USERNAME]-fortune-php" on server "https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
 
@@ -209,9 +212,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fortune-php
-  namespace: fortune-php # <1>
-  labels:
-    app: fortune-php
 spec:
   template:
     spec:
@@ -234,9 +234,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: fortune-php
-  namespace: fortune-php # <1>
-  labels:
-    app: fortune-php
 spec:
   ports:
     - port: 8080
@@ -245,16 +242,15 @@ spec:
     app: fortune-php
   type: ClusterIP
 ----
-<1> Make sure this annotation matches exactly the name of your project: `fortune-php`
 
 . Then apply the deployment to your {product} project and wait until your pod appears with the status "Running":
 +
 [source,shell]
 --
-$ oc -n fortune-php apply -f deployment.yaml
+$ oc apply -f deployment.yaml
 deployment.apps/fortune-php created
 service/fortune-php created
-$ oc -n fortune-php get pods --watch
+$ oc get pods --watch
 NAME                         READY   STATUS    RESTARTS   AGE
 fortune-php-6fbd5484cf-k47gt   1/1     Running   0          11s
 --
@@ -263,7 +259,7 @@ fortune-php-6fbd5484cf-k47gt   1/1     Running   0          11s
 
 At the moment your container is running but it's not available from the Internet. To be able to access our application, we must create an `Ingress` object.
 
-. Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_APP_NAME]` and `[YOUR_PREFERRED_ZONE]` to your liking:
+. Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]):
 +
 [source,yaml]
 --
@@ -273,10 +269,9 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
   name: fortune-php-ingress
-  namespace: fortune-php # <1>
 spec:
   rules:
-  - host: [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud # <2>
+  - host: [YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <1>
     http:
       paths:
       - pathType: Prefix
@@ -288,29 +283,28 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - [YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud
+    - [YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
     secretName: fortune-php-cert
 --
-<1> Make sure this annotation matches exactly the name of your project: `fortune-php`
-<2> Replace the placeholders `YOUR_APP_NAME` and `YOUR_PREFERRED_ZONE` with valid values.
+<1> Replace the placeholders `YOUR_USERNAME` and `YOUR_CHOSEN_ZONE` with valid values.
 
 . Apply the ingress object to your {product} project and wait until you route shows as available.
 +
 [source,shell]
 --
-$ oc -n fortune-php apply -f ingress.yaml
+$ oc apply -f ingress.yaml
 ingress.networking.k8s.io/fortune-php-ingress created
-$ oc -n fortune-php get routes --watch
+$ oc get routes --watch
 NAME                      HOST/PORT                                         PATH   SERVICES    PORT    TERMINATION     WILDCARD
-fortune-php-ingress-4pk2j   fortune-php.apps.[YOUR_PREFERRED_ZONE].appuio.cloud   /      fortune-php   <all>   edge/Redirect   None
+fortune-php-ingress-4pk2j   [YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud   /      fortune-php   <all>   edge/Redirect   None
 --
 
 . After a few seconds, you should be able to get your daily fortune message using `curl`!
 +
 [source,shell]
 --
-$ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header "Accept: text/plain"
-$ curl https://[YOUR_APP_NAME].apps.[YOUR_PREFERRED_ZONE].appuio.cloud --header "Accept: application/json"
+$ curl https://[YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: text/plain"
+$ curl https://[YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: application/json"
 --
 
 == Step 3: There's no Step 3!
@@ -321,11 +315,11 @@ What's next? To run your own application written in PHP or using the Slim Framew
 
 * Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
-* Configure your CI/CD system to automatically deploy your application to your cluster.
+* Configure your CI/CD system to automatically deploy your application to your preferred {product} zone.
 
 Finally, when you're done testing the fortune application, delete the `fortune-php` project with the following command:
 
 [source,shell]
 --
-$ oc delete project fortune-php
+$ oc delete project [YOUR_USERNAME]-fortune-php
 --
