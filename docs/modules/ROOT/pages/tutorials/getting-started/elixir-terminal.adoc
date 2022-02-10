@@ -177,8 +177,6 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-      - name: gitlab-pull-secret
       containers:
       - image: registry.gitlab.com/vshn/applications/fortune-elixir:latest
         imagePullPolicy: Always
