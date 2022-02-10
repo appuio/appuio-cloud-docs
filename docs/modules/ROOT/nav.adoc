@@ -16,20 +16,29 @@
 ** xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
 ** xref:how-to/list-namespaces.adoc[List Namespaces]
 ** xref:how-to/using-templates.adoc[Using OpenShift Templates]
+
 * Networking
 ** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
 * Storage
 ** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
+
 * Security
 ** xref:how-to/getting-a-certificate.adoc[Generate Certificates]
+
 * Logging
 ** xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
+
 * Image Registry
 ** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
+
 * Databases
 ** xref:how-to/install-postgres-db-helm.adoc[Install PostgreSQL via Helm]
+
+* Programming & DevOps
+** xref:how-to/connect-gitlab.adoc[Connect GitLab]
+** xref:how-to/use-tilt.adoc[Using Tilt]
+
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
-* xref:how-to/connect-gitlab.adoc[Connect GitLab]
 
 .Technical reference
 * xref:references/zones.adoc[Zones]
