@@ -34,9 +34,11 @@
 * Databases
 ** xref:how-to/install-postgres-db-helm.adoc[Install PostgreSQL via Helm]
 
-* Programming & DevOps
-** xref:how-to/connect-gitlab.adoc[Connect GitLab]
+* Programming
 ** xref:how-to/use-tilt.adoc[Using Tilt]
+
+* DevOps
+** xref:how-to/connect-gitlab.adoc[Connect GitLab]
 
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
 
