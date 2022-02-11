@@ -1,0 +1,183 @@
+= How to use Skaffold with {product}
+
+image:logos/skaffold.png[role="related thumb right",alt="Skaffold logo",width=120,height=120] https://skaffold.dev/[Skaffold] Skaffold handles the workflow for building, pushing and deploying your application, allowing you to focus on what matters most: writing code.
+
+This page will describe the required steps to use Skaffold successfully with {product}.
+
+IMPORTANT: This information is provided as a courtesy for {product} users. We don't provide support for Skaffold, and in case of issues, you are invited to contact the developers of Skaffold at their https://github.com/GoogleContainerTools/skaffold[GitHub project].
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`skaffold`:: The https://skaffold.dev/docs/[Skaffold documentation] explains how to install it in your operating system of choice.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+`docker`:: You can download it from https://www.docker.com.
+
+== Procedure
+
+This section explains the steps required to use Skaffold with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-fortune-go"
++
+[source,shell]
+--
+oc new-project [YOUR_USERNAME]-fortune-go
+--
+
+=== 2. Login to the {product} Container Registry
+
+Skaffold uses Docker to build the container image, and to publish to a container registry. In this example we're going to use the {product} integrated container registry.
+
+. Login to the {product} container registry (as explained in xref:how-to/use-integrated-registry.adoc[this page]):
++
+[source,shell]
+--
+oc whoami -t | docker login registry.${zone}.appuio.cloud -u $(oc whoami) --password-stdin
+--
+
+=== 3. Clone the sample "Fortune in Go" project
+
+The "Fortune in Go" project provides a very simple Go application to start with. You can clone it from GitLab:
+
+[source,shell]
+--
+git clone https://gitlab.com/vshn/applications/fortune-go.git
+--
+
+And then `cd` into it:
+
+[source,shell]
+--
+cd fortune-go
+--
+
+=== 4. Add a Deployment File
+
+Add a file named `deployment.yaml` at the root of the project with the following information:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-go
+spec:
+  template:
+    spec:
+      containers: # <1>
+      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go:latest
+        imagePullPolicy: Always
+        name: fortune-container
+        ports:
+        - containerPort: 8080
+    metadata:
+      labels:
+        app: fortune-go
+  selector:
+    matchLabels:
+      app: fortune-go
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortune-go
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: fortune-go
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: fortune-go-ingress
+spec:
+  rules:
+  - host: [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <1>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: fortune-go
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
+    secretName: fortune-go-cert
+--
+<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+
+=== 5. Initialize Skaffold
+
+Initialize the project to use Skaffold:
+
+[source,shell]
+--
+skaffold init
+--
+
+Reply to the questions interactively as follows:
+
+. Choose the builder to build image registry.${zone}.appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go
+** Docker (Dockerfile)
+. Which builders would you like to create kubernetes resources for?
+** Hit enter
+. Do you want to write this configuration to skaffold.yaml?
+** `y`
+
+And it's ready! The file `skaffold.yaml` will contain the following information:
+
+[source,yaml]
+--
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: fortune-go
+build:
+  artifacts:
+  - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - deployment.yaml
+--
+
+NOTE: Skaffold reads the URL of the container image from the deployment YAML created in the previous step, so make sure that you are properly logged in to both OpenShift and to the container registry.
+
+=== 6. Launch Skaffold
+
+Launch Skaffold on the terminal:
+
+[source,shell]
+--
+skaffold dev
+--
+
+Skaffold should build your container image, push it to the {product} registry, and deploy your application to the cluster in a few seconds.
+
+Now you can edit any file in your project, and as soon as you save it, Skaffold will automatically rebuild your image, push it, and redeploy it, increasing your productivity.
+
+== Tips & Tricks
+
+Here go some ideas to use Skaffold efficiently:
+
+* Skaffold rebuilds your Docker image every time you save a file in your project, which depending on your setup can take a long time to finish. In that case you might want to use a separate `Dockerfile` for development, and another for production builds, where you turn on all optimizations, and strip all debug symbols away.
+* Help your team adopt Skaffold by following the https://skaffold.dev/docs/workflows/getting-started-with-your-project/[getting started guide] and adding the appropriate information in your project's README file.
