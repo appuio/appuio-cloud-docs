@@ -3,8 +3,7 @@
 image:logos/tilt.svg[role="related thumb right",alt="Tilt logo",width=120,height=120] https://tilt.dev/[Tilt] is a developer toolkit to enable teams to build microservices architectures faster on Kubernetes clusters.
 
 > The best indicator of a healthy development workflow is a short feedback loop.
-
-https://docs.tilt.dev/example_go.html[(Source: Tilt documentation)]
+> -- https://docs.tilt.dev/example_go.html[Tilt documentation]
 
 This page will describe the required steps to use Tilt successfully with {product}.
 
@@ -32,25 +31,25 @@ Follow these steps to login to {product} on your terminal and to create a projec
 +
 [source,shell]
 --
-$ oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
-You must obtain an API token by visiting https://oauth-openshift.apps.[YOUR_CHOSEN_ZONE].appuio.cloud/oauth/token/request
+oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
++
+You can find the exact URL of your chosen zone in the xref:references/zones.adoc[Zones page] of this documentation.
 
-. Click on the link above to open it on your browser.
+. Click on the link above to open it in your browser.
 . Click "Display token" and copy the login command shown in "Log in with this token"
 . Paste the `oc login` command on the terminal:
 +
 [source,shell]
 --
-$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
+oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
 
 . Create a new project called "[YOUR_USERNAME]-fortune-go"
 +
 [source,shell]
 --
-$ oc new-project [YOUR_USERNAME]-fortune-go
-Now using project "[YOUR_USERNAME]-fortune-go" on server "https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443".
+oc new-project [YOUR_USERNAME]-fortune-go
 --
 
 === 2. Login to the {product} Container Registry
@@ -61,7 +60,7 @@ Tilt uses Docker to build the container image, and to publish to a container reg
 +
 [source,shell]
 --
-$ oc whoami -t | docker login registry.${zone}.appuio.cloud -u $(oc whoami) --password-stdin
+oc whoami -t | docker login registry.${zone}.appuio.cloud -u $(oc whoami) --password-stdin
 --
 
 === 3. Clone the sample "Fortune in Go" project
@@ -70,8 +69,14 @@ The "Fortune in Go" project provides a very simple Go application to start with.
 
 [source,shell]
 --
-$ git clone https://gitlab.com/vshn/applications/fortune-go.git
-$ cd fortune-go
+git clone https://gitlab.com/vshn/applications/fortune-go.git
+--
+
+And then `cd` into it:
+
+[source,shell]
+--
+cd fortune-go
 --
 
 === 4. Add a Deployment File
@@ -165,14 +170,7 @@ Launch Tilt on the terminal:
 
 [source,shell]
 --
-$ tilt up
-Tilt started on http://localhost:10350/
-v0.24.1, built 2022-02-08
-
-(space) to open the browser
-(s) to stream logs (--stream=true)
-(t) to open legacy terminal mode (--legacy=true)
-(ctrl-c) to exit
+tilt up
 --
 
 Hit the space bar to open the browser and see the status of Tilt. It should be already at work, building your container image, pushing it to the {project} registry, and deploying your application to the cluster.
