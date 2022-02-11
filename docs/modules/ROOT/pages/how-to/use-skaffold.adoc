@@ -141,7 +141,24 @@ Reply to the questions interactively as follows:
 . Do you want to write this configuration to skaffold.yaml?
 ** `y`
 
-And it's ready!
+And it's ready! The file `skaffold.yaml` will contain the following information:
+
+[source,yaml]
+--
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: fortune-go
+build:
+  artifacts:
+  - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - deployment.yaml
+--
 
 NOTE: Skaffold reads the URL of the container image from the deployment YAML created in the previous step, so make sure that you are properly logged in to both OpenShift and to the container registry.
 
