@@ -231,8 +231,6 @@ spec:
 [source,shell]
 --
 oc apply -f deployment.yaml
-deployment.apps/fortune-java created
-service/fortune-java created
 --
 +
 And wait until your pod appears with the status "Running":
@@ -280,7 +278,6 @@ spec:
 [source,shell]
 --
 oc apply -f ingress.yaml
-ingress.networking.k8s.io/fortune-java-ingress created
 --
 +
 And wait for your route to be ready:

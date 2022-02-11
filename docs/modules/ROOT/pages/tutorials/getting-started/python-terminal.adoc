@@ -217,8 +217,6 @@ spec:
 [source,shell]
 --
 oc apply -f deployment.yaml
-deployment.apps/fortune-python created
-service/fortune-python created
 --
 +
 And wait until your pod appears with the status "Running":
@@ -266,7 +264,6 @@ spec:
 [source,shell]
 --
 oc apply -f ingress.yaml
-ingress.networking.k8s.io/fortune-python-ingress created
 --
 +
 And wait for your route to be ready:

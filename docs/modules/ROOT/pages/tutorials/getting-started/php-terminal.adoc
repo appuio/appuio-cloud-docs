@@ -252,8 +252,6 @@ spec:
 [source,shell]
 --
 oc apply -f deployment.yaml
-deployment.apps/fortune-php created
-service/fortune-php created
 --
 +
 And wait until your pod appears with the status "Running":
@@ -301,7 +299,6 @@ spec:
 [source,shell]
 --
 oc apply -f ingress.yaml
-ingress.networking.k8s.io/fortune-php-ingress created
 --
 +
 And wait for your route to be ready:
