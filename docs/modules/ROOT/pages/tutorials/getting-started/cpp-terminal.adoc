@@ -169,23 +169,7 @@ podman build -t fortune-cpp .
 
 == Step 1: Create a Project
 
-Follow these steps to login to {product} on your terminal, create a project, and to deploy the application:
-
-. Login to the {product} console:
-+
-[source,shell]
---
-oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
---
-
-. Click on the link above to open it on your browser.
-. Click "Display token" and copy the login command shown in "Log in with this token"
-. Paste the `oc login` command on the terminal:
-+
-[source,shell]
---
-oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
---
+include::partial$login-in-terminal.adoc[]
 
 . Create a new project called "[YOUR_USERNAME]-fortune-cpp"
 +
