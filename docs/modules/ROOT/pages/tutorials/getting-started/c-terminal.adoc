@@ -76,20 +76,32 @@ int handler(void *cls, struct MHD_Connection *connection,
 
 === Run the Container
 
-This step is optional; you can easily test the application locally with Docker or Podman:
+This step is optional; you can easily test the application locally with Docker:
 
 [source,shell]
 --
-$ docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-c:latest
-$ podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-c:latest
+docker run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-c:latest
 --
 
-Now you can test the application with `curl`:
+Or with Podman:
 
 [source,shell]
 --
-$ curl http://localhost:8080 --header "Accept: application/json"
-$ curl http://localhost:8080 --header "Accept: text/plain"
+podman run --rm --publish 8080:8080 registry.gitlab.com/vshn/applications/fortune-c:latest
+--
+
+Now you can test the application with `curl`, for example to get some JSON:
+
+[source,shell]
+--
+curl http://localhost:8080 --header "Accept: application/json"
+--
+
+Or to see a plain text version:
+
+[source,shell]
+--
+curl http://localhost:8080 --header "Accept: text/plain"
 --
 
 You can also open a browser and navigate to http://localhost:8080 to get your fortune cookie of the day.
@@ -128,14 +140,32 @@ CMD ["/usr/local/bin/c-fortune"]
 --
 <1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
 
-You can use the `Dockerfile` above to build your own copy of the container, which you can then push to the registry of your choice:
+You can use the `Dockerfile` above to build your own copy of the container, which you can then push to the registry of your choice. Clone the repo:
 
 [source,shell]
 --
-$ git clone https://gitlab.com/vshn/applications/fortune-c.git
-$ cd fortune-c
-$ docker build -t fortune-c .
-$ podman build -t fortune-c .
+git clone https://gitlab.com/vshn/applications/fortune-c.git
+--
+
+`cd` into it:
+
+[source,shell]
+--
+cd fortune-c
+--
+
+And build your image with Docker:
+
+[source,shell]
+--
+docker build -t fortune-c .
+--
+
+Or with Podman instead:
+
+[source,shell]
+--
+podman build -t fortune-c .
 --
 
 == Step 1: Create a Project
@@ -146,8 +176,7 @@ Follow these steps to login to {product} on your terminal, create a project, and
 +
 [source,shell]
 --
-$ oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
-You must obtain an API token by visiting https://oauth-openshift.apps.[YOUR_CHOSEN_ZONE].appuio.cloud/oauth/token/request
+oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
 
 . Click on the link above to open it on your browser.
@@ -156,23 +185,14 @@ You must obtain an API token by visiting https://oauth-openshift.apps.[YOUR_CHOS
 +
 [source,shell]
 --
-$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
+oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
 
 . Create a new project called "[YOUR_USERNAME]-fortune-c"
 +
 [source,shell]
 --
-$ oc new-project [YOUR_USERNAME]-fortune-c
-Now using project "[YOUR_USERNAME]-fortune-c" on server "https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443".
-
-You can add applications to this project with the 'new-app' command. For example, try:
-
-    oc new-app rails-postgresql-example
-
-to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
-
-    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+oc new-project [YOUR_USERNAME]-fortune-c
 --
 
 . To deploy the application we will use a standard Kubernetes `Deployment` object. Save the following YAML in a file called `deployment.yaml`:
@@ -214,16 +234,20 @@ spec:
   type: ClusterIP
 ----
 
-. Then apply the deployment to your {product} project and wait until your pod appears with the status "Running":
+. Then apply the deployment to your {product} project:
 +
 [source,shell]
 --
-$ oc apply -f deployment.yaml
+oc apply -f deployment.yaml
 deployment.apps/fortune-c created
 service/fortune-c created
-$ oc get pods --watch
-NAME                         READY   STATUS    RESTARTS   AGE
-fortune-c-6fbd5484cf-k47gt   1/1     Running   0          11s
+--
++
+And wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
 --
 
 == Step 2: Publish your Application
@@ -263,19 +287,29 @@ spec:
 +
 [source,shell]
 --
-$ oc apply -f ingress.yaml
+oc apply -f ingress.yaml
 ingress.networking.k8s.io/fortune-c-ingress created
-$ oc get routes --watch
-NAME                      HOST/PORT                                         PATH   SERVICES    PORT    TERMINATION     WILDCARD
-fortune-c-ingress-4pk2j   [YOUR_USERNAME]-fortune-c.apps.[YOUR_CHOSEN_ZONE].appuio.cloud   /      fortune-c   <all>   edge/Redirect   None
 --
-
-. After a few seconds, you should be able to get your daily fortune message using `curl`!
++
+And wait for your route to be ready:
 +
 [source,shell]
 --
-$ curl https://[YOUR_USERNAME]-fortune-c.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: text/plain"
-$ curl https://[YOUR_USERNAME]-fortune-c.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: application/json"
+oc get routes --watch
+--
+
+. After a few seconds, you should be able to get your daily fortune message using `curl` in plain text!
++
+[source,shell]
+--
+curl https://[YOUR_USERNAME]-fortune-c.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: text/plain"
+--
++
+Or in JSON instead:
++
+[source,shell]
+--
+curl https://[YOUR_USERNAME]-fortune-c.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --header "Accept: application/json"
 --
 
 == Step 3: There's no Step 3!
@@ -292,5 +326,5 @@ Finally, when you're done testing the fortune application, delete the `fortune-c
 
 [source,shell]
 --
-$ oc delete project [YOUR_USERNAME]-fortune-c
+oc delete project [YOUR_USERNAME]-fortune-c
 --
