@@ -155,7 +155,7 @@ Launch Tilt on the terminal:
 tilt up
 --
 
-Hit the space bar to open the browser and see the status of Tilt. It should be already at work, building your container image, pushing it to the {project} registry, and deploying your application to the cluster.
+Hit the space bar to open the browser and see the status of Tilt. It should be already at work, building your container image, pushing it to the {product} registry, and deploying your application to the cluster.
 
 Now you can edit any file in your project, and as soon as you save it, Tilt will automatically rebuild your image, push it, and redeploy it, increasing your productivity.
 
