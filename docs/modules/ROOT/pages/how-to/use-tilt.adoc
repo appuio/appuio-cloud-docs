@@ -75,7 +75,7 @@ spec:
   template:
     spec:
       containers: # <1>
-      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/fortune-go/fortune-go:latest
+      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go:latest
         imagePullPolicy: Always
         name: fortune-container
         ports:
