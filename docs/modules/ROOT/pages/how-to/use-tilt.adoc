@@ -1,0 +1,181 @@
+= How to use Tilt with {product}
+
+image:logos/tilt.svg[role="related thumb right",alt="Tilt logo",width=120,height=120] https://tilt.dev/[Tilt] is a developer toolkit to enable teams to build microservices architectures faster on Kubernetes clusters.
+
+> The best indicator of a healthy development workflow is a short feedback loop.
+> -- https://docs.tilt.dev/example_go.html[Tilt documentation]
+
+This page will describe the required steps to use Tilt successfully with {product}.
+
+IMPORTANT: This information is provided as a courtesy for {product} users. We don't provide support for Tilt, and in case of issues, you are invited to contact the developers of Tilt at their https://github.com/tilt-dev/tilt[GitHub project].
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`tilt`:: The https://docs.tilt.dev/[Tilt documentation] explains how to install it in your operating system of choice.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+`docker`:: You can download it from https://www.docker.com.
+
+== Procedure
+
+This section explains the steps required to use Tilt with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-fortune-go"
++
+[source,shell]
+--
+oc new-project [YOUR_USERNAME]-fortune-go
+--
+
+=== 2. Login to the {product} Container Registry
+
+Tilt uses Docker to build the container image, and to publish to a container registry. In this example we're going to use the {product} integrated container registry.
+
+. Login to the {product} container registry (as explained in xref:how-to/use-integrated-registry.adoc[this page]):
++
+[source,shell]
+--
+oc whoami -t | docker login registry.${zone}.appuio.cloud -u $(oc whoami) --password-stdin
+--
+
+=== 3. Clone the sample "Fortune in Go" project
+
+The "Fortune in Go" project provides a very simple Go application to start with. You can clone it from GitLab:
+
+[source,shell]
+--
+git clone https://gitlab.com/vshn/applications/fortune-go.git
+--
+
+And then `cd` into it:
+
+[source,shell]
+--
+cd fortune-go
+--
+
+=== 4. Add a Deployment File
+
+Add a file named `deployment.yaml` at the root of the project with the following information:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-go
+spec:
+  template:
+    spec:
+      containers: # <1>
+      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go:latest
+        imagePullPolicy: Always
+        name: fortune-container
+        ports:
+        - containerPort: 8080
+    metadata:
+      labels:
+        app: fortune-go
+  selector:
+    matchLabels:
+      app: fortune-go
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortune-go
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: fortune-go
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: fortune-go-ingress
+spec:
+  rules:
+  - host: [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <1>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: fortune-go
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
+    secretName: fortune-go-cert
+--
+<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+
+=== 5. Add a `Tiltfile`
+
+The `Tiltfile` provides the information required for `tilt` to rebuild and redeploy your application as soon as you edit any file in your project.
+
+For APPUiO Cloud, you can use a `Tiltfile` similar to this one:
+
+[source,python]
+--
+# <1>
+allow_k8s_contexts('[YOUR_USERNAME]-fortune-go/api-[YOUR_CHOSEN_ZONE]-appuio-cloud:6443/[YOUR_USERNAME]')
+
+# <1>
+docker_build('registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go', '.')
+
+k8s_yaml(['deployment.yaml'])
+--
+<1> Remember to change the `[YOUR_CHOSEN_ZONE]` and `[YOUR_USERNAME]` placeholders to your preferred {product} zone and your username, respectively.
+
+NOTE: It's very important that the container image referenced in the `Deployment` YAML object *and* the `docker_build()` command of the `Tiltfile` are the same.
+
+=== 6. Launch Tilt
+
+Launch Tilt on the terminal:
+
+[source,shell]
+--
+tilt up
+--
+
+Hit the space bar to open the browser and see the status of Tilt. It should be already at work, building your container image, pushing it to the {project} registry, and deploying your application to the cluster.
+
+Now you can edit any file in your project, and as soon as you save it, Tilt will automatically rebuild your image, push it, and redeploy it, increasing your productivity.
+
+== Tips & Tricks
+
+Here go some ideas to use Tilt efficiently:
+
+* Tilt rebuilds your Docker image every time you save a file in your project, which depending on your setup can take a long time to finish. In that case you might want to use a separate `Dockerfile` for development, and another for production builds, where you turn on all optimizations, and strip all debug symbols away. You can also only `tilt up` some of your services instead of all at once; check the https://docs.tilt.dev/tiltfile_config.html[Tiltfile Config] page in the documentation for details.
+* Tilt has plenty of configuration options. Check the https://docs.tilt.dev/snippets.html[Tiltfile Snippets] page in the Tilt documentation to learn more.
+* Help your team adopt Tilt by following the https://docs.tilt.dev/onboarding_checklist.html[onboarding checklist] and adding the appropriate information in your project's README file.
+
+== Troubleshooting
+
+Tilt uses https://docs.docker.com/develop/develop-images/build_enhancements/[BuildKit] by default whenever available in the local Docker installation.
+
+However, BuildKit can cause problems when working with Alpine-based images (like in the case of the `fortune-go` project), as explained in https://github.com/gliderlabs/docker-alpine/issues/191[this issue] in the GliderLabs Alpine repository.
+
+In this case there are two possible solutions:
+
+. Use the `DOCKER_BUILDKIT=0 tilt up` command. This will make Tilt use the standard Docker image builder mechanism instead of BuildKit.
+. Patch and restart your local Docker daemon using https://github.com/gliderlabs/docker-alpine/issues/386#issuecomment-437698540[this fix]. BuildKit should work without issues after that.
+
+Finally, if you encounter problems with Tilt, run the `tilt doctor` command, and check the https://docs.tilt.dev/faq.html[project FAQ] before opening an issue in the https://github.com/tilt-dev/tilt[Tilt project].
