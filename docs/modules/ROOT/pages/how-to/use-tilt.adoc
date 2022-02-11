@@ -22,22 +22,29 @@ This section explains the steps required to use Tilt with {product}.
 
 Follow these steps to login to {product} on your terminal and to create a project:
 
-. Login to the {product} console on your web browser.
-. Click on your user name on the top right and select "Copy login command"
+. Login to the {product} console:
++
+[source,shell]
+--
+$ oc login --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
+You must obtain an API token by visiting https://oauth-openshift.apps.[YOUR_CHOSEN_ZONE].appuio.cloud/oauth/token/request
+--
+
+. Click on the link above to open it on your browser.
 . Click "Display token" and copy the login command shown in "Log in with this token"
 . Paste the `oc login` command on the terminal:
 +
 [source,shell]
 --
-$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.${zone}.appuio.cloud:6443
+$ oc login --token=sha256~_xxxxxx_xxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxxx-X --server=https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443
 --
 
-. Create a new project called "fortune-go"
+. Create a new project called "[YOUR_USERNAME]-fortune-go"
 +
 [source,shell]
 --
-$ oc new-project fortune-go
-Now using project "fortune-go" on server "https://api.${zone}.appuio.cloud:6443".
+$ oc new-project [YOUR_USERNAME]-fortune-go
+Now using project "[YOUR_USERNAME]-fortune-go" on server "https://api.[YOUR_CHOSEN_ZONE].appuio.cloud:6443".
 --
 
 === 2. Login to the {product} Container Registry
@@ -75,7 +82,7 @@ spec:
   template:
     spec:
       containers: # <1>
-      - image: registry.[ZONE].appuio.cloud/fortune-go/fortune-go:latest
+      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/fortune-go/fortune-go:latest
         imagePullPolicy: Always
         name: fortune-container
         ports:
@@ -106,10 +113,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-  name: fortune-go
+  name: fortune-go-ingress
 spec:
-  rules: # <1>
-  - host: fortune.apps.[ZONE].appuio.cloud
+  rules:
+  - host: [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <1>
     http:
       paths:
       - pathType: Prefix
@@ -120,11 +127,11 @@ spec:
             port:
               number: 8080
   tls:
-  - hosts: # <1>
-    - fortune.apps.[ZONE].appuio.cloud
+  - hosts:
+    - [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
     secretName: fortune-go-cert
 --
-<1> Remember to change the `[ZONE]` placeholder by your preferred {product} zone.
+<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
 
 === 5. Add a `Tiltfile`
 
