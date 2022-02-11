@@ -41,20 +41,22 @@ The code below shows the main router of the application in the TypeScript progra
 --
 app.get('/', async (req: Request, res: Response) => {
   const fortune = await shellExec('fortune')
-  const hostname = os.hostname()
-  const random = Math.floor((Math.random() * 1000));
-  const version = "1.0-typescript";
+  const random = Math.floor((Math.random() * 1000))
   const data = new Fortune(fortune, hostname, version, random)
   const accept = req.headers['accept']
   if (accept === 'application/json') {
     res.send(data)
   }
   else if (accept === 'text/plain') {
-    res.send(`Fortune ${version} cookie of the day #${random}:\n\n${fortune}`);
+    res.send(`Fortune ${version} cookie of the day #${random}:\n\n${fortune}`)
   }
   else {
     res.render('index', data)
   }
+})
+
+app.listen(port, () => {
+  console.log(`Fortune app listening port ${port}`)
 })
 --
 
@@ -86,7 +88,7 @@ The application includes a https://gitlab.com/vshn/applications/fortune-typescri
 --
 # Step 2: Runtime image
 FROM node:16.9.1-alpine3.14
-RUN apk update && apk add fortune
+RUN apk update && apk add --no-cache fortune
 WORKDIR /api
 COPY --from=builder /api/node_modules /api/node_modules
 COPY --from=builder /api/dist/ /api/dist
