@@ -82,7 +82,7 @@ You can now edit the files in your project, for example the `main.go` file, and 
 
 == Limitations
 
-At the time of this writing (version 2.5.0), odo cannot be used in a project with an https://github.com/redhat-developer/odo/issues/5110[existing `Dockerfile`] or an https://github.com/redhat-developer/odo/issues/5408[existing codebase]. These features may or may not be available in future versions.
+At the time of this writing (version 2.5.0), odo can't be used in a project with an https://github.com/redhat-developer/odo/issues/5110[existing `Dockerfile`] or an https://github.com/redhat-developer/odo/issues/5408[existing codebase]. These features may or may not be available in future versions.
 
 The `devfile.yaml` file format documentation is located in a separate website: https://devfile.io/[Devfile].
 
