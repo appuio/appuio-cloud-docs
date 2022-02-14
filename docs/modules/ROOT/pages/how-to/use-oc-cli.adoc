@@ -7,7 +7,7 @@ There you can find various binaries to work with OpenShift from the command line
 
 == Login
 
-To login to the OpenShift cluster, you need to get the login command from the OpenShift web console by clicking on your name (top right) and choose `Copy login command`.
+include::partial$login-in-terminal.adoc[]
 
 == Get help
 
