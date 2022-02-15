@@ -1,0 +1,89 @@
+= How to use odo with {product}
+
+image:logos/odo.png[role="related thumb right",alt="odo logo",width=120,height=120] https://odo.dev/[odo] is a developer toolkit to enable fast iterative application development deployed immediately to your kubernetes cluster.
+
+This page will describe the required steps to use odo successfully with {product}.
+
+IMPORTANT: This information is provided as a courtesy for {product} users. We don't provide support for odo, and in case of issues, you are invited to contact the developers of odo at their https://github.com/redhat-developer/odo[GitHub project].
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`odo`:: The https://odo.dev/docs/getting-started/installation[odo documentation] explains how to install it in your operating system of choice.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+== Procedure
+
+This section explains the steps required to use odo with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-odo-go" using the `odo` tool:
++
+[source,shell]
+--
+odo project create [YOUR_USERNAME]-odo-go
+--
+
+=== 2. Create a local folder
+
+. Create a local folder for your project:
++
+[source,shell]
+--
+mkdir [YOUR_USERNAME]-odo-go
+--
+
+. Jump into it:
++
+[source,shell]
+--
+cd [YOUR_USERNAME]-odo-go
+--
+
+=== 3. Create an odo project
+
+. Run the `odo create` command to create a new project interactively:
++
+[source,shell]
+--
+odo create
+--
+
+. Select the following options:
+** Which devfile component type do you wish to create? `go`
+** What do you wish to name the new devfile component? `(go)`
+** What project do you want the devfile component to be created in? `[YOUR_USERNAME]-odo-go`
+** Do you want to download a starter project? `y`
+
+You should see in your directory a file called `devfile.yaml`, following the https://devfile.io/[Devfile] specification.
+
+=== 4. Deploy
+
+. Deploy the code to {product} and see it in action:
++
+[source,shell]
+--
+odo push
+--
+
+. Find the URL to access the application:
++
+[source,shell]
+--
+odo url list
+--
+
+You can now edit the files in your project, for example the `main.go` file, and the `odo push` command will redeploy your changes to {product} automatically.
+
+== Limitations
+
+At the time of this writing (version 2.5.0), odo can't be used in a project with an https://github.com/redhat-developer/odo/issues/5110[existing `Dockerfile`] or an https://github.com/redhat-developer/odo/issues/5408[existing codebase]. These features may or may not be available in future versions.
+
+The `devfile.yaml` file format documentation is located in a separate website: https://devfile.io/[Devfile].
+
+If you encounter problems with odo, check the https://odo.dev/docs/intro[documentation] and the https://odo.dev/blog[project blog] before opening an issue in the https://github.com/redhat-developer/odo[odo GitHub project].
