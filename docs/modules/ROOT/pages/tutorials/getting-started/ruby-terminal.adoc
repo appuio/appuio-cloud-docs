@@ -40,7 +40,7 @@ The code below shows the main router of the application in the Ruby programming 
 [source,ruby,indent=0]
 --
 get '/' do
-  @version = "1.0-ruby"
+  @version = "1.1-ruby"
   @hostname = `hostname`
   @message = `fortune`
   @number = rand(1000)

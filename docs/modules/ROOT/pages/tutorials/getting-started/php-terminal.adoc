@@ -39,12 +39,12 @@ The code below shows the main router of the application in the PHP programming l
 
 [source,php,indent=0]
 --
-$app->get('/', function (Request $request, Response $response, $args) {
+$app->get('/', function (Request $request, Response $response, $args) use ($version, $hostname) {
     $data = [
         'message' => `fortune`,
         'number' => rand(1, 1000),
-        'version' => '1.0-php',
-        'hostname' => `hostname`
+        'version' => $version,
+        'hostname' => $hostname
     ];
     if ($request->hasHeader('Accept')) {
         $acceptHeader = $request->getHeaderLine('Accept');

@@ -44,7 +44,7 @@ func setupRouter() *gin.Engine {
 	gin.DisableConsoleColor()
 	r.LoadHTMLFiles("templates/fortune.html")
 	hostname := hostname()
-	version := "1.0-go"
+	version := "1.1-go"
 
 	r.GET("/", func(c *gin.Context) {
 		contentType := c.Request.Header.Get("Accept")

@@ -41,7 +41,7 @@ The code below shows the main router of the application in the F# programming la
 --
 let fortuneHandler next (ctx: HttpContext) =
     task {
-        let obj = { Message = fortune(); Hostname = hostname; Version = "1.0-f#"; Number = random() }
+        let obj = { Message = fortune(); Hostname = hostname; Version = "1.1-f#"; Number = random() }
         let header =
             match ctx.GetRequestHeader "Accept" with
                 | Error msg -> "text/html"

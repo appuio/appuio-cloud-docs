@@ -46,7 +46,7 @@ defmodule FortuneElixirWeb.PageController do
     number = :rand.uniform(1000)
     message = elem(System.cmd("fortune", []), 0)
     hostname = elem(System.cmd("hostname", []), 0)
-    version = "1.0-elixir"
+    version = "1.1-elixir"
     fortune = %{"number" => number, "message" => message, "hostname" => hostname, "version" => version }
     accept = case get_req_header(conn, "accept") do
       [version] -> version

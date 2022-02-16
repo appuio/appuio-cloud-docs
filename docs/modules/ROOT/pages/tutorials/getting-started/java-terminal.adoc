@@ -61,7 +61,7 @@ public class FortuneResource {
         data.message = fortuneService.getFortune();
         data.number = randomNumberService.generateRandomNumber();
         data.hostname = hostnameService.getHostname();
-        data.version = "1.0-java";
+        data.version = "1.1-java";
         return data;
     }
 

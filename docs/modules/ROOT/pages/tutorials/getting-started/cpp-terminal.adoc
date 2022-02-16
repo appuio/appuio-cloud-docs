@@ -42,7 +42,7 @@ The code below shows the main router of the application in the C++ programming l
 int main()
 {
     std::string hostname = execute_command("hostname");
-    std::string version = std::string("1.0-c++");
+    std::string version = std::string(VERSION);
     auto router = [=](const HttpRequestPtr &req,
                       std::function<void(const HttpResponsePtr &)> &&callback)
     {
@@ -78,7 +78,7 @@ int main()
         auto resp = HttpResponse::newHttpViewResponse("fortune", data);
         callback(resp);
     };
-    app().registerHandler("/", router).addListener("0.0.0.0", 8080).run();
+    app().registerHandler("/", router).addListener("0.0.0.0", PORT).run();
 }
 --
 
