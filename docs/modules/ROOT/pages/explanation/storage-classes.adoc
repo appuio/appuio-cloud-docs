@@ -47,6 +47,12 @@ Use this storage class if your application requires `RWX` storage.
 
 |===
 
+[NOTE]
+.cloudscale.ch `bulk`
+====
+Please be aware that you can only provision `bulk` volumes in steps of 100GB, since cloudscale.ch doesn't provide more fine-grained volume sizes for `bulk` storage.
+====
+
 === Performance
 
 We show representative performance numbers (IOPS and bandwidth) for each storage class below.
