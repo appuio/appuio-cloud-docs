@@ -324,7 +324,7 @@ curl https://[YOUR_USERNAME]-fortune-php.apps.[YOUR_CHOSEN_ZONE].appuio.cloud --
 
 == Step 3: There's no Step 3!
 
-The "Fortune in  PHP" application is now running on {product}. Congratulations!
+The "Fortune in  PHP" application is now running on {product}. Congratulations! Hit the `R` key in your keyboard to see a new fortune message, or just wait 10 seconds to get a new one automatically.
 
 What's next? To run your own application written in PHP or using the Slim Framework on {product}, follow these steps:
 

@@ -43,7 +43,7 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 
 == Step 2: There's no Step 2!
 
-The "Fortune in  Java" application is now running on {product}. Congratulations!
+The "Fortune in  Java" application is now running on {product}. Congratulations! Hit the `R` key in your keyboard to see a new fortune message, or just wait 10 seconds to get a new one automatically.
 
 What's next? To run your own application written in Java or using the Quarkus Framework on {product}, follow these steps:
 
