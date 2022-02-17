@@ -242,9 +242,9 @@ spec:
 [WARNING]
 .URL length warning
 ====
-Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-ruby` used in the `Ingress` YAML above is *not longer than 63 characters*. This is due for two reasons:
+Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-ruby` used in the `Ingress` YAML above *isn't longer than 63 characters*. This is due for two reasons:
 
-. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (e.g. the prefix in this example) must be <= 63 characters (octets to be exact), and the whole domain name must be <= 255 octets.
+. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (for example the prefix in this case) must be <= 63 characters (octets to be exact), and the whole domain name must be <= 255 octets.
 . The <=63 / <= 255 octets limit also applies to most https://kubernetes.io/docs/concepts/overview/working-with-objects/names/[Kubernetes resource names].
 ====
 

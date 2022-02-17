@@ -121,9 +121,9 @@ spec:
 [WARNING]
 .URL length warning
 ====
-Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-go` used in the `Ingress` YAML above is *not longer than 63 characters*. This is due for two reasons:
+Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-go` used in the `Ingress` YAML above *isn't longer than 63 characters*. This is due for two reasons:
 
-. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (e.g. the prefix in this example) must be <= 63 characters (octets to be exact), and the whole domain name must be <= 255 octets.
+. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (for example the prefix in this case) must be <= 63 characters (octets to be exact), and the whole domain name must be <= 255 octets.
 . The <=63 / <= 255 octets limit also applies to most https://kubernetes.io/docs/concepts/overview/working-with-objects/names/[Kubernetes resource names].
 ====
 
@@ -167,7 +167,7 @@ image::how-to/github-actions-secrets.png[]
 
 GitHub Actions are defined in YAML, in files stored in the `.github/workflows` folder. For {product}, you can use a workflow similar to this one, with two jobs: one to build and push the container to the {product} registry, and another to deploy the latest version of the application.
 
-IMPORTANT: It could be possible that GitHub Actions are not automatically enabled in your repository, because it has been imported from another location. In that case, you can enable them by going to the menu:Settings[Actions > General] screen and selecting  the "Allow all actions" option.
+IMPORTANT: It could be possible that GitHub Actions aren't automatically enabled in your repository, because it has been imported from another location. In that case, you can enable them by going to the menu:Settings[Actions > General] screen and selecting  the "Allow all actions" option.
 
 . Create the `.github/workflows` folder in your project.
 +
