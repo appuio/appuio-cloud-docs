@@ -42,7 +42,7 @@ The code below shows the main router of the application in the Scala programming
 class FortuneServlet extends ScalatraServlet with JacksonJsonSupport {
   protected implicit lazy val jsonFormats: Formats = DefaultFormats
   protected val hostname = "hostname".!!
-  protected val version = "1.1-scala"
+  protected val version = "1.2-scala"
 
   def fortune_message() : String = {
     return "fortune".!!
@@ -249,6 +249,15 @@ spec:
     secretName: fortune-scala-cert
 --
 <1> Replace the placeholders `YOUR_USERNAME` and `YOUR_CHOSEN_ZONE` with valid values.
+
+[WARNING]
+.URL length warning
+====
+Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-scala` used in the `Ingress` YAML above is *not longer than 63 characters*. This is due for two reasons:
+
+. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (e.g. the prefix in this example) must be <= 63 characters (octets to be exact), and the whole domain name must be <= 255 octets.
+. The <=63 / <= 255 octets limit also applies to most https://kubernetes.io/docs/concepts/overview/working-with-objects/names/[Kubernetes resource names].
+====
 
 . Apply the ingress object to your {product} project and wait until you route shows as available.
 +
