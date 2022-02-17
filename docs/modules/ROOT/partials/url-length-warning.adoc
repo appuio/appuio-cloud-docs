@@ -1,0 +1,8 @@
+[WARNING]
+.URL length warning
+====
+Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-[LANGUAGE]` used in the `Ingress` YAML above *isn't longer than 63 characters*. This is due for two reasons:
+
+. As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (for example the prefix in this case) must be equal or less than 63 characters long (octets to be exact), and the whole domain name must be equal or shorter than 255 octets.
+. These limits also apply to most https://kubernetes.io/docs/concepts/overview/working-with-objects/names/[Kubernetes resource names].
+====
