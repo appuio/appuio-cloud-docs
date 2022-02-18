@@ -70,6 +70,7 @@
 
 * DevOps
 ** xref:how-to/connect-gitlab.adoc[Connect GitLab]
+** xref:how-to/use-github-actions.adoc[Using GitHub Actions]
 ** xref:how-to/use-tilt.adoc[Using Tilt]
 ** xref:how-to/use-skaffold.adoc[Using Skaffold]
 ** xref:how-to/use-odo.adoc[Using odo]

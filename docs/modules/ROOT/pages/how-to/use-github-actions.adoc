@@ -1,0 +1,228 @@
+= How to use GitHub Actions with {product}
+
+image:logos/github-actions.png[role="related thumb right",alt="GitHub Actions logo",width=120,height=120] https://docs.github.com/en/actions[GitHub Actions] enables developers to automate, customize, and execute your software development workflows right in your repository.
+
+This page will describe the required steps to use GitHub Actions successfully with {product}.
+
+IMPORTANT: This information is provided as a courtesy for {product} users. We don't provide support for GitHub Actions, and in case of issues, you are invited to check the https://docs.github.com/en/actions[official documentation].
+
+== Requirements
+
+To follow this guide, please make sure that you have the following elements:
+
+GitHub account:: You can create one for free at https://github.com.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+== Procedure
+
+This section explains the steps required to use GitHub Actions with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-fortune-go"
++
+[source,shell]
+--
+oc new-project [YOUR_USERNAME]-fortune-go
+--
+
+=== 2. Clone the sample "Fortune in Go" project
+
+The https://gitlab.com/vshn/applications/fortune-go["Fortune in Go"] project provides a very simple Go application to start with.
+
+. Login to your https://github.com[GitHub] account.
+. Click on the `+` sign on the top right and select "Import repository" as shown in the screenshot below:
++
+image::how-to/github-import.png[]
+
+. Enter the URL of the project:
+** `https://gitlab.com/vshn/applications/fortune-go`
+
+. Enter `fortune-go` as the name of the project in your profile.
+
+. Clone the project:
++
+[source,shell]
+--
+git clone git@github.com:[YOUR_GITHUB_USERNAME]/fortune-go.git
+--
+
+. `cd` into it:
++
+[source,shell]
+--
+cd fortune-go
+--
+
+. Since the code has been imported from another repository, GitHub Actions aren't automatically available. Enable them by going to the menu:Settings[Actions > General] screen and selecting the "Allow all actions" option.
+
+=== 3. Add a Deployment File
+
+Add a file named `deployment.yaml` at the root of the project with the following information:
+
+[source,yaml]
+--
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: fortune-go
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers: # <1>
+      - image: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-fortune-go/fortune-go:latest
+        imagePullPolicy: Always
+        name: fortune-container
+        ports:
+        - containerPort: 8080
+    metadata:
+      labels:
+        app: fortune-go
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortune-go
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: fortune-go
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: fortune-go-ingress
+spec:
+  rules:
+  - host: [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <1>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: fortune-go
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
+    secretName: fortune-go-cert
+--
+<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+
+include::partial$url-length-warning.adoc[]
+
+=== 4. Configure Secrets
+
+To be able to communicate with {product}, GitHub Actions use secrets. And to connect GitHub Actions to {product} we're going to use a dedicated service account.
+
+. Create a service account
++
+[source,shell]
+--
+oc create sa github-actions
+--
+
+. Add the proper role to the service account:
++
+[source,shell]
+--
+oc adm policy add-role-to-user edit -z github-actions
+--
+
+. On your laptop, copy the token of the service account:
++
+[source,shell]
+--
+oc sa get-token github-actions
+--
+
+. On GitHub, select the menu:Settings[Secrets > Actions] screen and click on the btn:[New repository secret] button.
+. Create the following secrets:
++
+.. `REGISTRY_USERNAME`: Should be `github-actions`.
+.. `REGISTRY_PASSWORD`: The token you copied in the previous step, corresponding to the `github-actions` service account.
+.. `REGISTRY_URL`: The URL to the "Integrated Cluster Registry Domain" in your chosen {product} zone, as defined in the https://portal.appuio.cloud/zones[Zones page in the {product} Portal].
+.. `OPENSHIFT_URL`: The URL to the "Kubernetes API endpoint" in your chosen {product} zone, as defined in the https://portal.appuio.cloud/zones[Zones page in the {product} Portal].
+.. `OPENSHIFT_PROJECT`: The name of the project you created at the beginning of this guide, which should be `[YOUR_USERNAME]-fortune-go`.
+
+image::how-to/github-actions-secrets.png[]
+
+=== 5. Add a GitHub Actions Workflow
+
+GitHub Actions are defined in YAML, in files stored in the `.github/workflows` folder. For {product}, you can use a workflow similar to this one, with two jobs: one to build and push the container to the {product} registry, and another to deploy the latest version of the application.
+
+IMPORTANT: Since the code has been imported (step 2 above), GitHub Actions aren't automatically enabled in your repository. Remember to enable them by going to the menu:Settings[Actions > General] screen and selecting the "Allow all actions" option.
+
+. Create the `.github/workflows` folder in your project.
++
+[source,shell]
+--
+mkdir -p .github/workflows
+--
+
+. Create a file named `.github/workflows/master.yml` with the following contents:
++
+[source,yaml]
+--
+name: ci
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login to APPUiO Cloud Registry
+      run: echo ${{ secrets.REGISTRY_PASSWORD }} | docker login --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ secrets.REGISTRY_URL }}
+    - name: Build the latest Docker image
+      run: docker build . --file Dockerfile --tag ${{ secrets.REGISTRY_URL }}/${{ secrets.OPENSHIFT_PROJECT }}/fortune-go:latest
+    - name: Push the latest Docker image
+      run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.OPENSHIFT_PROJECT }}/fortune-go:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login to APPUiO Cloud Project
+      run: oc login --token=${{ secrets.REGISTRY_PASSWORD }} --server=${{ secrets.OPENSHIFT_URL }}
+    - name: Select project
+      run: oc project ${{ secrets.OPENSHIFT_PROJECT }}
+    - name: Deploy application
+      run: oc apply --overwrite --filename deployment.yaml
+    - name: Rollout latest version
+      run: oc rollout latest dc/fortune-go
+--
+
+NOTE: The workflow above uses the `ubuntu-latest` runner, which contains various developer tools ready to use, https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#cli-tools[including] the latest version of the OpenShift CLI.
+
+=== 6. Push your Changes
+
+Commit your changes in Git, as you would with any other project:
+
+[source,shell]
+--
+git add . && git commit -m "Added GitHub Actions" && git push
+--
+
+Go to your project's menu:Actions[] screen, and you should see your workflow running. It should be already at work, building your container image, pushing it to the {product} registry, and deploying your application to the cluster.
+
+image::how-to/github-actions-runs.png[]
+
+NOTE: The first run fails because the `oc rollout` command returns an error when the application is deployed for the first time.
+
+Now you can push any change to your project, and GitHub Actions will automatically rebuild your image, push it, and redeploy it, increasing your productivity.
