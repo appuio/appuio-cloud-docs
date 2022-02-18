@@ -6,5 +6,5 @@ Make sure that the total length of the prefix string `[YOUR_USERNAME]-fortune-[L
 . As per the https://datatracker.ietf.org/doc/html/rfc1035#section-2.3.4[DNS RFC], each label (for example the prefix in this case) must be equal or less than 63 characters long (octets to be exact), and the whole domain name must be equal or shorter than 255 octets.
 . These limits also apply to most https://kubernetes.io/docs/concepts/overview/working-with-objects/names/[Kubernetes resource names].
 
-If your Ingress does not generate a route after deploying your application, shorten the URL in your YAML and redeploy.
+If your Ingress doesn't generate a route after deploying your application, shorten the URL in your YAML and redeploy.
 ====
