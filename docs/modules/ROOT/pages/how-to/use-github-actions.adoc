@@ -226,3 +226,11 @@ image::how-to/github-actions-runs.png[]
 NOTE: The first run fails because the `oc rollout` command returns an error when the application is deployed for the first time.
 
 Now you can push any change to your project, and GitHub Actions will automatically rebuild your image, push it, and redeploy it, increasing your productivity.
+
+== Tips & Tricks
+
+Here go some ideas to use GitHub Actions efficiently:
+
+* For the sake of simplicity, this guide uses a `DeploymentConfig`, which is an OpenShift-specific feature, conveniently providing the `oc rollout latest` feature used in the workflow. For more complex scenarios it is recommended, however, to use tagged images and tagged releases, which can be configured through standard Kubernetes `Deployment` objects instead.
+* GitHub Actions have plenty of configuration options. Check the https://docs.github.com/en/actions[official documentation] to learn more.
+* Help your team adopt GitHub Actions by adding the appropriate information in your project's README file.
