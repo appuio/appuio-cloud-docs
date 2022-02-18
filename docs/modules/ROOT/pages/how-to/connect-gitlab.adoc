@@ -1,6 +1,6 @@
 = Connect GitLab to {product}
 
-This page explains how to connect your GitLab project to {product} for your GitOps operations.
+image:logos/gitlab.svg[role="related thumb right",alt="GitLab logo",width=120,height=120] This page explains how to connect your GitLab project to {product} for your GitOps operations.
 
 This integration has two major aspects:
 

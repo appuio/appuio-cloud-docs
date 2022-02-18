@@ -92,7 +92,28 @@ Select your programming language to get started:
 
 |===
 
-== Step 6: Learn More
+== Step 6: Use your Favorite DevOps Tool
+
+[cols="^1,^1"]
+|===
+| image:logos/gitlab.svg[alt="GitLab logo",width=50,height=50]
+| xref:how-to/connect-gitlab.adoc[GitLab]
+
+| image:logos/github-actions.png[alt="GitHub Actions logo",width=50,height=50]
+| xref:how-to/use-github-actions.adoc[GitHub Actions]
+
+| image:logos/odo.png[alt="odo logo",width=50,height=50]
+| xref:how-to/use-odo.adoc[odo]
+
+| image:logos/skaffold.png[alt="Skaffold logo",width=50,height=50]
+| xref:how-to/use-skaffold.adoc[Skaffold]
+
+| image:logos/tilt.svg[alt="Tilt logo",width=50,height=50]
+| xref:how-to/use-tilt.adoc[Tilt]
+
+|===
+
+== Step 7: Learn More
 
 The APPUiO Cloud documentation consists of the following pieces:
 
