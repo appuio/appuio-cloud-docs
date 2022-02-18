@@ -152,8 +152,8 @@ oc sa get-token github-actions
 +
 .. `REGISTRY_USERNAME`: Should be `github-actions`.
 .. `REGISTRY_PASSWORD`: The token you copied in the previous step, corresponding to the `github-actions` service account.
-.. `REGISTRY_URL`: The URL to the "Integrated Cluster Registry Domain" in your chosen {product} zone, as defined in the xref:references/zones.adoc[Zones documentation page].
-.. `OPENSHIFT_URL`: The URL to the "Kubernetes API endpoint" in your chosen {product} zone, as defined in the xref:references/zones.adoc[Zones documentation page].
+.. `REGISTRY_URL`: The URL to the "Integrated Cluster Registry Domain" in your chosen {product} zone, as defined in the https://portal.appuio.cloud/zones[Zones page in the {product} Portal].
+.. `OPENSHIFT_URL`: The URL to the "Kubernetes API endpoint" in your chosen {product} zone, as defined in the https://portal.appuio.cloud/zones[Zones page in the {product} Portal].
 .. `OPENSHIFT_PROJECT`: The name of the project you created at the beginning of this guide, which should be `[YOUR_USERNAME]-fortune-go`.
 
 image::how-to/github-actions-secrets.png[]
