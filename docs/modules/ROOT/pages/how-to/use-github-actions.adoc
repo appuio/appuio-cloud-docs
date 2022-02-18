@@ -57,6 +57,8 @@ git clone git@github.com:[YOUR_GITHUB_USERNAME]/fortune-go.git
 cd fortune-go
 --
 
+. Since the code has been imported from another repository, GitHub Actions aren't automatically available. Enable them by going to the menu:Settings[Actions > General] screen and selecting the "Allow all actions" option.
+
 === 3. Add a Deployment File
 
 Add a file named `deployment.yaml` at the root of the project with the following information:
@@ -160,7 +162,7 @@ image::how-to/github-actions-secrets.png[]
 
 GitHub Actions are defined in YAML, in files stored in the `.github/workflows` folder. For {product}, you can use a workflow similar to this one, with two jobs: one to build and push the container to the {product} registry, and another to deploy the latest version of the application.
 
-IMPORTANT: It could be possible that GitHub Actions aren't automatically enabled in your repository, because it has been imported from another location. In that case, you can enable them by going to the menu:Settings[Actions > General] screen and selecting  the "Allow all actions" option.
+IMPORTANT: Since the code has been imported (step 2 above), GitHub Actions aren't automatically enabled in your repository. Remember to enable them by going to the menu:Settings[Actions > General] screen and selecting the "Allow all actions" option.
 
 . Create the `.github/workflows` folder in your project.
 +
@@ -169,7 +171,7 @@ IMPORTANT: It could be possible that GitHub Actions aren't automatically enabled
 mkdir -p .github/workflows
 --
 
-. Create a file named `master.yml` with the following contents:
+. Create a file named `.github/workflows/master.yml` with the following contents:
 +
 [source,yaml]
 --
