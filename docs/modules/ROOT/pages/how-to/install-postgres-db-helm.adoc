@@ -8,16 +8,14 @@ This guide is based on the older guide documented here: https://docs.appuio.ch/e
 
 You need first to install the `helm` CLI tool: https://helm.sh/docs/intro/quickstart/
 
-Make sure you add the Bitnami Helm Chart Repository, because we will use later the PostgreSQL Helm chart provided by
-Bitnami:
+Make sure you add the Bitnami Helm Chart Repository, because we will use later the PostgreSQL Helm chart provided by Bitnami:
 
 [source,shell]
 ----
 helm repo add bitnami https://charts.bitnami.com/bitnami
 ----
 
-
-== Step 2: Create an adapted values.yaml file
+== Step 2: Create an adapted YAML file
 
 We use the Bitnami provided PostgreSQL helm chart documented here: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 
@@ -26,13 +24,13 @@ To ensure that PostgreSQL works on {product} we need to adjust some chart parame
 If users don't explicitly configure limits, the {product} platform injects limits of `cpu: 200m` and `memory: 200Mi`.
 See the reference docs of {product} for more details on xref:references/default-quota.adoc#_resource_limits_and_defaults[default resource limits].
 
-See also the https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml[`values.yaml` file of the PostgreSQL Helm chart] for more details on configurable values.
+See also the https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml[YAML file of the PostgreSQL Helm chart] for more details on configurable values.
 
-Create a custom `postgres-values.yaml` (filename doesn't matter) file to override the needed chart parameters.
+Create a custom `postgresql-values.yaml` (filename doesn't matter) file to override the needed chart parameters.
 
 Below is a full working example for deploying the Bitnami PostgreSQL chart on {product}.
 
-.postgres-values.yaml
+.postgresql-values.yaml
 [source,yaml]
 ----
 global:
@@ -73,7 +71,7 @@ By default the `storageClass` is empty and the {product} platform uses `ssd` as 
 See the xref:explanation/storage-classes.adoc[documentation of available storage classes] on {product} for more details.
 
 
-== Step 3: Install the Helm chart with the custom values.yaml file
+== Step 3: Install the Helm chart with the custom YAML file
 
 Install the PostgreSQL Helm chart with the following command:
 
@@ -86,7 +84,7 @@ Replace the `<DB_PW>` with your database user password.
 
 Replace `<MY_HELM_INSTANCE_NAME>` with a descriptive name for your Helm installation, for example `service-xy-db`.
 
-The `-f postgresql-values.yaml` points to your custom values.yaml file to override the needed Chart parameters.
+The `-f postgresql-values.yaml` points to your custom YAML file, overriding the required Chart parameters.
 
 
 == Step 4: Check your installation
