@@ -18,7 +18,7 @@ A pod is considered `Terminating` when it has `.spec.activeDeadlineSeconds >= 0`
 Generally, it's considered best practice to configure `.spec.activeDeadlineSeconds` in the `PodSpec` of Jobs and CronJobs.
 All other pods are considered `NotTerminating`.
 
-See the Kubernetes xref:https://kubernetes.io/docs/concepts/policy/resource-quotas[Resource Quotas] documentation for more details on how Kubernetes Resource Quotas work.
+See the Kubernetes https://kubernetes.io/docs/concepts/policy/resource-quotas[Resource Quotas] documentation for more details on how Kubernetes Resource Quotas work.
 
 TIP: If the default quotas block you from running your application, please contact xref:contact.adoc[{product} support].
 
