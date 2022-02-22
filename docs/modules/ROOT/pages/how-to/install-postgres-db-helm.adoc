@@ -77,7 +77,7 @@ Install the PostgreSQL Helm chart with the following command:
 
 [source,shell]
 ----
-helm install -f postgresql-values.yaml --set global.postgresql.postgresqlPassword=<DB_PW> <MY_HELM_INSTANCE_NAME> bitnami/postgresql
+helm install -f postgresql-values.yaml --set global.postgresql.postgresqlPassword=<DB_PW> <MY_HELM_INSTANCE_NAME> --version 10 bitnami/postgresql
 ----
 
 Replace the `<DB_PW>` with your database user password.
