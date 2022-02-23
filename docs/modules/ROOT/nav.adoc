@@ -3,6 +3,7 @@
 * https://status.appuio.cloud[Status 🔗^]
 
 .About
+* https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
 * https://discuss.appuio.cloud/[Community Discussions 🔗^]
 * https://community.appuio.ch/[Community Chat 🔗^]
 * https://roadmap.appuio.cloud/[Roadmap 🔗^]
