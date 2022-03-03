@@ -132,20 +132,6 @@ dev:
 --
 <1> This container image (together with its `Dockerfile`) is available at the https://gitlab.com/vshn/demos/demo-devspace-custom-image[DevSpace in APPUiO Base Image] project.
 
-. Finally, add the `dev:replacePods:persistPaths` key:
-+
-[source,yaml]
---
-dev:
-  # ...
-  replacePods:
-    persistPaths:
-      - path: /app
-        skipPopulate: true
---
-+
-The `skipPopulate: true` option is needed because otherwise an init container tries to copy stuff around, which leads to an `Operation not permitted` error.
-
 === 6. Launch DevSpace
 
 Launch DevSpace on the terminal:
