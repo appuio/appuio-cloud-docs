@@ -144,16 +144,7 @@ dev:
   replacePods:
     # ...
     patches:
-    - op: replace
-      path: spec.containers[0].command
-      value:
-      - sleep
-    - op: replace
-      path: spec.containers[0].args
-      value:
-      - "9999999"
-    - op: remove
-      path: spec.containers[0].securityContext
+    # ...
 --
 +
 to this:
@@ -166,31 +157,13 @@ dev:
   replacePods:
     # ...
     patches:
-    - op: replace
-      path: spec.containers[0].command
-      value:
-      - sleep
-    - op: replace
-      path: spec.containers[0].args
-      value:
-      - "9999999"
-    - op: remove
-      path: spec.containers[0].securityContext
-    - op: add # <1>
-      path: spec.containers[0].env
-      value:
-      - name: HOME
-        value: /app
-      - name: GOPATH
-        value: /app/go
-    persistPaths: # <2>
+    # ...
+    persistPaths:
       - path: /app
         skipPopulate: true
 --
-<1> New `op` patch, adding environment values.
-<2> New `persistPath` entry.
 +
-The `skipPopulate: true` is needed because otherwise an init container tries to copy stuff around, which leads to an `Operation not permitted` error.
+The `skipPopulate: true` option is needed because otherwise an init container tries to copy stuff around, which leads to an `Operation not permitted` error.
 
 === 6. Launch DevSpace
 
