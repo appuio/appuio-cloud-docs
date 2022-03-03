@@ -58,30 +58,28 @@ cd fortune-go
 
 === 4. Setup DevSpace
 
-Initialize DevSpace in the current project running this command:
-
+. Initialize DevSpace in the current project running this command:
++
 [source,shell]
 --
 devspace init
 --
-
-When prompted, select the following options:
-
-. How do you want to deploy this project?
++
+This generates a new file in your project called `devspace.yaml`. When prompted, select the following options:
++
+.. How do you want to deploy this project?
 ** helm: Use Component Helm Chart [QUICKSTART] (https://devspace.sh/component-chart/docs)
-. How should DevSpace build the container image for this project?
+.. How should DevSpace build the container image for this project?
 ** Based on this existing Dockerfile: ./Dockerfile
-. Which registry would you want to use to push images to?
+.. Which registry would you want to use to push images to?
 ** Use other registry
-. Please provide the registry hostname without the image path
+.. Please provide the registry hostname without the image path
 ** `registry.[YOUR_CHOSEN_ZONE].appuio.cloud`
-
++
 WARNING: Remember to login to your {product} container registry first! Please refer the previous step in this guide for details.
 
-The previous step generates a new file in your project called `devspace.yaml`.
-
-Notify DevSpace of your working project in {product}.
-
+. Notify DevSpace of your working project in {product}.
++
 [source,shell]
 --
 devspace use namespace [YOUR_USERNAME]-devspace
