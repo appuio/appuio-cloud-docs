@@ -75,6 +75,7 @@
 ** xref:how-to/use-tilt.adoc[Using Tilt]
 ** xref:how-to/use-skaffold.adoc[Using Skaffold]
 ** xref:how-to/use-odo.adoc[Using odo]
+** xref:how-to/use-devspace.adoc[Using DevSpace]
 
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
 

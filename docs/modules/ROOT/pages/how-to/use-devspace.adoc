@@ -1,0 +1,230 @@
+= How to use DevSpace with {product}
+
+image:logos/devspace.svg[role="related thumb right",alt="DevSpace logo",width=120,height=120] https://devspace.sh/[DevSpace] is an open-source developer tool for Kubernetes that lets you develop and deploy cloud-native software faster.
+
+This page will describe the required steps to use DevSpace successfully with {product}.
+
+IMPORTANT: This information is provided as a courtesy for {product} users. We don't provide support for DevSpace, and in case of issues, you are invited to contact the developers of DevSpace at their https://github.com/loft-sh/devspace[GitHub project].
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`devspace`:: The https://devspace.sh/cli/docs/quickstart[DevSpace documentation] explains how to install it in your operating system of choice.
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+== Procedure
+
+This section explains the steps required to use DevSpace with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-devspace"
++
+[source,shell]
+--
+oc new-project [YOUR_USERNAME]-devspace
+--
+
+=== 2. Login to the {product} Container Registry
+
+DevSpace uses Docker to build the container image, and to publish to a container registry. In this example we're going to use the {product} integrated container registry.
+
+Login to the {product} container registry (as explained in xref:how-to/use-integrated-registry.adoc[this page]):
+
+[source,shell]
+--
+oc whoami -t | docker login registry.${zone}.appuio.cloud -u $(oc whoami) --password-stdin
+--
+
+=== 3. Clone the sample "Fortune in Go" project
+
+The "Fortune in Go" project provides a very simple Go application to start with. You can clone it from GitLab:
+
+[source,shell]
+--
+git clone https://gitlab.com/vshn/applications/fortune-go.git
+--
+
+And then `cd` into it:
+
+[source,shell]
+--
+cd fortune-go
+--
+
+=== 4. Setup DevSpace
+
+Initialize DevSpace in the current project running this command:
+
+[source,shell]
+--
+devspace init
+--
+
+When prompted, select the following options:
+
+. How do you want to deploy this project?
+** helm: Use Component Helm Chart [QUICKSTART] (https://devspace.sh/component-chart/docs)
+. How should DevSpace build the container image for this project?
+** Based on this existing Dockerfile: ./Dockerfile
+. Which registry would you want to use to push images to?
+** Use other registry
+. Please provide the registry hostname without the image path
+** `registry.[YOUR_CHOSEN_ZONE].appuio.cloud`
+
+WARNING: Remember to login to your {product} container registry first! Please refer the previous step in this guide for details.
+
+The previous step generates a new file in your project called `devspace.yaml`.
+
+Notify DevSpace of your working project in {product}.
+
+[source,shell]
+--
+devspace use namespace [YOUR_USERNAME]-devspace
+--
+
+=== 5. Customize the `devspace.yaml` file
+
+DevSpace works by synchronizing your local work directory with a running pod on {product}; this requires write permissions in pods, but by default, {product} prevents such operations. You must therefore modify the `devspace.yaml` file in the root of your project as follows.
+
+. At the top of the file, change the value of the `IMAGE` variable from this:
++
+[source,yaml]
+--
+vars:
+- name: IMAGE
+  value: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]/project/app
+--
++
+to this:
++
+[source,yaml]
+--
+vars:
+- name: IMAGE
+  value: registry.[YOUR_CHOSEN_ZONE].appuio.cloud/[YOUR_USERNAME]-devspace/app
+--
++
+IMPORTANT: Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+
+. Then change the `dev:replacePods:replaceImage` value, from:
++
+[source,yaml]
+--
+dev:
+  # ...
+  replacePods:
+  - imageSelector: ${IMAGE}
+    replaceImage: loftsh/go:latest
+--
++
+to:
++
+[source,yaml]
+--
+dev:
+  # ...
+  replacePods:
+  - imageSelector: ${IMAGE}
+    replaceImage: registry.gitlab.com/vshn/demos/demo-devspace-custom-image:latest # <1>
+--
+<1> This container image (together with its `Dockerfile`) is available at the https://gitlab.com/vshn/demos/demo-devspace-custom-image[DevSpace in APPUiO Base Image] project.
+
+. Finally, apply a few more `dev:replacePods:patches`, going from this:
++
+[source,yaml]
+--
+# `dev` only applies when you run `devspace dev`
+dev:
+  # ...
+  replacePods:
+    # ...
+    patches:
+    - op: replace
+      path: spec.containers[0].command
+      value:
+      - sleep
+    - op: replace
+      path: spec.containers[0].args
+      value:
+      - "9999999"
+    - op: remove
+      path: spec.containers[0].securityContext
+--
++
+to this:
++
+[source,yaml]
+--
+# `dev` only applies when you run `devspace dev`
+dev:
+  # ...
+  replacePods:
+    # ...
+    patches:
+    - op: replace
+      path: spec.containers[0].command
+      value:
+      - sleep
+    - op: replace
+      path: spec.containers[0].args
+      value:
+      - "9999999"
+    - op: remove
+      path: spec.containers[0].securityContext
+    - op: add # <1>
+      path: spec.containers[0].env
+      value:
+      - name: HOME
+        value: /app
+      - name: GOPATH
+        value: /app/go
+    persistPaths: # <2>
+      - path: /app
+        skipPopulate: true
+--
+<1> New `op` patch, adding environment values.
+<2> New `persistPath` entry.
++
+The `skipPopulate: true` is needed because otherwise an init container tries to copy stuff around, which leads to an `Operation not permitted` error.
+
+=== 6. Launch DevSpace
+
+Launch DevSpace on the terminal:
+
+[source,shell]
+--
+devspace dev
+--
+
+DevSpace deploys your container to the cluster and gives you a terminal prompt; run the `go run main.go` command, and watch your application in action in http://localhost:8080.
+
+Now you can edit any file in your project, and as soon as you save it, DevSpace will automatically sync your files with the pod, increasing your productivity. Just stop the web server with kbd:[CTRL+C], and start it again to see your changes.
+
+Once you're done developing your application, use the following command to deploy it in production:
+
+[source,shell]
+--
+devspace deploy -p production
+--
+
+You can see it in production either by adding an `Ingress` object, or by using the following command:
+
+[source,shell]
+--
+devspace open
+--
+
+and selecting the "via localhost" option.
+
+== Tips & Tricks
+
+Here go some ideas to use DevSpace efficiently:
+
+* You can provide a different image in the `dev:replacePods:replaceImage` field, including all of the dependencies required by your application. The https://gitlab.com/vshn/demos/demo-devspace-custom-image[DevSpace in APPUiO Base Image] example can serve as a starting point.
+* DevSpace has plenty of options to configure the `devspace.yaml` file. Check the https://devspace.sh/cli/docs/configuration/reference[DevSpace configuration reference] to learn more.
+* Help your team adopt DevSpace by adding the appropriate information in your project's README file.
