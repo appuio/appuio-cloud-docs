@@ -134,30 +134,13 @@ dev:
 --
 <1> This container image (together with its `Dockerfile`) is available at the https://gitlab.com/vshn/demos/demo-devspace-custom-image[DevSpace in APPUiO Base Image] project.
 
-. Finally, apply a few more `dev:replacePods:patches`, going from this:
+. Finally, add the `dev:replacePods:persistPaths` key:
 +
 [source,yaml]
 --
-# `dev` only applies when you run `devspace dev`
 dev:
   # ...
   replacePods:
-    # ...
-    patches:
-    # ...
---
-+
-to this:
-+
-[source,yaml]
---
-# `dev` only applies when you run `devspace dev`
-dev:
-  # ...
-  replacePods:
-    # ...
-    patches:
-    # ...
     persistPaths:
       - path: /app
         skipPopulate: true
