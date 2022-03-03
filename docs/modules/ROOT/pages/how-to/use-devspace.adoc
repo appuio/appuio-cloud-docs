@@ -173,7 +173,12 @@ You can see it in production either by adding an `Ingress` object, or by using t
 devspace open
 --
 
-and selecting the "via localhost" option.
+and selecting the "via localhost" option. If you would like to clean your {product} project from all DevSpace products, just use this:
+
+[source,shell]
+--
+devspace purge
+--
 
 == Tips & Tricks
 
