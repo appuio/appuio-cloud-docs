@@ -131,7 +131,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: "/data"
-        image: minio/minio
+        image: quay.io/minio/minio
         args:
         - server
         - /data
