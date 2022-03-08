@@ -361,5 +361,6 @@ spec:
 
 Here go some ideas to use K8up efficiently:
 
-* K8up has plenty of options. Check the https://k8up.io/[documentation] to learn more.
+* K8up has plenty of options.
+  Check the https://k8up.io/[documentation] to learn more.
 * Help your team adopt K8up by adding the appropriate information in your project's README file.
