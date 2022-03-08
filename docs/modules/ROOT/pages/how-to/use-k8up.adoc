@@ -224,7 +224,8 @@ spec:
     - [YOUR_USERNAME]-minio-server.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
     secretName: minio-server-cert
 --
-<1> This `Secret` contains the credentials used to store data in the MinIO instance. *These credentials are only for demo purposes!*
+<1> This `Secret` contains the credentials used to store data in the MinIO instance.
+    *These credentials are only for demo purposes!*
 <2> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
 
 include::partial$url-length-warning.adoc[]
