@@ -281,6 +281,13 @@ spec:
 <1> This `Secret` is used to store the password used by Restic to access the backup repository stored in MinIO.
     *This credential is only for demo purposes!*
 
+Apply the manifest:
+
+[source,shell]
+--
+oc apply -f backup.yaml
+--
+
 A few seconds after applying this `Backup` object, you will see in the MinIO GUI that the Restic repository has been successfully initialized and populated with a bucket called `backups`.
 
 === 5. Restore the backup locally
