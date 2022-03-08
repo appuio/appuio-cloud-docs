@@ -327,7 +327,8 @@ The file `restored/[PROJECT_NAME]-fortune-container.txt` will contain a fortune 
 
 === 6. Schedule regular backups
 
-A `Backup` object performs a one-off backup of your pods and PVCs. You can instead create a `Schedule` object to backup your system regularly:
+A `Backup` object performs a one-off backup of your pods and PVCs.
+You can instead create a `Schedule` object to backup your system regularly:
 
 [source,yaml]
 --
