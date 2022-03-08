@@ -54,8 +54,10 @@
 
 * Networking
 ** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
+
 * Storage
 ** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
+** xref:how-to/use-k8up.adoc[Backups with K8up]
 
 * Security
 ** xref:how-to/getting-a-certificate.adoc[Generate Certificates]

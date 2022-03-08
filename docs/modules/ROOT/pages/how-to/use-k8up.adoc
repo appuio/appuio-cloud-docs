@@ -1,0 +1,374 @@
+= How to Backup with K8up
+
+image:logos/k8up.svg[role="related thumb right",alt="K8up logo",width=120,height=120] https://k8up.io/[K8up] (pronounced /keɪtæpp/ or simply "ketchup") is a Kubernetes Operator distributed via a Helm chart, compatible with OpenShift and plain Kubernetes, and installed by default in {product}
+
+This page will describe the required steps to use K8up successfully with {product}.
+
+[IMPORTANT]
+====
+This guide is provided as a courtesy for {product} users.
+For more information about K8up, please refer to its https://k8up.io/[official documentation].
+====
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`oc`:: You can download the OpenShift client directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+`restic`:: Follow the https://restic.net/#installation[Restic installation instructions] corresponding to your operating system.
+
+== Procedure
+
+This section explains the steps required to use K8up with {product}.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-fortune-go"
++
+[source,shell]
+--
+oc new-project [YOUR_USERNAME]-fortune-go
+--
+
+=== 2. Deploy a simple app
+
+We're going to deploy a https://gitlab.com/vshn/applications/fortune-go[sample application written in Go] using the `deployment.yaml` file shown below.
+This deployment doesn't need neither a `Service` nor an `Ingress`:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-go
+spec:
+  template:
+    spec:
+      containers:
+      - image: registry.gitlab.com/vshn/applications/fortune-go:latest
+        imagePullPolicy: Always
+        name: fortune-container
+        ports:
+        - containerPort: 8080
+    metadata:
+      labels:
+        app: fortune-go
+      annotations:
+        k8up.io/backupcommand: fortune # <1>
+        k8up.io/file-extension: .txt   # <2>
+  selector:
+    matchLabels:
+      app: fortune-go
+  strategy:
+    type: Recreate
+--
+<1> K8up is able to backup the output of any tool piping data to `stdin`; in this case, we're going to backup a message created by the `fortune` tool installed in the pod.
+<2> This annotation provides a file extension to the data to be added in the backup.
+
+Apply the deployment to your {product} project:
+
+[source,shell]
+--
+oc apply -f deployment.yaml
+--
+
+=== 3. Deploy Minio
+
+K8up is powered by the https://restic.net/[Restic] backup tool, and is thus able to store backups in any S3-compatible storage.
+For the purposes of this guide, you can quickly install a https://min.io/[MinIO] instance in your project.
+
+[IMPORTANT]
+====
+This setup is only for demo purposes.
+In production settings, it's recommended to use an S3 provider outside of the cluster, such as https://aws.amazon.com/s3/[Amazon S3], https://www.exoscale.com/object-storage/[Exoscale Object Storage], a secure MinIO instance in another {product} zone, or similar.
+====
+
+[source,yaml]
+--
+apiVersion: v1
+kind: Secret  # <1>
+metadata:
+  name: minio-credentials
+type: Opaque
+stringData:
+  username: minio
+  password: minio123
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minio-pvc
+      containers:
+      - name: minio
+        volumeMounts:
+        - name: data
+          mountPath: "/data"
+        image: quay.io/minio/minio
+        args:
+        - server
+        - /data
+        - --console-address
+        - ":9001"
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: minio-credentials
+              key: username
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio-credentials
+              key: password
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-gui
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9001
+      targetPort: 9001
+      protocol: TCP
+  selector:
+    app: minio
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: minio-ingress
+spec:
+  rules:
+  - host: [YOUR_USERNAME]-minio-gui.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: minio-gui
+            port:
+              number: 9001
+  tls:
+  - hosts:
+    - [YOUR_USERNAME]-minio-gui.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
+    secretName: minio-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  name: minio-server-ingress
+spec:
+  rules:
+  - host: [YOUR_USERNAME]-minio-server.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9000
+  tls:
+  - hosts:
+    - [YOUR_USERNAME]-minio-server.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
+    secretName: minio-server-cert
+--
+<1> This `Secret` contains the credentials used to store data in the MinIO instance.
+    *These credentials are only for demo purposes!*
+<2> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+
+include::partial$url-length-warning.adoc[]
+
+Apply the deployment to your {product} project:
+
+[source,shell]
+--
+oc apply -f minio.yaml
+--
+
+After a few minutes you should be able to open the MinIO GUI console at the following URL:
+
+`https://[YOUR_USERNAME]-minio-gui.apps.[YOUR_CHOSEN_ZONE].appuio.cloud`
+
+Login using the `minio` username and the `minio123` password, as specified in the deployment above.
+
+=== 4. Apply a Backup object
+
+Add a file named `backup.yaml` at the root of the project with the following information:
+
+[source,yaml]
+--
+apiVersion: v1
+kind: Secret # <1>
+metadata:
+  name: backup-repo
+type: Opaque
+stringData:
+  password: p@ssw0rd
+---
+apiVersion: k8up.io/v1
+kind: Backup
+metadata:
+  name: backup-test
+spec:
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 2
+  backend:
+    repoPasswordSecretRef:
+      name: backup-repo
+      key: password
+    s3:
+      endpoint: http://minio:9000
+      bucket: backups
+      accessKeyIDSecretRef:
+        name: minio-credentials
+        key: username
+      secretAccessKeySecretRef:
+        name: minio-credentials
+        key: password
+--
+<1> This `Secret` is used to store the password used by Restic to access the backup repository stored in MinIO.
+    *This credential is only for demo purposes!*
+
+Apply the manifest:
+
+[source,shell]
+--
+oc apply -f backup.yaml
+--
+
+A few seconds after applying this `Backup` object, you will see in the MinIO GUI that the Restic repository has been successfully initialized and populated with a bucket called `backups`.
+
+=== 5. Restore the backup locally
+
+Using the `restic` command line tool, we will now restore the backup locally on your system.
+Create a script named `environment.sh` that exports the required environment variables used by https://restic.net/[restic]:
+
+[source,bash]
+--
+#!/usr/bin/env bash
+
+# <1>
+export RESTIC_REPOSITORY=s3:http://[YOUR_USERNAME]-minio-server.apps.[YOUR_CHOSEN_ZONE].appuio.cloud/backups/
+export RESTIC_PASSWORD=p@ssw0rd       # <2>
+export AWS_ACCESS_KEY_ID=minio        # <3>
+export AWS_SECRET_ACCESS_KEY=minio123 # <3>
+--
+<1> Remember to change the `[YOUR_CHOSEN_ZONE]` and `[YOUR_USERNAME]` placeholders to your preferred {product} zone and your username, respectively.
+<2> This is the Restic repository backup password.
+<3> These are the MinIO credentials.
+
+Source the file to load the variables in your environment:
+
+[source,shell]
+--
+source environment.sh
+--
+
+Use `restic` to list the current snapshots:
+
+[source,shell]
+--
+restic snapshots
+--
+
+You can now backup the latest snapshot locally into the `restored` folder:
+
+[source,shell]
+--
+restic restore latest --target ./restored
+--
+
+The file `restored/[PROJECT_NAME]-fortune-container.txt` will contain a fortune message coming from the deployment.
+
+=== 6. Schedule regular backups
+
+A `Backup` object performs a one-off backup of your pods and PVCs.
+You can instead create a `Schedule` object to backup your system regularly:
+
+[source,yaml]
+--
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: schedule-test
+spec:
+  backend:
+    s3:
+      endpoint: http://minio:9000
+      bucket: backups
+      accessKeyIDSecretRef:
+        name: minio-credentials
+        key: username
+      secretAccessKeySecretRef:
+        name: minio-credentials
+        key: password
+    repoPasswordSecretRef:
+      name: backup-repo
+      key: password
+  backup:
+    schedule: '*/5 * * * *' # <1>
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 2
+--
+<1> This instruction will trigger a backup every 5 minutes.
+
+== Tips & Tricks
+
+Here go some ideas to use K8up efficiently:
+
+* K8up has plenty of options.
+  Check the https://k8up.io/[documentation] to learn more.
+* Help your team adopt K8up by adding the appropriate information in your project's README file.
