@@ -14,7 +14,7 @@ For more information about K8up, please refer to its https://k8up.io/[official d
 
 To follow this guide, please make sure that you have the following tools installed:
 
-`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+`oc`:: You can download the OpenShift client directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
 
 `restic`:: Follow the https://restic.net/#installation[Restic installation instructions] corresponding to your operating system.
 
