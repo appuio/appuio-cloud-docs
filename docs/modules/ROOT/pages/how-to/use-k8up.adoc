@@ -316,7 +316,7 @@ Source the file to load the variables in your environment:
 source environment.sh
 --
 
-Use `restic` to watch the current snapshots:
+Use `restic` to list the current snapshots:
 
 [source,shell]
 --
