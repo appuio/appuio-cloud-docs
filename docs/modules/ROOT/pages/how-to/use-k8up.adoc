@@ -264,7 +264,6 @@ metadata:
 spec:
   failedJobsHistoryLimit: 2
   successfulJobsHistoryLimit: 2
-  promURL: http://minio:9000
   backend:
     repoPasswordSecretRef:
       name: backup-repo
