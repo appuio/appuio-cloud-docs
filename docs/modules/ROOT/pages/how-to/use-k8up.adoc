@@ -271,11 +271,11 @@ spec:
 --
 <1> This `Secret` is used to store the password used by Restic to access the backup repository stored in MinIO. *This credential is only for demo purposes!*
 
-A few seconds after applying this `Backup` object, you will see in the MinIO GUI that the Restic repository has been successfully initialized and populated.
+A few seconds after applying this `Backup` object, you will see in the MinIO GUI that the Restic repository has been successfully initialized and populated with a bucket called `backups`.
 
 === 5. Restore the backup locally
 
-Using the `restic` command line tool, we will now restore the backup locally on your system. Create and source a `environment.sh` script that exports the required environment variables used by https://restic.net/[restic]:
+Using the `restic` command line tool, we will now restore the backup locally on your system. Create a script named `environment.sh` that exports the required environment variables used by https://restic.net/[restic]:
 
 [source,bash]
 --
@@ -291,7 +291,7 @@ export AWS_SECRET_ACCESS_KEY=minio123 # <3>
 <2> This is the Restic repository backup password.
 <3> These are the MinIO credentials.
 
-Source the file:
+Source the file to load the variables in your environment:
 
 [source,shell]
 --
