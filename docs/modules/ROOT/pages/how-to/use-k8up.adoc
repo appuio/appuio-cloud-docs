@@ -74,6 +74,8 @@ oc apply -f deployment.yaml
 
 K8up is powered by the https://restic.net/[Restic] backup tool, and is thus able to store backups in any S3-compatible storage. For the purposes of this guide, you can quickly install a https://min.io/[MinIO] instance in your project.
 
+IMPORTANT: This setup is only for demo purposes. In production settings, it is recommended to use an S3 provider outside of the cluster, such as https://aws.amazon.com/s3/[Amazon S3], https://www.exoscale.com/object-storage/[Exoscale Object Storage], a secure MinIO instance in another {product} zone, or similar.
+
 [source,yaml]
 --
 apiVersion: v1
@@ -213,7 +215,7 @@ spec:
     - [YOUR_USERNAME]-minio-server.apps.[YOUR_CHOSEN_ZONE].appuio.cloud # <2>
     secretName: minio-server-cert
 --
-<1> This `Secret` contains the credentials used to store data in the MinIO instance.
+<1> This `Secret` contains the credentials used to store data in the MinIO instance. *These credentials are only for demo purposes!*
 <2> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
 
 include::partial$url-length-warning.adoc[]
@@ -267,7 +269,7 @@ spec:
         name: minio-credentials
         key: password
 --
-<1> This `Secret` is used to store the password used by Restic to access the backup repository stored in MinIO.
+<1> This `Secret` is used to store the password used by Restic to access the backup repository stored in MinIO. *This credential is only for demo purposes!*
 
 A few seconds after applying this `Backup` object, you will see in the MinIO GUI that the Restic repository has been successfully initialized and populated.
 
