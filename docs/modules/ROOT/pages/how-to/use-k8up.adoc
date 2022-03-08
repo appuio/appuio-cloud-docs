@@ -285,7 +285,8 @@ A few seconds after applying this `Backup` object, you will see in the MinIO GUI
 
 === 5. Restore the backup locally
 
-Using the `restic` command line tool, we will now restore the backup locally on your system. Create a script named `environment.sh` that exports the required environment variables used by https://restic.net/[restic]:
+Using the `restic` command line tool, we will now restore the backup locally on your system.
+Create a script named `environment.sh` that exports the required environment variables used by https://restic.net/[restic]:
 
 [source,bash]
 --
