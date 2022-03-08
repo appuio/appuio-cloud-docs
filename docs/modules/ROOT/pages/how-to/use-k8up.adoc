@@ -4,7 +4,11 @@ image:logos/k8up.svg[role="related thumb right",alt="K8up logo",width=120,height
 
 This page will describe the required steps to use K8up successfully with {product}.
 
-IMPORTANT: This guide is provided as a courtesy for {product} users. For more information about K8up, please refer to its https://k8up.io/[official documentation].
+[IMPORTANT]
+====
+This guide is provided as a courtesy for {product} users.
+For more information about K8up, please refer to its https://k8up.io/[official documentation].
+====
 
 == Requirements
 
