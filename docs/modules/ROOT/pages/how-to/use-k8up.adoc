@@ -35,7 +35,8 @@ oc new-project [YOUR_USERNAME]-fortune-go
 
 === 2. Deploy a simple app
 
-We're going to deploy a https://gitlab.com/vshn/applications/fortune-go[sample application written in Go] using the `deployment.yaml` file shown below. This deployment doesn't need neither a `Service` nor an `Ingress`:
+We're going to deploy a https://gitlab.com/vshn/applications/fortune-go[sample application written in Go] using the `deployment.yaml` file shown below.
+This deployment doesn't need neither a `Service` nor an `Ingress`:
 
 [source,yaml]
 --
