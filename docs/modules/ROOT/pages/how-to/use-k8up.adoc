@@ -76,7 +76,8 @@ oc apply -f deployment.yaml
 
 === 3. Deploy Minio
 
-K8up is powered by the https://restic.net/[Restic] backup tool, and is thus able to store backups in any S3-compatible storage. For the purposes of this guide, you can quickly install a https://min.io/[MinIO] instance in your project.
+K8up is powered by the https://restic.net/[Restic] backup tool, and is thus able to store backups in any S3-compatible storage.
+For the purposes of this guide, you can quickly install a https://min.io/[MinIO] instance in your project.
 
 IMPORTANT: This setup is only for demo purposes. In production settings, it's recommended to use an S3 provider outside of the cluster, such as https://aws.amazon.com/s3/[Amazon S3], https://www.exoscale.com/object-storage/[Exoscale Object Storage], a secure MinIO instance in another {product} zone, or similar.
 
