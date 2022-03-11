@@ -113,16 +113,16 @@ The application includes a https://gitlab.com/vshn/applications/fortune-go/-/blo
 # Step 2: deployment image
 FROM alpine:3.14
 RUN apk update && apk upgrade && apk add --no-cache fortune
-WORKDIR /
-COPY --from=build /app/fortune-go /fortune-go
-COPY templates ./templates
+WORKDIR /app
+COPY --from=build /app/fortune-go /app/fortune-go
+COPY templates /app/templates
 
 EXPOSE 8080
 
 # <1>
 USER 1001
 
-ENTRYPOINT ["/fortune-go"]
+ENTRYPOINT ["/app/fortune-go"]
 --
 <1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
 

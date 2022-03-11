@@ -42,16 +42,13 @@ The code below shows the main router of the application in the Rust programming 
 #[get("/")]
 async fn fortune(req: HttpRequest) -> impl Responder {
     let response = FortuneData::new();
-    match get_content_type(&req) {
-        Some(content_type) => {
-            if content_type == "text/plain" {
-                return HttpResponse::Ok().body(response.to_plain());
-            }
-            if content_type == "application/json" {
-                return HttpResponse::Ok().json(response);
-            }
+    if let Some(content_type) = get_content_type(&req) {
+        if content_type == "text/plain" {
+            return HttpResponse::Ok().body(response.to_plain());
         }
-        None => {}
+        if content_type == "application/json" {
+            return HttpResponse::Ok().json(response);
+        }
     }
     HttpResponse::Ok().body(response.render().unwrap())
 }

@@ -79,6 +79,7 @@ int main()
         callback(resp);
     };
     app().registerHandler("/", router).addListener("0.0.0.0", PORT).run();
+    return EXIT_SUCCESS;
 }
 --
 
