@@ -98,7 +98,7 @@ IMPORTANT: Remember to set your TTL back to the previous value after the migrati
 
 . There are different `CNAME` resource records to point to depending on which {zone} you migrate the application to; please refer to xref:references/zones.adoc[the {zone}s] reference document, where the corresponding `CNAME` entry is specified.
 
-. If you can't create `CNAME` records, consider creating `ALIAS` records.
+. If you want to redirect the top level of a domain, consider creating `ALIAS` or `ANAME` records if your DNS provider supports either of those record types.
   If this is also not an option, you can create an A record to the currently active IP address.
 +
 IMPORTANT: The ingress IP address is not guaranteed to be stable.
