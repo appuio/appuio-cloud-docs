@@ -101,7 +101,7 @@ IMPORTANT: Remember to set your TTL back to the previous value after the migrati
 . If you want to redirect the top level of a domain, consider creating `ALIAS` or `ANAME` records if your DNS provider supports either of those record types.
   If this is also not an option, you can create an A record to the currently active IP address.
 +
-IMPORTANT: The ingress IP address is not guaranteed to be stable.
+IMPORTANT: The ingress IP address isn't guaranteed to be stable.
 
 == Let's Encrypt
 
