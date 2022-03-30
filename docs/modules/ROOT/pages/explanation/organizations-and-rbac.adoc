@@ -23,12 +23,7 @@ Nothing will stop you from removing access to created projects.
 
 == Organization Membership
 
-On the first login to {idp} the default organization membership is assigned.
-
-Membership of organizations and organizations itself are currently being maintained by VSHN.
-
-It's planned to enable self-management of organizations and membership in the https://roadmap.appuio.cloud[upcoming Webportal].
-Please xref:contact[contact] us to manage organization membership for you for the time being.
+{product} provides self-management of organizations and organization membership through the https://portal.appuio.cloud/organizations[APPUiO Cloud Webportal].
 
 == Transfer Projects
 
