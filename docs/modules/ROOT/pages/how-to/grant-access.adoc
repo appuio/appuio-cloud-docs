@@ -1,0 +1,27 @@
+= Granting Access to Projects and Namespaces
+
+In the xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces] page it is explained how to create projects and namespaces.
+This page explains in detail how to manage users, groups, and teams within those projects, assigning rights and entitlements.
+
+IMPORTANT: The contents of this page rely on knowledge provided by the https://docs.openshift.com/container-platform/4.9/authentication/using-rbac.html[official OpenShift 4.9 documentation about Role-Base Access Control (RBAC)], highlighting the differences in {product}.
+
+== Organizations and Teams in {product}
+
+Organizations and teams are reflected as OpenShift 4.9 groups.
+For each and every organization, there is a group with the same name; and for each and every team, there is a group with the same name, but prefixed with the name of the parent organization.
+For example: `acme+accounting` would be a valid team name in {product} for the Accounting team within the ACME organization.
+
+IMPORTANT: OpenShift groups do not have any notion of hierarchy! From the point of view of OpenShift, they all belong to the same flat structure.
+
+== Granting Privileges
+
+A `RoleBinding` object grants the creator of a Project or Namespace admin privileges.
+This is a default behavior in OpenShift.
+
+This means that by default, all members of the owning organization are granted admin privileges by referencing the corresponding OpenShift Group.
+
+Both RoleBindings can be deleted and replaced by something else.
+
+CAUTION: Modifications to RoleBindings can prevent users from accessing their projects; in other words, you might end up locked out of your project!
+
+Access can be granted to any OpenShift Group (This includes that namespace owned by organization A can be managed by members of organization B or only a team of organization B)
