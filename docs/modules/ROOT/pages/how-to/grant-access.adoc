@@ -3,7 +3,7 @@
 In the xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces] page it's explained how to create projects and namespaces.
 This page explains in detail how to manage users, groups, and teams within those projects, assigning rights and entitlements.
 
-IMPORTANT: The contents of this page rely on knowledge provided by the https://docs.openshift.com/container-platform/4.9/authentication/using-rbac.html[official OpenShift 4.9 documentation about Role-Base Access Control (RBAC)], highlighting the differences in {product}.
+IMPORTANT: The contents of this page rely on knowledge provided by the https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html[official OpenShift documentation about Role-Base Access Control (RBAC)], highlighting the differences in {product}.
 
 == Organizations and Teams in {product}
 
