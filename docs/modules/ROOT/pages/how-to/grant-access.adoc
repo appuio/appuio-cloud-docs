@@ -18,7 +18,8 @@ IMPORTANT: OpenShift groups don't have any notion of hierarchy! From the point o
 The RoleBinding object named `admin` grants the creator of a Project or Namespace admin privileges.
 This is a default behavior in OpenShift.
 
-This means that by default, all members of the owning organization are granted admin privileges by referencing the corresponding OpenShift Group.
+In addition, the RoleBinding named `namespace-owner` grants the group named equal to the Organization owning the namespace admin privileges.
+This means that by default, all members of the owning organization are granted admin privileges.
 
 Both RoleBindings can be deleted and replaced by something else.
 
