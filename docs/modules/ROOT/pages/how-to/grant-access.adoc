@@ -8,7 +8,7 @@ IMPORTANT: The contents of this page rely on knowledge provided by the https://d
 == Organizations and Teams in {product}
 
 Organizations and teams are reflected as OpenShift groups.
-For each and every organization, there is a group with the same name; and for each and every team, there is a group with the same name, but prefixed with the name of the parent organization.
+For each and every organization, there is a group with the same name; and for each and every team, there is a group with the same name, but prefixed with the name of the parent organization and glued together witn `+`.
 For example: `acme+accounting` would be a valid team name in {product} for the Accounting team within the ACME organization.
 
 IMPORTANT: OpenShift groups don't have any notion of hierarchy! From the point of view of OpenShift, they all belong to the same flat structure.
