@@ -1,0 +1,28 @@
+= Granting Access to Projects and Namespaces
+
+In the xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces] page it's explained how to create projects and namespaces.
+This page explains in detail how to manage users, groups, and teams within those projects, assigning rights and entitlements.
+
+IMPORTANT: The contents of this page rely on knowledge provided by the https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html[official OpenShift documentation about Role-Base Access Control (RBAC)], highlighting the differences in {product}.
+
+== Organizations and Teams in {product}
+
+Organizations and teams are reflected as OpenShift groups.
+For each and every organization, there is a group with the same name; and for each and every team, there is a group with the same name, but prefixed with the name of the parent organization and glued together witn `+`.
+For example: `acme+accounting` would be a valid team name in {product} for the Accounting team within the ACME organization.
+
+IMPORTANT: OpenShift groups don't have any notion of hierarchy! From the point of view of OpenShift, they all belong to the same flat structure.
+
+== Granting Privileges
+
+On {product}, the RoleBinding object named `admin` grants the group named equal to the Organization owning the Project or Namespace admin privileges.
+This differs from the default behavior in OpenShift, where the default `admin` RoleBinding only grants the creator of a Project admin privileges.
+
+In addition, the RoleBinding named `namespace-owner` gives the group named equal to the Organization of the Namespace object permissions to view, edit and delete objects within the namespace.
+
+Both RoleBindings can be changed or deleted and replaced by something else.
+
+CAUTION: Modifications to RoleBindings can prevent users from accessing their projects; in other words, you might end up locked out of your project!
+
+Access can be granted to any OpenShift Group.
+This includes that namespace owned by organization A can be managed by members of organization B or only a team of organization B.
