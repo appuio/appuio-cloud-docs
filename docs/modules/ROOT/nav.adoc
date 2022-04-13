@@ -1,6 +1,7 @@
 * xref:index.adoc[Home]
 * xref:contact.adoc[Contact]
 * https://status.appuio.cloud[Status 🔗^]
+* https://portal.appuio.cloud[Portal 🔗^]
 
 .About
 * https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
@@ -83,7 +84,7 @@
 * xref:how-to/use-oc-cli.adoc[oc CLI usage]
 
 .Technical reference
-* xref:references/zones.adoc[Zones]
+* https://portal.appuio.cloud/zones[Zones 🔗^]
 * xref:references/default-quota.adoc[Default Quota]
 
 .Explanation
