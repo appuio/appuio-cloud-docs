@@ -1,0 +1,64 @@
+= Fix Long Pod Startup Time (CreateContainerError)
+
+This page describes how you can mitigate very long Pod startup times and `CreateContainerError` for Pods which mount RWX PVCs with a large amount of files.
+
+== Explanation
+
+When a Pod mounts a volume which contains many files, the Pod startup time can be very long.
+This is caused because the container runtime updates the SELinux labels of all the files in the volume on Pod startup.
+Depending on the number of files, the relabeling can take a long time.
+
+After some time, the Pod goes into status `CreateContainerError` when the relabeling takes too long.
+When the container is created again, the container runtime continues relabeling files where it left off.
+Depending on the amount of files, multiple container restarts are required before the relabeling is done.
+Once the relabeling is complete, the Pod will go into status `Running`.
+
+== Implementation
+
+This section explains the steps required to mitigate the long Pod startup times and `CreateContainerError`.
+
+=== Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Switch to the correct project.
++
+[source,shell]
+--
+oc project [YOUR_PROJECT_NAME]
+--
+
+=== Change the Deployment SecurityContext
+
+Set the following `SecurityContext` in the Deployment using `oc edit`:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: [YOUR_DEPLOYMENT_NAME]
+  namespace: [YOUR_PROJECT_NAME]
+spec:
+  template:
+    spec:
+      securityContext:
+        seLinuxOptions:
+          type: spc_t
+...
+--
+
+You can also use `oc patch` to change the `securityContext` of the Deployment:
+
+[source,shell]
+--
+oc patch deployment [YOUR_DEPLOYMENT_NAME] -p '{"spec":{"template":{"spec":{"securityContext":{"seLinuxOptions":{"type":"spc_t"}}}}}}'
+--
+
+For more information, see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#selinuxoptions-v1-core[SELinuxOptions Spec].
+
+[IMPORTANT]
+====
+All Pods managed through the Deployment will be restarted.
+However, with the modification in place, you should notice a much faster Pod startup time.
+====
