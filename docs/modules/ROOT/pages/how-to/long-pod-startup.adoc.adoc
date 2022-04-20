@@ -1,20 +1,23 @@
-= CreateContainerError - Long Pod Startup
+= Fix Long Pod Startup Time (CreateContainerError)
 
-This page will describe how to mitigate a very long pod startup time and `CreateContainerError`.
+This page describes how you can mitigate very long Pod startup times and `CreateContainerError` for Pods which mount RWX PVCs with a large amount of files.
 
 == Explanation
 
-When a Pod has a volume with many files attached, the Pod startup time can be very long.
+When a Pod mounts a volume which contains many files, the Pod startup time can be very long.
+This is caused because the container runtime updates the SELinux labels of all the files in the volume on Pod startup.
+Depending on the number of files, the relabeling can take a long time.
 
-This is caused by SELinux relabeling all the files in the volume. Depending on the number of files, the relabeling can take a long time.
-
-Even though the Pod status is `CreateContainerError`, the relabeling is still in progress. After the relabeling is done, the Pod status will be `Running`.
+After some time, the Pod goes into status `CreateContainerError` when the relabeling takes too long.
+When the container is created again, the container runtime continues relabeling files where it left off.
+Depending on the amount of files, multiple container restarts are required before the relabeling is done.
+Once the relabeling is complete, the Pod will go into status `Running`.
 
 == Implementation
 
-This section explains the steps required to mitigate the long pod startup time and `CreateContainerError`.
+This section explains the steps required to mitigate the long Pod startup times and `CreateContainerError`.
 
-=== 1. Login to {product}
+=== Login to {product}
 
 include::partial$login-in-terminal.adoc[]
 
@@ -25,7 +28,7 @@ include::partial$login-in-terminal.adoc[]
 oc project [YOUR_PROJECT_NAME]
 --
 
-=== 2. Change the Deployment SecurityContext
+=== Change the Deployment SecurityContext
 
 Set the following `SecurityContext` in the Deployment using `oc edit`:
 
@@ -54,4 +57,8 @@ oc patch deployment [YOUR_DEPLOYMENT_NAME] -p '{"spec":{"template":{"spec":{"sec
 
 For more information, see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#selinuxoptions-v1-core[SELinuxOptions Spec].
 
-Please note that the Pods will be restarted. You should notice a much faster Pod startup time.
+[IMPORTANT]
+====
+All Pods managed through the Deployment will be restarted.
+However, with the modification in place, you should notice a much faster Pod startup time.
+====
