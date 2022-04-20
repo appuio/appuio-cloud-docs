@@ -1,0 +1,57 @@
+= CreateContainerError - Long Pod Startup
+
+This page will describe how to mitigate a very long pod startup time and `CreateContainerError`.
+
+== Explanation
+
+When a Pod has a volume with many files attached, the Pod startup time can be very long.
+
+This is caused by SELinux relabeling all the files in the volume. Depending on the number of files, the relabeling can take a long time.
+
+Even though the Pod status is `CreateContainerError`, the relabeling is still in progress. After the relabeling is done, the Pod status will be `Running`.
+
+== Implementation
+
+This section explains the steps required to mitigate the long pod startup time and `CreateContainerError`.
+
+=== 1. Login to {product}
+
+include::partial$login-in-terminal.adoc[]
+
+. Switch to the correct project.
++
+[source,shell]
+--
+oc project [YOUR_PROJECT_NAME]
+--
+
+=== 2. Change the Deployment SecurityContext
+
+Set the following `SecurityContext` in the Deployment using `oc edit`:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: [YOUR_DEPLOYMENT_NAME]
+  namespace: [YOUR_PROJECT_NAME]
+spec:
+  template:
+    spec:
+      securityContext:
+        seLinuxOptions:
+          type: spc_t
+...
+--
+
+You can also use `oc patch` to change the `securityContext` of the Deployment:
+
+[source,shell]
+--
+oc patch deployment [YOUR_DEPLOYMENT_NAME] -p '{"spec":{"template":{"spec":{"securityContext":{"seLinuxOptions":{"type":"spc_t"}}}}}}'
+--
+
+For more information, see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#selinuxoptions-v1-core[SELinuxOptions Spec].
+
+Please note that the Pods will be restarted. You should notice a much faster Pod startup time.
