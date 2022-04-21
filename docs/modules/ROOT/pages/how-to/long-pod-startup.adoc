@@ -32,7 +32,7 @@ oc project [YOUR_PROJECT_NAME]
 
 [NOTE]
 ====
-In this example, a `Deployment` is used, but the same change can be applied to a `DeploymentConfig` or `StatefulSet`.
+In this example, a `Deployment` is used, but the same change can be applied to all Kubernetes resources specifying a Pod spec.
 ====
 
 Set the following `securityContext` in the Deployment using `oc edit`:
