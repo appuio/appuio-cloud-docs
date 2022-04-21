@@ -1,14 +1,14 @@
 = Fix Long Pod Startup Time (CreateContainerError)
 
-This page describes how you can mitigate very long Pod startup times and `CreateContainerError` for Pods which mount RWX PVCs with a large amount of files.
+This page describes how you can mitigate very long Pod startup times and `CreateContainerError` for Pods which mount persistent volumes (PVCs) with a large number of files.
 
 == Explanation
 
 When a Pod mounts a volume which contains many files, the Pod startup time can be very long.
 This is caused because the container runtime updates the SELinux labels of all the files in the volume on Pod startup.
-Depending on the number of files, the relabeling can take a long time.
+Depending on the number of files, relabeling can take a long time.
 
-After some time, the Pod goes into status `CreateContainerError` when the relabeling takes too long.
+When relabeling takes too long, the Pod goes into `CreateContainerError` status after some time.
 When the container is created again, the container runtime continues relabeling files where it left off.
 Depending on the amount of files, multiple container restarts are required before the relabeling is done.
 Once the relabeling is complete, the Pod will go into status `Running`.
@@ -30,7 +30,12 @@ oc project [YOUR_PROJECT_NAME]
 
 === Change the Deployment SecurityContext
 
-Set the following `SecurityContext` in the Deployment using `oc edit`:
+[NOTE]
+====
+In this example, a `Deployment` is used, but the same change can be applied to all Kubernetes resources specifying a Pod spec.
+====
+
+Set the following `securityContext` in the Deployment using `oc edit`:
 
 [source,yaml]
 --
