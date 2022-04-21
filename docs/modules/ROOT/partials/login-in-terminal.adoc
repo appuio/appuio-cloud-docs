@@ -7,7 +7,7 @@ Follow these steps to login to {product} on your terminal:
 oc login --server=https://api.${zone}.appuio.cloud:6443
 --
 +
-You can find the exact URL of your chosen zone in the xref:references/zones.adoc[Zones page] of this documentation.
+You can find the exact URL of your chosen zone in the https://portal.appuio.cloud/zones[{product} Portal].
 +
 This command displays a URL on your terminal:
 +
