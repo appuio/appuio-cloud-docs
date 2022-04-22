@@ -43,7 +43,7 @@ The final step consists of the following:
 ** You can also select the menu:Actions[Connect with a certificate] menu entry, available at the right side of the btn:[Actions] button.
 . Fill the form with the following information:
 ** Kubernetes cluster name: "{product} [ZONE NAME]."
-** API URL: Use the xref:references/zones.adoc[URL corresponding to your chosen zone].
+** API URL: Use the https://portal.appuio.cloud/zones[URL corresponding to your chosen zone].
 ** CA Certificate: leave empty.
 ** Service Token: paste the value copied in the `oc sa get-token` command above.
 ** Check the "RBAC-enabled cluster" option.

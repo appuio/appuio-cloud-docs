@@ -124,7 +124,7 @@ spec:
     - [YOUR_USERNAME]-fortune-go.apps.[YOUR_CHOSEN_ZONE].appuio.cloud
     secretName: fortune-go-cert
 --
-<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]).
+<1> Remember to customize the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the https://portal.appuio.cloud/zones[Zones documentation page]).
 
 include::partial$url-length-warning.adoc[]
 

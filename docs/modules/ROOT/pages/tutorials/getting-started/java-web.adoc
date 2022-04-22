@@ -26,7 +26,7 @@ You can browse the full source code of this application on GitLab:
 Follow these steps to create an OpenShift project and deploy the application:
 
 . Login to {product} and open the "Developer" perspective.
-** You can find the link to the {product} web console of your chosen zone in the xref:references/zones.adoc[{product} Zones] documentation page.
+** You can find the link to the {product} web console of your chosen zone in the https://portal.appuio.cloud/zones[{product} Zones] documentation page.
 . Create a new project called "[YOUR_USERNAME]-fortune-java."
 . Click the "+Add" button on the sidebar.
 . Select the "Container images" option.

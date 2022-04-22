@@ -15,7 +15,7 @@ www  IN  CNAME  cname.cloudscale-lpg-0.appuio.cloud. <1>
 ----
 <1> The trailing dot is required to stop resolvers trying to resolve the cname with their configured search domains.
 
-You can find the correct target domain in xref:references/zones.adoc[Zones].
+You can find the correct target domain in https://portal.appuio.cloud/zones[Zones].
 
 [WARNING]
 ====

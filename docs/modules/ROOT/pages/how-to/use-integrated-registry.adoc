@@ -27,7 +27,7 @@ oc whoami -t | docker login -u $(oc whoami) --password-stdin \
   registry.${zone}.appuio.cloud
 ----
 <1> Replace `ZONE-ID` with the zone on which you want to access the registry.
-See the xref:references/zones.adoc[list of zones] for available {product} zones.
+See the https://portal.appuio.cloud/zones[list of zones] for available {product} zones.
 <2> You may be asked to obtain an API token from `oauth-openshift` on the zone.
 If that's the case, simply follow the link and copy the resulting login command from the browser before executing the next command.
 

@@ -265,7 +265,7 @@ oc get pods --watch
 
 At the moment your container is running but it's not available from the Internet. To be able to access our application, we must create an `Ingress` object.
 
-. Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the xref:references/zones.adoc[Zones documentation page]):
+. Create another file called `ingress.yaml` with the following contents, customizing the parts marked as `[YOUR_USERNAME]` and `[YOUR_CHOSEN_ZONE]` to your liking (and according to the https://portal.appuio.cloud/zones[Zones documentation page]):
 +
 [source,yaml]
 --
