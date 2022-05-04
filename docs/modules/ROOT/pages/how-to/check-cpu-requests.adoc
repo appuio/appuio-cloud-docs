@@ -1,0 +1,159 @@
+= Investigate and resolve fair use ratio violations for a project
+:stem:
+
+== Prerequisites
+
+For this guide, it's assumed that:
+
+* You are logged in to your {product} project using the `oc login` command.
+* You are familiar with Kubernetes' https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/[`Quantity` format].
+* You are familiar with the basic usage of `oc` (or `kubectl`)
+//* You have `jq` installed locally -- not needed atm
+
+
+== Investigating CPU requests
+
+Generally, for projects which violate the fair use ratio, {product} will show a warning whenever you create a new resource on the command line (for example with `oc create`).
+
+The warnings show the cumulative memory-per-core ratio of your project.
+
+.Example warning when creating a deployment
+[source]
+----
+W0504 16:36:06.622956  318587 warnings.go:70] Current memory to CPU ratio of 4000Mi/core in this namespace is below the fair use ratio of 4Gi/core
+----
+
+In this example, the project has a cumulative memory-per-core ratio of 4000Mi/core which is lower than the zone's fair use ratio of 4Gi/core (4096Mi/core).
+
+Additionally, {product} also emits Kubernetes Events for pods in projects which violate the fair use ratio.
+You can check resource ratio events emitted by {product} in your project with
+
+[source,bash]
+----
+oc get events --field-selector=source=resource-ratio-controller
+----
+
+{product} will emit a new event for each new Pod in a project which violates the fair use ratio.
+
+.Example event
+[source,console]
+----
+118m        Warning   TooMuchCPURequest   pod/PODNAME   Current memory to CPU ratio of 4000Mi/core in this namespace is below the fair use ratio of 4Gi/core
+----
+
+TIP: Events disappear after some time.
+
+== Manually calculate memory-per-core ratio
+
+You can follow the steps in this section to manually calculate the memory-per-core ratio of your project or individual workloads in your project.
+
+The following command will list the CPU and memory requests for all containers of all pods in your project:
+
+[source,bash]
+----
+oc get pods -ocustom-columns="NAME:.metadata.name,\
+CPU REQUESTS:.spec.containers[*].resources.requests.cpu,\
+MEMORY REQUESTS:.spec.containers[*].resources.requests.memory"
+----
+
+TIP: For pods with multiple containers, the CPU and memory requests of all containers are shown separated by commas.
+
+[TIP]
+====
+You can use the usual methods to select a subset of pods in your project.
+For example, you can list only pods with a specific label by appending `--selector=<labelkey>=<labelvalue>` to the command.
+====
+
+You can calculate the cumulative memory-per-core ratio for your project using the following steps:
+
+. To simplify the calculation, normalize all the shown values to full CPU cores (for example, multiply by `0.001` for CPU requests postfixed with `m`) and MiB (for example, multiply by `1024` for memory requests in `Gi`).
+See the Kubernetes documentation for details on the https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/[format used for resource requests].
+. Sum up the values for `CPU REQUESTS` and `MEMORY REQUESTS`.
+The result of `sum(MEMORY REQUESTS) / sum(CPU REQUESTS)` is the workload ratio.
+
+Alternatively you can sum up the values for `CPU REQUESTS` and `MEMORY REQUESTS` for each pod individually.
+In that case, you can then calculate each pod's ratio by dividing the pod's  summed up `MEMORY REQUESTS` by the pod's summed up `CPU REQUESTS`.
+
+
+=== Example calculation
+
+Let's assume you get the following as the output of the `oc get pods` command above.
+
+.Listing of pods with their requests from `oc get pods`
+[source]
+----
+NAME                                    CPU REQUESTS   MEMORY REQUESTS
+acme-dns-655d74cb85-ztxr5               25m,25m        100Mi,100Mi <1>
+backup-acme-dns-backup-6chsf--1-gmlpq   25m            100Mi
+backup-acme-dns-backup-6mcs4--1-rzbsd   25m            100Mi
+backup-acme-dns-backup-khx2d--1-thqcx   25m            100Mi
+backup-acme-dns-backup-pp6pt--1-jdhj6   25m            100Mi
+check-acme-dns-check-mfw7w--1-fqp2k     25m            100Mi
+check-acme-dns-check-n22ts--1-cg4tq     25m            100Mi
+prune-acme-dns-prune-6b6w5--1-4xj64     25m            100Mi
+prune-acme-dns-prune-85ghl--1-k69cb     25m            100Mi
+----
+<1> Requests for pods with multiple containers are shown as a comma-separated list in the output
+
+First, you should normalize all values to full CPU cores and MiB (`Mi`).
+In the example, only the CPU requests have to be normalized, since all memory requests are already in MiB.
+
+After normalization you end up with something like the following listing.
+
+.Normalized requests
+[source]
+----
+NAME                                    CPU REQUESTS   MEMORY REQUESTS
+acme-dns-655d74cb85-ztxr5               0.025,0.025    100,100
+backup-acme-dns-backup-6chsf--1-gmlpq   0.025          100
+backup-acme-dns-backup-6mcs4--1-rzbsd   0.025          100
+backup-acme-dns-backup-khx2d--1-thqcx   0.025          100
+backup-acme-dns-backup-pp6pt--1-jdhj6   0.025          100
+check-acme-dns-check-mfw7w--1-fqp2k     0.025          100
+check-acme-dns-check-n22ts--1-cg4tq     0.025          100
+prune-acme-dns-prune-6b6w5--1-4xj64     0.025          100
+prune-acme-dns-prune-85ghl--1-k69cb     0.025          100
+----
+
+To calculate the memory-per-core ratio for a single pod, you can directly divide the sum of the pod's memory requests by the sum of the pod's CPU requests.
+
+.memory-per-core ratio for pod `acme-dns-655d74cb85-ztxr5`
+[source]
+----
+CPU REQUESTS:     2*0.025 = 0.05
+MEMORY REQUESTS:  2*100   = 200
+
+RATIO:  200 / 0.05 = 4000
+----
+
+To calculate the project's cumulative memory-per-core ratio, you can sum up the CPU requests and memory requests:
+
+.Summed requests for all pods in the project
+[source]
+----
+CPU REQUESTS:    10*0.025 = 0.25
+MEMORY REQUESTS: 10*100   = 1000
+----
+
+Finally, you can calculate the memory-per-core ratio for the project by dividing the memory requests by the CPU requests:
+
+.memory-per-core ratio for the whole project
+[source]
+----
+1000 / 0.25 = 4000
+----
+
+== Resolution
+
+* Make sure your deployments (and other resources which create workloads) configure CPU and memory requests which result in your workload using at least the displayed minimum memory CPU ratio for your zone in https://portal.appuio.cloud/zones[the portal].
+
+To adjust the ratio of your workload to be at or above the displayed ratio you can:
+
+** Lower the CPU requests while leaving the memory requests unchanged
+** Raise the memory requests while leaving the CPU requests unchanged
+** Lower the CPU requests and raise the memory requests
+
+See our documentation on https://kb.vshn.ch/rancher/explanations/kubernetes_resource_management.html[workload requests and limits].
+Despite its location, this documentation also applies for workloads on {product}.
+
+Additionally, you can also consult the Kubernetes documentation on https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/[managing resources for containers] for details on configuring your workload's requests.
