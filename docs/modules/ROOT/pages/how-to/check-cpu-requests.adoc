@@ -1,5 +1,10 @@
 = Investigate and resolve fair use ratio violations for a project
-:stem:
+
+[IMPORTANT]
+====
+*As of 2022-05-01*, {product} is billing CPU requests which violate the fair use ratio.
+See the https://products.docs.vshn.ch/products/appuio/cloud/pricing.html#_compute[{product} pricing documentation] for details.
+====
 
 == Prerequisites
 
