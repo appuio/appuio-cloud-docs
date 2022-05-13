@@ -22,6 +22,8 @@ In the home screen of the https://portal.appuio.cloud/[APPUiO Cloud Portal] sele
 
 image::getting-started/choose-zone.png[]
 
+If you are more of a command line person, you can also copy the Kubernets API URL and login using `oc login --server=<url>`.
+
 == Step 5: Get Started with OpenShift
 
 Follow the "Getting Started" instructions of OpenShift; download the command line tools if you haven't already, create a new project, and deploy your first application in just a few steps.
