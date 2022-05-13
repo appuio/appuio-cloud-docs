@@ -8,23 +8,31 @@ To create your APPUiO Cloud account, fill the form https://www.appuio.ch/en/offe
 
 == Step 2: Login
 
-Login to the https://control.vshn.net/[VSHN Control Panel] following the instructions in your welcome e-mail. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
+Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] following the instructions in your welcome e-mail. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
 
-== Step 3: Choose a Zone
+== Step 3: Create an Organization
 
-In the https://control.vshn.net/appuio-cloud[APPUiO Cloud] page, select the link that corresponds to your preferred zone.
+The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to create an organization for yourself and your team.
 
-image::getting-started/zones.png[]
+image::getting-started/create-organization.png[]
 
-== Step 4: Get Started with OpenShift
+== Step 4: Choose a Zone
+
+In the home screen of the https://portal.appuio.cloud/[APPUiO Cloud Portal] select the link that corresponds to your preferred zone marked as "Console"
+
+image::getting-started/choose-zone.png[]
+
+If you are more of a command line person, you can also copy the Kubernetes API URL and login using `oc login --server=<url>`.
+
+== Step 5: Get Started with OpenShift
 
 Follow the "Getting Started" instructions of OpenShift; download the command line tools if you haven't already, create a new project, and deploy your first application in just a few steps.
 
 image::getting-started/openshift-welcome.png[]
 
-== Step 5: Deploy an Application Now!
+== Step 6: Deploy an Application
 
-Select your programming language to get started:
+Select your preferred programming language to get started; you can either use the OpenShift web console, or, if you are more technically inclined, just launch your preferred terminal and start typing:
 
 [cols="^1,^1,^1"]
 |===
@@ -92,7 +100,7 @@ Select your programming language to get started:
 
 |===
 
-== Step 6: Use your Favorite DevOps Tool
+== Step 7: Use your Favorite DevOps Tool
 
 [cols="^1,^1"]
 |===
@@ -116,11 +124,11 @@ Select your programming language to get started:
 
 |===
 
-== Step 7: Learn More
+== Step 8: Learn More
 
 The APPUiO Cloud documentation consists of the following pieces:
 
-* The https://docs.appuio.cloud/[User documentation], which you are reading right now;
+* The https://docs.appuio.cloud/[User documentation], precisely the one you are reading right now;
 * The https://kb.vshn.ch/appuio-cloud/[Technical documentation], available at the VSHN Knowledge Base, and containing important technical details of interest for DevOps engineers.
 * The https://products.docs.vshn.ch/products/appuio/cloud/[Product information], with feature and pricing descriptions.
 * The https://roadmap.appuio.cloud/[Roadmap], with a sneak peek into the work planned for future versions of APPUiO Cloud.
