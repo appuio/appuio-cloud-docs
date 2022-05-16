@@ -14,6 +14,8 @@ Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] following the ins
 
 The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to create an organization for yourself and your team.
 
+WARNING: If you don't choose a default organization, you won't be able to create new projects in the OpenShift web console later.
+
 image::getting-started/create-organization.png[]
 
 == Step 4: Choose a Zone
