@@ -9,7 +9,7 @@ See the https://products.docs.vshn.ch/products/appuio/cloud/pricing.html#_comput
 [TIP]
 ====
 The OpenShift Web Console provides you a dashboard showing all relevant data on requests, limits and effective usage.
-You find it at btn:Observe → btn:Dashboard → Select _Kubernetes / Compute Resources / Namespaces (Pods)_.
+You find it at btn:[Observe] → btn:[Dashboard] → Select _Kubernetes / Compute Resources / Namespaces (Pods)_.
 The direct link is `https://console.<zone>.appuio.cloud/dev-monitoring?dashboard=grafana-dashboard-k8s-resources-namespace`.
 ====
 
