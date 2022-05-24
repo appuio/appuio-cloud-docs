@@ -19,44 +19,30 @@ For this guide, it's assumed that:
 To configure your {product} project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
 
 . Create a service account in your project.
-. Add the `edit` role to the new service account.
-. Copy the generated secret associated with the service account in your clipboard.
-. Configure {product} in GitLab.
+. Add an elevated role to this service account.
+. Create a local `KUBECONFIG` variable and login to your OpenShift cluster.
+. Create a variable named `KUBECONFIG` in the GitLab settings.
 
-=== On APPUiO
-
-The following commands show the first three steps in detail:
+The following commands show the steps in detail:
 
 [source,shell]
 ----
 oc project [PROJECT-NAME]
-oc create sa gitlab-ci
-oc adm policy add-role-to-user edit -z gitlab-ci
-oc sa get-token gitlab-ci
+oc create serviceaccount gitlab-ci
+oc policy add-role-to-user admin -z gitlab-ci --rolebinding-name gitlab-ci
 ----
 
-=== On GitLab (via Certificates)
+Create a local KUBECONFIG variable and login to your OpenShift cluster using the gitlab-ci service account:
 
-The final step consists of the following:
+[source,shell]
+----
+TOKEN=$(oc sa get-token gitlab-ci)
+export KUBECONFIG=gitlab-ci.kubeconfig
+oc login --server=$OPENSHIFT_API_URL --token=$TOKEN
+unset KUBECONFIG
+----
 
-. In your GitLab project, select the menu:Infrastructure[Kubernetes clusters] menu item, and scroll to the bottom to select the btn:[Connect existing cluster] button.
-** You can also select the menu:Actions[Connect with a certificate] menu entry, available at the right side of the btn:[Actions] button.
-. Fill the form with the following information:
-** Kubernetes cluster name: "{product} [ZONE NAME]."
-** API URL: Use the https://portal.appuio.cloud/zones[URL corresponding to your chosen zone].
-** CA Certificate: leave empty.
-** Service Token: paste the value copied in the `oc sa get-token` command above.
-** Check the "RBAC-enabled cluster" option.
-** Uncheck "GitLab-managed cluster" and "Namespace per environment."
-** Leave the "Project namespace prefix (optional, unique)" empty.
-. Click the button btn:[Add Kubernetes cluster]
-
-image::gitlab-kubernetes.png[]
-
-[IMPORTANT]
-If the token is invalid, the message `There was a problem authenticating with your cluster.
-Please ensure your CA Certificate and Token are valid` will appear.
-Check that the pasted token value is correct.
+You should now have a file named `gitlab-ci.kubeconfig` in your current working directory. Copy its contents and create a variable named `KUBECONFIG` in the GitLab settings with the value of the file (that's under menu:Settings[CI/CD > Variables > Expand > Add Variable]). Remember to set the "environment" scope for the variable and to disable any previous Kubernetes integration, as the `KUBECONFIG` variable might collide with this new variable.
 
 == Connecting {product} to the GitLab Container Registry
 
