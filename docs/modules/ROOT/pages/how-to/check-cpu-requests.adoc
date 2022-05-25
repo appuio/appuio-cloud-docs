@@ -60,11 +60,14 @@ TIP: Events disappear after some time.
 
 You can follow the steps in this section to manually calculate the memory-per-core ratio of your project or individual workloads in your project.
 
+TIP: The memory-per-core ratio of a project is computed only from pods in state `Running`.
+
 The following command will list the CPU and memory requests for all containers of all pods in your project:
 
 [source,bash]
 ----
-oc get pods -ocustom-columns="NAME:.metadata.name,\
+oc get pods --field-selector=status.phase=Running \
+-ocustom-columns="NAME:.metadata.name,\
 CPU REQUESTS:.spec.containers[*].resources.requests.cpu,\
 MEMORY REQUESTS:.spec.containers[*].resources.requests.memory"
 ----
@@ -97,14 +100,7 @@ Let's assume you get the following as the output of the `oc get pods` command ab
 ----
 NAME                                    CPU REQUESTS   MEMORY REQUESTS
 acme-dns-655d74cb85-ztxr5               25m,25m        100Mi,100Mi <1>
-backup-acme-dns-backup-6chsf--1-gmlpq   25m            100Mi
-backup-acme-dns-backup-6mcs4--1-rzbsd   25m            100Mi
-backup-acme-dns-backup-khx2d--1-thqcx   25m            100Mi
-backup-acme-dns-backup-pp6pt--1-jdhj6   25m            100Mi
-check-acme-dns-check-mfw7w--1-fqp2k     25m            100Mi
-check-acme-dns-check-n22ts--1-cg4tq     25m            100Mi
-prune-acme-dns-prune-6b6w5--1-4xj64     25m            100Mi
-prune-acme-dns-prune-85ghl--1-k69cb     25m            100Mi
+acme-dns-655d74cb85-vl39b               25m,25m        100Mi,100Mi <1>
 ----
 <1> Requests for pods with multiple containers are shown as a comma-separated list in the output
 
@@ -118,14 +114,7 @@ After normalization you end up with something like the following listing.
 ----
 NAME                                    CPU REQUESTS   MEMORY REQUESTS
 acme-dns-655d74cb85-ztxr5               0.025,0.025    100,100
-backup-acme-dns-backup-6chsf--1-gmlpq   0.025          100
-backup-acme-dns-backup-6mcs4--1-rzbsd   0.025          100
-backup-acme-dns-backup-khx2d--1-thqcx   0.025          100
-backup-acme-dns-backup-pp6pt--1-jdhj6   0.025          100
-check-acme-dns-check-mfw7w--1-fqp2k     0.025          100
-check-acme-dns-check-n22ts--1-cg4tq     0.025          100
-prune-acme-dns-prune-6b6w5--1-4xj64     0.025          100
-prune-acme-dns-prune-85ghl--1-k69cb     0.025          100
+acme-dns-655d74cb85-vl39b               0.025,0.025    100,100
 ----
 
 To calculate the memory-per-core ratio for a single pod, you can directly divide the sum of the pod's memory requests by the sum of the pod's CPU requests.
@@ -144,8 +133,8 @@ To calculate the project's cumulative memory-per-core ratio, you can sum up the 
 .Summed requests for all pods in the project
 [source]
 ----
-CPU REQUESTS:    10*0.025 = 0.25
-MEMORY REQUESTS: 10*100   = 1000
+CPU REQUESTS:    4*0.025 = 0.1
+MEMORY REQUESTS: 4*100   = 400
 ----
 
 Finally, you can calculate the memory-per-core ratio for the project by dividing the memory requests by the CPU requests:
@@ -153,7 +142,7 @@ Finally, you can calculate the memory-per-core ratio for the project by dividing
 .memory-per-core ratio for the whole project
 [source]
 ----
-1000 / 0.25 = 4000
+400 / 0.1 = 4000
 ----
 
 == Resolution
