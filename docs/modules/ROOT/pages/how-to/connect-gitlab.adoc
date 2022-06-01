@@ -2,30 +2,157 @@
 
 image:logos/gitlab.svg[role="related thumb right",alt="GitLab logo",width=120,height=120] This page explains how to connect your GitLab project to {product} for your GitOps operations.
 
-This integration has two major aspects:
+This integration has three significant aspects:
 
-. Configuring {product} as a Kubernetes cluster for your GitLab project.
+. Configuring {product} as a Kubernetes cluster for your GitLab project *with* the Agent.
+. Configuring {product} as a Kubernetes cluster for your GitLab project *without* the Agent.
 . Connecting {product} to access your GitLab project's container registry.
 
 == Prerequisites
 
-For this guide, it's assumed that:
+For this guide, you need:
 
-* You have a GitLab project (either on https://gitlab.com or in a private instance).
-* You are logged in to your {product} project using the `oc login` command.
+* A GitLab project (either on https://gitlab.com or in a private instance).
+* Log in to your {product} project using the `oc login` command, and select your project.
 
-== Configuring {product} as a Kubernetes cluster in GitLab
+== Configuring {product} as a Kubernetes cluster in GitLab with the Agent
+
+To configure your {product} project as a Kubernetes cluster in GitLab using the new GitLab Agent, follow the steps outlined below.
+
+IMPORTANT: Given the shared nature of {product}, the GitLab Agent cannot be installed cluster-wide, but it can be installed "organization-wide", however, as shown in this section.
+
+On your GitLab instance:
+
+. Create a file named `.gitlab/agents/appuio-cloud/config.yaml` in your GitLab project; commit and push.
+. In GitLab, select the menu:Infrastructure[Kubernetes Clusters] screen and click the btn:[Connect a cluster (agent)].
+. In the popup that opens, click on the menu:[Select an agent or enter a name to create new] menu and select the `appuio-cloud` entry, corresponding to the file created above.
+. Copy the GitLab Agent token shown in the popup, as it won't appear anymore.
+
+In your terminal, perform the following steps:
+
+. Add the GitLab repository to `helm` and update:
++
+[source, shell]
+--
+helm repo add gitlab https://charts.gitlab.io && helm repo update
+--
+
+. Use the GitLab Agent token in the following command:
++
+[source, shell]
+--
+helm upgrade --install gitlab-agent gitlab/gitlab-agent \
+    --set config.token={GITLAB_AGENT_TOKEN} \
+    --set config.kasAddress=wss://kas.gitlab.com \
+    --set rbac.create=false
+--
+
+NOTE: If you're using a self-hosted GitLab instance, change the value of the `config.kasAddress` parameter to match your own.
+
+. Grant namespace admin permissions for the Agent's service account:
++
+[source, shell]
+--
+oc policy add-role-to-user admin -z gitlab-agent --rolebinding-name gitlab-agent
+--
+
+You can now modify your `.gitlab-ci.yml` file to deploy your manifests whenever needed; for example, every time a new tag is pushed:
+
+[source, yaml]
+--
+variables:
+  TARGET_PROJECT: gitlab-agent-test
+
+stages:
+  - deploy
+
+master:deploy:
+  stage: deploy
+  image: docker.io/appuio/oc:v4.5
+  environment:
+    name: production
+  script:
+    - oc config get-contexts # <1>
+    - oc config use-context username/project-name:appuio-cloud # <2>
+    - oc -n $TARGET_PROJECT apply -f deployment
+    - oc -n $TARGET_PROJECT apply -f appuio-cloud
+  only:
+    - tags
+--
+<1> This will print in the CI/CD console of the job runner the list of available contexts, which might be helpful in case of a failure.
+<2> The `username/project-name` value must match those of your project; the `appuio-cloud` name corresponds to the file `.gitlab/agents/appuio-cloud/config.yaml` created previously.
+
+.GitLab connected to GitLab Agent on APPUiO Cloud
+image::how-to/gitlab-agent.png[]
+
+=== Reusing the GitLab Agent from other Projects
+
+You can reuse this GitLab Agent instance from other projects. Let's imagine that it's installed in a project called `gitlab-agent-test`.
+
+. Create another project:
++
+[source, shell]
+--
+oc new-project new-project-name
+--
+
+. Grant namespace admin permissions to the GitLab Agent service account, even though it is not installed:
++
+[source, shell]
+--
+oc policy add-role-to-user admin -z gitlab-agent --rolebinding-name gitlab-agent
+--
++
+This line will show a warning: "ServiceAccount 'gitlab-agent' not found".
+
+. Edit the new `RoleBinding` called `gitlab-agent` and change the namespace, pointing to the correct one:
++
+[source, shell]
+--
+oc edit rolebinding gitlab-agent
+--
++
+This will open your $EDITOR with the contents of the `RoleBinding`; edit the `subjects[0].namespace` value to point to the `gitlab-agent-test` project:
++
+[source, yaml]
+--
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  creationTimestamp: "2022-06-01T10:45:30Z"
+  name: gitlab-agent
+  namespace: new-project-name
+  resourceVersion: "303705680"
+  uid: dae7f5f5-7030-41b9-9371-9bee8bcaab30
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: gitlab-agent
+  namespace: new-project-name # <1>
+--
+<1> Change this line to point to the `gitlab-agent-test` namespace instead.
+
+Now you can deploy from GitLab into other projects belonging to your organization, using a single GitLab Agent installed in the `gitlab-agent-test` project.
+
+== Configuring {product} as a Kubernetes cluster in GitLab without the Agent
 
 To configure your {product} project as a Kubernetes cluster in GitLab, follow the steps that are outlined in more detail below:
 
 . Create a service account in your project.
 . Add an elevated role to this service account.
-. Create a local `KUBECONFIG` variable and login to your OpenShift cluster.
+. Create a local `KUBECONFIG` variable and log in to your OpenShift cluster.
 . Create a variable named `KUBECONFIG` in the GitLab settings.
 
 The following commands show the steps in detail:
 
-[source,shell]
+[source, shell]
 ----
 oc project [PROJECT-NAME]
 oc create serviceaccount gitlab-ci
@@ -34,7 +161,7 @@ oc policy add-role-to-user admin -z gitlab-ci --rolebinding-name gitlab-ci
 
 Create a local KUBECONFIG variable and login to your OpenShift cluster using the gitlab-ci service account:
 
-[source,shell]
+[source, shell]
 ----
 TOKEN=$(oc sa get-token gitlab-ci)
 export KUBECONFIG=gitlab-ci.kubeconfig
@@ -62,7 +189,7 @@ Follow these steps to create a new deploy token in your GitLab project:
 . Click the btn:[Create deploy token] button.
 . Copy the token immediately; it won't be shown ever again.
 
-image::gitlab-registry.png[]
+image::how-to/gitlab-registry.png[]
 
 NOTE: If no name is provided, GitLab provides a default username of the form `gitlab+deploy-token-{n}`.
 
