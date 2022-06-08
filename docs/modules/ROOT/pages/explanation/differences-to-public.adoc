@@ -110,3 +110,8 @@ Thanks to the recent Kubernetes version we offer the latest available K8up versi
 
 {product} uses UTC as timezone on the control plane which affects for example `CronJobs`.
 In APPUiO Public the timezone was set to `Europe/Zurich`.
+
+=== Limited availability of logs
+
+APPUiO Cloud stores logs only for three days.
+It is also not possible to change the log retention for individual namespaces.
