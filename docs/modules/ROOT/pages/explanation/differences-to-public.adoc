@@ -121,4 +121,4 @@ In APPUiO Public the timezone was set to `Europe/Zurich`.
 === Limited availability of logs
 
 APPUiO Cloud stores logs only for three days.
-It is also not possible to change the log retention for individual namespaces.
+It's also not possible to change the log retention for individual namespaces.
