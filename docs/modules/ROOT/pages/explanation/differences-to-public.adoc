@@ -3,6 +3,13 @@
 {product} is the successor to APPUiO Public.
 This page lists the most notable differences.
 
+[IMPORTANT]
+====
+This is only a summary for convenience and may not be complete.
+For the exact set of features, see the https://products.docs.vshn.ch/products/appuio/cloud/index.html[APPUiO Cloud Product Documentation].
+In case of differences, the APPUiO Cloud Product Documentation takes precedence.
+====
+
 == Product
 
 === Billing Model
@@ -110,3 +117,8 @@ Thanks to the recent Kubernetes version we offer the latest available K8up versi
 
 {product} uses UTC as timezone on the control plane which affects for example `CronJobs`.
 In APPUiO Public the timezone was set to `Europe/Zurich`.
+
+=== Limited availability of logs
+
+APPUiO Cloud stores logs only for three days.
+It's also not possible to change the log retention for individual namespaces.
