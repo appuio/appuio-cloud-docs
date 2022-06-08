@@ -3,6 +3,13 @@
 {product} is the successor to APPUiO Public.
 This page lists the most notable differences.
 
+[IMPORTANT]
+====
+This is only a summary for convenience and may not be complete.
+For the exact set of features, see the https://products.docs.vshn.ch/products/appuio/cloud/index.html[APPUiO Cloud Product Documentation].
+In case of differences, the APPUiO Cloud Product Documentation takes precedence.
+====
+
 == Product
 
 === Billing Model
