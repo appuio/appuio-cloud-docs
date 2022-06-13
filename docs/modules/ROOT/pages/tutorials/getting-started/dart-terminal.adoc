@@ -19,7 +19,7 @@ To follow this guide, please make sure that you have the following tools install
 
 == About the Application
 
-To demo how to run applications written in the https://dart.dev/[Dart] programming language on {product}, we will use a small demo application using the https://www.theconduit.dev/[Conduit], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://dart.dev/[Dart] programming language on {product}, we will use a small demo application using the https://www.theconduit.dev/[Conduit Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
 You can browse the full source code of this application on GitLab:
 
@@ -35,7 +35,7 @@ Learn more about the `fortune-dart` application, including how to edit and build
 
 === The Application Router
 
-The code below shows the main router of the application in the Dart programming language, located at https://gitlab.com/vshn/applications/fortune-dart/-/blob/master/lib/channel.dart[lib/channel.dart], courtesy of the https://www.theconduit.dev/[Conduit].
+The code below shows the main router of the application in the Dart programming language, located at https://gitlab.com/vshn/applications/fortune-dart/-/blob/master/lib/channel.dart[lib/channel.dart], courtesy of the https://www.theconduit.dev/[Conduit Framework].
 
 [source,dart,indent=0]
 --
@@ -276,7 +276,7 @@ curl https://[YOUR_USERNAME]-fortune-dart.apps.[YOUR_CHOSEN_ZONE].appuio.cloud -
 
 The "Fortune in  Dart" application is now running on {product}. Congratulations! Hit the kbd:[R] key in your keyboard to see a new fortune message, or just wait 10 seconds to get a new one automatically.
 
-What's next? To run your own application written in Dart or using the Conduit on {product}, follow these steps:
+What's next? To run your own application written in Dart or using the Conduit Framework on {product}, follow these steps:
 
 * Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
 * Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
