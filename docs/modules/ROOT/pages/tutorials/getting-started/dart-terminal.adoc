@@ -113,7 +113,23 @@ The application includes a https://gitlab.com/vshn/applications/fortune-dart/-/b
 
 [source,dockerfile,indent=0]
 --
+# Build minimal serving image from AOT-compiled `/server` and required system
+# libraries and configuration files stored in `/runtime/` from the build stage.
+FROM alpine:3.14
+RUN apk update \
+    && apk add --no-cache fortune ca-certificates tzdata \
+    && rm -rf /var/cache/apk/*
+WORKDIR /app/bin
+COPY --from=build /runtime/ /
+COPY --from=build /app/fortune_dart.aot /app/bin/
+COPY templates /app/bin/templates
 
+EXPOSE 8080
+
+# <1>
+USER 1001:0
+
+CMD ["/app/bin/fortune_dart.aot", "--port=8080", "--address=0.0.0.0"]
 --
 <1> This explicitly prevents the container from running as root; this is a requirement of OpenShift, and a good practice for images in general.
 
