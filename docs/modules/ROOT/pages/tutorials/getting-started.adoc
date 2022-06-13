@@ -52,6 +52,10 @@ Select your preferred programming language to get started; you can either use th
 | xref:tutorials/getting-started/csharp-web.adoc[C# with web console]
 | xref:tutorials/getting-started/csharp-terminal.adoc[C# with the terminal]
 
+| image:logos/dart.svg[alt="Programming language logo",width=50,height=50]
+| xref:tutorials/getting-started/dart-web.adoc[Dart with web console]
+| xref:tutorials/getting-started/dart-terminal.adoc[Dart with the terminal]
+
 | image:logos/elixir.svg[alt="Programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/elixir-web.adoc[Elixir with web console]
 | xref:tutorials/getting-started/elixir-terminal.adoc[Elixir with the terminal]
