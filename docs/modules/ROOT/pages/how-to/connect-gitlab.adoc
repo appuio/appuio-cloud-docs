@@ -19,7 +19,7 @@ For this guide, you need:
 
 To configure your {product} project as a Kubernetes cluster in GitLab using the new GitLab Agent, follow the steps outlined below.
 
-IMPORTANT: Given the shared nature of {product}, the GitLab Agent cannot be installed cluster-wide, but it can be installed "organization-wide", however, as shown in this section.
+IMPORTANT: Given the shared nature of {product}, the GitLab Agent can't be installed cluster-wide, but it can be installed organization-wide, however, as shown in this section.
 
 On your GitLab instance:
 
@@ -32,32 +32,35 @@ In your terminal, perform the following steps:
 
 . Add the GitLab repository to `helm` and update:
 +
-[source, shell]
+[source, bash]
 --
 helm repo add gitlab https://charts.gitlab.io && helm repo update
 --
 
 . Use the GitLab Agent token in the following command:
 +
-[source, shell]
+[source, bash]
 --
+GITLAB_AGENT_TOKEN=<the-token> <1>
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
-    --set config.token={GITLAB_AGENT_TOKEN} \
+    --set config.token=${GITLAB_AGENT_TOKEN} \
     --set config.kasAddress=wss://kas.gitlab.com \
     --set rbac.create=false
 --
+<1> The GitLab Agent's access token
 
 NOTE: If you're using a self-hosted GitLab instance, change the value of the `config.kasAddress` parameter to match your own.
 
 . Grant namespace admin permissions for the Agent's service account:
 +
-[source, shell]
+[source, bash]
 --
 oc policy add-role-to-user admin -z gitlab-agent --rolebinding-name gitlab-agent
 --
 
 You can now modify your `.gitlab-ci.yml` file to deploy your manifests whenever needed; for example, every time a new tag is pushed:
 
+.gitlab-ci.yml
 [source, yaml]
 --
 variables:
@@ -68,7 +71,7 @@ stages:
 
 master:deploy:
   stage: deploy
-  image: docker.io/appuio/oc:v4.5
+  image: docker.io/appuio/oc:v4.9
   environment:
     name: production
   script:
@@ -87,27 +90,28 @@ image::how-to/gitlab-agent.png[]
 
 === Reusing the GitLab Agent from other Projects
 
-You can reuse this GitLab Agent instance from other projects. Let's imagine that it's installed in a project called `gitlab-agent-test`.
+You can reuse this GitLab Agent instance from other projects.
+Let's imagine that it's installed in a project called `gitlab-agent-test`.
 
 . Create another project:
 +
-[source, shell]
+[source, bash]
 --
 oc new-project new-project-name
 --
 
-. Grant namespace admin permissions to the GitLab Agent service account, even though it is not installed:
+. Grant namespace admin permissions to the GitLab Agent service account, even though it's not installed:
 +
-[source, shell]
+[source, bash]
 --
 oc policy add-role-to-user admin -z gitlab-agent --rolebinding-name gitlab-agent
 --
 +
-This line will show a warning: "ServiceAccount 'gitlab-agent' not found".
+This line will show a warning: "ServiceAccount 'gitlab-agent' not found."
 
 . Edit the new `RoleBinding` called `gitlab-agent` and change the namespace, pointing to the correct one:
 +
-[source, shell]
+[source, bash]
 --
 oc edit rolebinding gitlab-agent
 --
@@ -152,7 +156,7 @@ To configure your {product} project as a Kubernetes cluster in GitLab, follow th
 
 The following commands show the steps in detail:
 
-[source, shell]
+[source, bash]
 ----
 oc project [PROJECT-NAME]
 oc create serviceaccount gitlab-ci
@@ -161,15 +165,18 @@ oc policy add-role-to-user admin -z gitlab-ci --rolebinding-name gitlab-ci
 
 Create a local KUBECONFIG variable and login to your OpenShift cluster using the gitlab-ci service account:
 
-[source, shell]
+[source, bash]
 ----
 TOKEN=$(oc sa get-token gitlab-ci)
 export KUBECONFIG=gitlab-ci.kubeconfig
-oc login --server=$OPENSHIFT_API_URL --token=$TOKEN
+oc login --server=$OPENSHIFT_API_URL --token=$TOKEN <1>
 unset KUBECONFIG
 ----
+<1> Replace `$OPENSHIFT_API_URL` with the {zone}'s API URL
 
-You should now have a file named `gitlab-ci.kubeconfig` in your current working directory. Copy its contents and create a variable named `KUBECONFIG` in the GitLab settings with the value of the file (that's under menu:Settings[CI/CD > Variables > Expand > Add Variable]). Remember to set the "environment" scope for the variable and to disable any previous Kubernetes integration, as the `KUBECONFIG` variable might collide with this new variable.
+You should now have a file named `gitlab-ci.kubeconfig` in your current working directory.
+Copy its contents and create a variable named `KUBECONFIG` in the GitLab settings with the value of the file (that's under menu:Settings[CI/CD > Variables > Expand > Add Variable]).
+Remember to set the "environment" scope for the variable and to disable any previous Kubernetes integration, as the `KUBECONFIG` variable might collide with this new variable.
 
 == Connecting {product} to the GitLab Container Registry
 
