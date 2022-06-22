@@ -8,6 +8,10 @@ The following quotas are configured:
 
 `organization-objects`:: Quotas for counts of non-compute objects such as ConfigMaps and Services.
 Check the https://kb.vshn.ch/appuio-cloud/references/quality-requirements/performance/resource-quota.html[system documentation] or use the `oc` command below to see all non-compute resources on which quotas are in place.
+Notably, we apply quotas for the cumulative storage requests for the storage classes `cephfs-fspool-cluster` and `rbd-storagepool-cluster`.
+There are separate quotas for each storage class.
++
+NOTE: Storage class `rbd-storagepool-cluster` isn't present on all {product} zones.
 `organization-compute`:: Quotas for `NotTerminating` pods.
 This includes the number of `NotTerminating` pods and the cumulative resource requests and limits for `NotTerminating` pods.
 `organization-compute-terminating`:: Quotas for `Terminating` pods.
