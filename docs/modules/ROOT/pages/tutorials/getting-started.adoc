@@ -48,6 +48,10 @@ Select your preferred programming language to get started; you can either use th
 | xref:tutorials/getting-started/cpp-web.adoc[C++ with web console]
 | xref:tutorials/getting-started/cpp-terminal.adoc[C++ with the terminal]
 
+| image:logos/crystal.svg[alt="Programming language logo",width=50,height=50]
+| xref:tutorials/getting-started/crystal-web.adoc[Crystal with web console]
+| xref:tutorials/getting-started/crystal-terminal.adoc[Crystal with the terminal]
+
 | image:logos/csharp.svg[alt="Programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/csharp-web.adoc[C# with web console]
 | xref:tutorials/getting-started/csharp-terminal.adoc[C# with the terminal]

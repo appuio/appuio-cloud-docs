@@ -14,6 +14,7 @@
 ** On the OpenShift Web Console
 *** xref:tutorials/getting-started/c-web.adoc[C]
 *** xref:tutorials/getting-started/cpp-web.adoc[C++]
+*** xref:tutorials/getting-started/crystal-web.adoc[Crystal]
 *** xref:tutorials/getting-started/csharp-web.adoc[C#]
 *** xref:tutorials/getting-started/dart-web.adoc[Dart]
 *** xref:tutorials/getting-started/elixir-web.adoc[Elixir]
@@ -32,6 +33,7 @@
 ** On the Terminal
 *** xref:tutorials/getting-started/c-terminal.adoc[C]
 *** xref:tutorials/getting-started/cpp-terminal.adoc[C++]
+*** xref:tutorials/getting-started/crystal-terminal.adoc[Crystal]
 *** xref:tutorials/getting-started/csharp-terminal.adoc[C#]
 *** xref:tutorials/getting-started/dart-terminal.adoc[Dart]
 *** xref:tutorials/getting-started/elixir-terminal.adoc[Elixir]
