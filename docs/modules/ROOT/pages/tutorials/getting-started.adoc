@@ -80,6 +80,10 @@ Select your preferred programming language to get started; you can either use th
 | xref:tutorials/getting-started/kotlin-web.adoc[Kotlin with web console]
 | xref:tutorials/getting-started/kotlin-terminal.adoc[Kotlin with the terminal]
 
+| image:logos/perl.svg[alt="Programming language logo",width=50,height=50]
+| xref:tutorials/getting-started/perl-web.adoc[Perl with web console]
+| xref:tutorials/getting-started/perl-terminal.adoc[Perl with the terminal]
+
 | image:logos/php.svg[alt="Programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/php-web.adoc[PHP with web console]
 | xref:tutorials/getting-started/php-terminal.adoc[PHP with the terminal]
