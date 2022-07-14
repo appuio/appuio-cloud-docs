@@ -43,9 +43,7 @@ get "/" do |env|
   message = `fortune`
   number = rand(1000)
   accept = env.request.headers["Accept"]
-  if accept.includes?("text/html")
-    render "src/views/fortune.ecr"
-  elsif accept == "application/json"
+  if accept == "application/json"
     obj = { :version => version,
             :hostname => hostname,
             :message => message,
@@ -53,6 +51,8 @@ get "/" do |env|
     obj.to_json
   elsif accept == "text/plain"
     "Fortune %s cookie of the day #%d:\n\n%s" % [version, number, message]
+  else
+    render "src/views/fortune.ecr"
   end
 end
 --

@@ -42,7 +42,6 @@ The code below shows the main router of the application in the Perl programming 
 get '/' => sub ($c) {
     my $fortune = `fortune`;
     my $number = int(rand(1000));
-    my $ua = $c->req->headers->accept;
     $c->respond_to(
         json => { json => {
             'version' => $version,
