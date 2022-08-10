@@ -76,6 +76,10 @@ Select your preferred programming language to get started; you can either use th
 | xref:tutorials/getting-started/java-web.adoc[Java with web console]
 | xref:tutorials/getting-started/java-terminal.adoc[Java with the terminal]
 
+| image:logos/javascript.svg[alt="Programming language logo",width=50,height=50]
+| xref:tutorials/getting-started/javascript-web.adoc[JavaScript with web console]
+| xref:tutorials/getting-started/javascript-terminal.adoc[JavaScript with the terminal]
+
 | image:logos/kotlin.svg[alt="Programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/kotlin-web.adoc[Kotlin with web console]
 | xref:tutorials/getting-started/kotlin-terminal.adoc[Kotlin with the terminal]

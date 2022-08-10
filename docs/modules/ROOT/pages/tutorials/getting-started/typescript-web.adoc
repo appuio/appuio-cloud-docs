@@ -13,7 +13,7 @@ This tutorial doesn't require anything else than an {product} account and a mode
 
 == About the Application
 
-To demo how to run applications written in the https://www.typescriptlang.org/[TypeScript] programming language on {product}, we will use a small demo application using the https://expressjs.com/[Express Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://www.typescriptlang.org/[TypeScript] programming language on {product}, we will use a small demo application using the https://fresh.deno.dev/[Fresh Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
 The "Fortune in TypeScript" application does one simple thing: when invoked on the browser, it returns a random number and a funny quote. That's all!
 
@@ -35,7 +35,7 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 
 . In the "Image name from external registry" field, enter the URL of the Fortune in TypeScript container:
 ** `registry.gitlab.com/vshn/applications/fortune-typescript:latest`
-. Change the runtime icon to match the TypeScript programming language, the Express Framework, or any other icon you'd like to use.
+. Change the runtime icon to match the TypeScript programming language, the Fresh Framework, or any other icon you'd like to use.
 . Click "Create."
 . After a few seconds, you will see in the "Topology" section an icon representing the "Fortune in TypeScript" application running. If you click on it, you will see that there is a "Route" to access the object; it will contain a clickable URL similar to the following:
 ** `fortune-typescript-[YOUR_USERNAME]-fortune-typescript.apps.[YOUR_CHOSEN_ZONE].appuio.cloud`
@@ -45,7 +45,7 @@ IMPORTANT: As explained in xref:explanation/differences-to-public.adoc[this page
 
 The "Fortune in  TypeScript" application is now running on {product}. Congratulations! Hit the kbd:[R] key in your keyboard to see a new fortune message, or just wait 10 seconds to get a new one automatically.
 
-What's next? To run your own application written in TypeScript or using the Express Framework on {product}, follow these steps:
+What's next? To run your own application written in TypeScript or using the Fresh Framework on {product}, follow these steps:
 
 * Check the xref:tutorials/getting-started/typescript-terminal.adoc[Getting Started with TypeScript on the Terminal] guide for more technical information.
 * Make sure your CI/CD system is ready to automatically deploy your application to your preferred {product} zone.
