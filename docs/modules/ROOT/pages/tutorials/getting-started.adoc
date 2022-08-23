@@ -40,79 +40,83 @@ Select your preferred programming language to get started; you can either use th
 |===
 | Programming Language | Web Console Version | Terminal Version
 
-| image:logos/c.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/c.svg[alt="C programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/c-web.adoc[C with web console]
 | xref:tutorials/getting-started/c-terminal.adoc[C with the terminal]
 
-| image:logos/cpp.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/cpp.svg[alt="C++ programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/cpp-web.adoc[C++ with web console]
 | xref:tutorials/getting-started/cpp-terminal.adoc[C++ with the terminal]
 
-| image:logos/crystal.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/crystal.svg[alt="Crystal programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/crystal-web.adoc[Crystal with web console]
 | xref:tutorials/getting-started/crystal-terminal.adoc[Crystal with the terminal]
 
-| image:logos/csharp.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/csharp.svg[alt="C# programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/csharp-web.adoc[C# with web console]
 | xref:tutorials/getting-started/csharp-terminal.adoc[C# with the terminal]
 
-| image:logos/dart.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/d.svg[alt="D programming language logo",width=50,height=50]
+| xref:tutorials/getting-started/d-web.adoc[D with web console]
+| xref:tutorials/getting-started/d-terminal.adoc[D with the terminal]
+
+| image:logos/dart.svg[alt="Dart programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/dart-web.adoc[Dart with web console]
 | xref:tutorials/getting-started/dart-terminal.adoc[Dart with the terminal]
 
-| image:logos/elixir.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/elixir.svg[alt="Elixir programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/elixir-web.adoc[Elixir with web console]
 | xref:tutorials/getting-started/elixir-terminal.adoc[Elixir with the terminal]
 
-| image:logos/fsharp.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/fsharp.svg[alt="F# programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/fsharp-web.adoc[F# with web console]
 | xref:tutorials/getting-started/fsharp-terminal.adoc[F# with the terminal]
 
-| image:logos/go.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/go.svg[alt="Go programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/go-web.adoc[Go with web console]
 | xref:tutorials/getting-started/go-terminal.adoc[Go with the terminal]
 
-| image:logos/java.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/java.svg[alt="Java programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/java-web.adoc[Java with web console]
 | xref:tutorials/getting-started/java-terminal.adoc[Java with the terminal]
 
-| image:logos/javascript.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/javascript.svg[alt="JavaScript programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/javascript-web.adoc[JavaScript with web console]
 | xref:tutorials/getting-started/javascript-terminal.adoc[JavaScript with the terminal]
 
-| image:logos/kotlin.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/kotlin.svg[alt="Kotlin programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/kotlin-web.adoc[Kotlin with web console]
 | xref:tutorials/getting-started/kotlin-terminal.adoc[Kotlin with the terminal]
 
-| image:logos/perl.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/perl.svg[alt="Perl programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/perl-web.adoc[Perl with web console]
 | xref:tutorials/getting-started/perl-terminal.adoc[Perl with the terminal]
 
-| image:logos/php.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/php.svg[alt="PHP programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/php-web.adoc[PHP with web console]
 | xref:tutorials/getting-started/php-terminal.adoc[PHP with the terminal]
 
-| image:logos/python.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/python.svg[alt="Python programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/python-web.adoc[Python with web console]
 | xref:tutorials/getting-started/python-terminal.adoc[Python with the terminal]
 
-| image:logos/ruby.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/ruby.svg[alt="Ruby programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/ruby-web.adoc[Ruby with web console]
 | xref:tutorials/getting-started/ruby-terminal.adoc[Ruby with the terminal]
 
-| image:logos/rust.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/rust.svg[alt="Rust programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/rust-web.adoc[Rust with web console]
 | xref:tutorials/getting-started/rust-terminal.adoc[Rust with the terminal]
 
-| image:logos/scala.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/scala.svg[alt="Scala programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/scala-web.adoc[Scala with web console]
 | xref:tutorials/getting-started/scala-terminal.adoc[Scala with the terminal]
 
-| image:logos/swift.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/swift.svg[alt="Swift programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/swift-web.adoc[Swift with web console]
 | xref:tutorials/getting-started/swift-terminal.adoc[Swift with the terminal]
 
-| image:logos/typescript.svg[alt="Programming language logo",width=50,height=50]
+| image:logos/typescript.svg[alt="TypeScript programming language logo",width=50,height=50]
 | xref:tutorials/getting-started/typescript-web.adoc[TypeScript with web console]
 | xref:tutorials/getting-started/typescript-terminal.adoc[TypeScript with the terminal]
 
