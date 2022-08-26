@@ -72,6 +72,7 @@
 ** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
 ** xref:how-to/use-k8up.adoc[Backups with K8up]
 ** xref:how-to/long-pod-startup.adoc[Fix Long Pod Startup time (CreateContainerError)]
+** xref:how-to/create-bucket.adoc[Create a cloudscale.ch Object Storage Bucket]
 
 * Security
 ** xref:how-to/getting-a-certificate.adoc[Generate Certificates]

@@ -1,0 +1,28 @@
+= Create Object Storage Bucket
+
+This page describes how to provision a simple cloudscale.ch bucket.
+
+.Example for a bucket on cloudscale.ch
+[code,yaml,attributes="verbatim"]
+----
+apiVersion: appcat.vshn.io/v1
+kind: ObjectBucket
+metadata:
+  name: object-bucket-claim
+  namespace: my-namespace
+spec:
+  parameters:
+    bucketName: my-bucket <1>
+    region: rma <2>
+  writeConnectionSecretToRef:
+    name: credentials <3>
+----
+<1> The name of the bucket
+<2> The bucket's region, either "rma" or "lpg"
+<3> Secret where the connection details are provisionied.
+    It should't exist beforehand.
+
+[NOTICE]
+A bucket name has to be unique for the whole system.
+If your object bucket doesn't get the state ready after a while, try to delete the bucket and re-create it with a different name.
+Currently, there's no error exposed if the name is already taken.
