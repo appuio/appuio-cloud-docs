@@ -1,28 +1,38 @@
-= Create Object Storage Bucket
+= Create an Object Storage Bucket
 
-This page describes how to provision a simple cloudscale.ch bucket.
+CAUTION: This service is currently in beta testing.
 
-.Example for a bucket on cloudscale.ch
+This page describes how to provision a simple object storage bucket.
+It's a service from our https://products.docs.vshn.ch/products/appcat/index.html[VSHN Application Catalog] offering.
+See our https://products.docs.vshn.ch/products/appcat/objectstorage.html[product documentation] for more information.
+Currently it's only available on cloudscale.ch.
+
+== On cloudscale.ch
+
+.Example to create an Object Storage bucket
 [code,yaml,attributes="verbatim"]
 ----
 apiVersion: appcat.vshn.io/v1
 kind: ObjectBucket
 metadata:
-  name: object-bucket-claim
-  namespace: my-namespace
+  name: my-cool-object-storage-bucket
+  namespace: my-namespace <1>
 spec:
   parameters:
-    bucketName: my-bucket <1>
-    region: rma <2>
+    bucketName: my-bucket-change-name <2>
+    region: rma <3>
   writeConnectionSecretToRef:
-    name: credentials <3>
+    name: objectbucket-creds <4>
 ----
-<1> The name of the bucket
-<2> The bucket's region, either "rma" or "lpg"
-<3> Secret where the connection details are provisionied.
+<1> The namespace you want the object storage bucket to live in
+<2> The name of the bucket - *Don't just copy/paste, choose your own name here!*
+<3> The bucket's region, either "rma" or "lpg"
+<4> Secret where the connection details are provisionied.
     It should't exist beforehand.
 
-[NOTICE]
+[IMPORTANT]
+====
 A bucket name has to be unique for the whole system.
 If your object bucket doesn't get the state ready after a while, try to delete the bucket and re-create it with a different name.
 Currently, there's no error exposed if the name is already taken.
+====
