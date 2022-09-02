@@ -36,3 +36,73 @@ A bucket name has to be unique for the whole system.
 If your object bucket doesn't get the state ready after a while, try to delete the bucket and re-create it with a different name.
 Currently, there's no error exposed if the name is already taken.
 ====
+
+After creating, the VSHN application catalog provides feedback in the Kubernetes config object itself:
+
+.Example of an Object Storage bucket status
+[code,yaml,attributes="verbatim"]
+----
+apiVersion: appcat.vshn.io/v1
+kind: ObjectBucket
+metadata:
+  creationTimestamp: '2022-09-02T12:01:50Z'
+  finalizers:
+    - finalizer.apiextensions.crossplane.io
+  name: my-cool-object-storage-bucket
+  namespace: my-namespace
+  resourceVersion: '832730254'
+  uid: a19666a8-6f4a-4e32-b295-245611a90106
+spec:
+  compositionRef:
+    name: cloudscale.objectbuckets.appcat.vshn.io
+  compositionUpdatePolicy: Automatic
+  parameters:
+    bucketName: my-bucket-change-name
+    region: rma
+  resourceRef:
+    apiVersion: appcat.vshn.io/v1
+    kind: XObjectBucket
+    name: my-bucket-change-name-4cpts
+  writeConnectionSecretToRef:
+    name: objectbucket-creds
+status:
+  conditions:
+    - lastTransitionTime: '2022-09-02T12:02:01Z'
+      reason: Available
+      status: 'True'
+      type: Ready <1>
+  connectionDetails:
+    lastPublishedTime: '2022-09-02T12:02:01Z'
+----
+<1> Ready means the bucket has been created and the access information has been written into a secret with the specified name
+
+.Example of an Object Storage bucket secret
+[code,yaml,attributes="verbatim"]
+----
+kind: Secret
+apiVersion: v1
+metadata:
+  name: objectbucket-creds
+  namespace: my-namespace
+  uid: 4a9bfb85-4941-4855-bddd-5adad5a87988
+  resourceVersion: '832730253'
+  creationTimestamp: '2022-09-02T12:02:01Z'
+  ownerReferences:
+    - apiVersion: appcat.vshn.io/v1
+      kind: ObjectBucket
+      name: my-bucket-change-name
+      uid: a19666a8-6f4a-4e32-b295-245611a90106
+      controller: true
+data:
+  AWS_ACCESS_KEY_ID: RaNdOMBaSe64EnCoDeD= <1>
+  AWS_REGION: cm1h <2>
+  AWS_SECRET_ACCESS_KEY: RaNdOMBaSe64EnCoDeD= <3>
+  BUCKET_NAME: RaNdOMBaSe64EnCoDeD= <4>
+  ENDPOINT: RaNdOMBaSe64EnCoDeD= <5>
+type: connection.crossplane.io/v1alpha1
+----
+<1> contains the "username"
+<2> contains the region "rma"
+<3> contains the "password"
+<4> contains the bucket name specified above
+<5> contains the endpoint "objects.rma.cloudscale.ch" excluding "https://"
