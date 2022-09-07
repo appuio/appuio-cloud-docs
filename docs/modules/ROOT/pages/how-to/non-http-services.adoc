@@ -52,7 +52,7 @@ spec:
     app: ggircd
 --
 
-On the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] zone, the cluster automatically assigns a unique external IPv4 address to this service. To see which IPv4 address has been assigned, go to the webconsole and navigate to "Networking/Services." The IP is displayed in the field "External IP."
+On the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] zone, the cluster automatically assigns a unique external IPv4 address to this service. To see which IPv4 address has been assigned, go to the OpenShift Web Console and navigate to "Networking/Services." The IP is displayed in the field "External IP."
 
 Using the CLI is also possible:
 
