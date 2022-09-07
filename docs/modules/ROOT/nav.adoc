@@ -67,6 +67,7 @@
 
 * Networking
 ** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
+** xref:how-to/non-http-services.adoc[Non HTTP Services / TCP Ingress]
 
 * Storage
 ** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
