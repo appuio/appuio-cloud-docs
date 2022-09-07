@@ -1,0 +1,70 @@
+= Non HTTP Services - TCP & UDP Ingress
+
+Accessing a TCP or UDP service directly, not using the provided OpenShift router but via the route object is possible, thanks to services of type LoadBalancer.
+
+WARNING: The explanation below only works on the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] region of APPUiO Cloud.
+
+Deploy a sample TCP service, in this case an https://gitlab.com/vshn/demos/demo-irc-openshift[IRC chat server]:
+
+[source,yaml]
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggircd
+  labels:
+    app: ggircd
+spec:
+  selector:
+    matchLabels:
+      app: ggircd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ggircd
+    spec:
+      containers:
+      - image: registry.gitlab.com/vshn/demos/demo-irc-openshift:latest
+        name: ggircd
+        ports:
+        - containerPort: 6667
+          name: ggircd
+--
+
+Expose this deployment with a LoadBalancer service:
+
+[source,yaml]
+--
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggircd-service
+spec:
+  ports:
+  - name: ggircd-port
+    port: 6667
+    targetPort: 6667
+    protocol: TCP
+  type: LoadBalancer
+  selector:
+    app: ggircd
+--
+
+On the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] zone, the cluster automatically assigns a unique external IPv4 address to this service. To see which IPv4 address has been assigned, go to the OpenShift Web Console and navigate to "Networking/Services." The IP is displayed in the field "External IP."
+
+Using the CLI is also possible:
+
+[source]
+--
+oc describe service ggircd-service
+--
+
+[IMPORTANT]
+--
+Please pay attention to the following:
+
+- Only IPv4 is supported, IPv6 isn't available for this service yet.
+- Additional https://products.docs.vshn.ch/products/appuio/cloud/pricing.html#_service_type_loadbalancer[costs] will apply for each external IP
+--
