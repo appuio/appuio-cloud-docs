@@ -66,5 +66,5 @@ oc describe service ggircd-service
 Please pay attention to the following:
 
 - Only IPv4 is supported, IPv6 isn't available for this service yet.
-- Additional costs will apply for each external IP
+- Additional https://products.docs.vshn.ch/products/appuio/cloud/pricing.html#_service_type_loadbalancer[costs] will apply for each external IP
 --
