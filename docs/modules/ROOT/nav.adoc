@@ -3,7 +3,7 @@
 * https://status.appuio.cloud[Status 🔗^]
 * https://portal.appuio.cloud[Portal 🔗^]
 * xref:portal:ROOT:index.adoc[APPUiO Cloud Portal 🔗^]
-* xref:appcat:ROOT:index.adoc[VSHN AppCat Documentation 🔗^]
+* xref:appcat:ROOT:index.adoc[VSHN AppCat Docs 🔗^]
 
 .About
 * https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
