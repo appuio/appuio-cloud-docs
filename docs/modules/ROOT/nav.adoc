@@ -1,9 +1,8 @@
-* xref:index.adoc[Home]
 * xref:contact.adoc[Contact]
 * https://status.appuio.cloud[Status 🔗^]
 * https://portal.appuio.cloud[Portal 🔗^]
-* xref:portal:ROOT:index.adoc[APPUiO Cloud Portal 🔗^]
-* xref:appcat:ROOT:index.adoc[VSHN AppCat Docs 🔗^]
+* xref:portal:ROOT:index.adoc[Portal Docs 🔗^]
+* xref:appcat:ROOT:index.adoc[AppCat Docs 🔗^]
 
 .About
 * https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
