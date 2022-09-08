@@ -1,6 +1,6 @@
 = {product} for Users
 
-image::appuio-cloud.svg[APPUiO Cloud,400,link=https://www.appuio.ch]
+image::appuio-cloud.svg[APPUiO Cloud,400,link=https://www.appuio.ch/en/offering/cloud/]
 
 Welcome to the {product} for Users documentation site.
 If you are new to {product}, check out the xref:tutorials/getting-started.adoc[Getting Started] page.
