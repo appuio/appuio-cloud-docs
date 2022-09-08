@@ -1,6 +1,6 @@
 * xref:user:ROOT:index.adoc[User Docs]
 * xref:portal:ROOT:index.adoc[Portal Docs]
 * xref:appcat:ROOT:index.adoc[AppCat Docs]
-* xref:contact.adoc[Contact]
+* xref:user:ROOT:contact.adoc[Contact]
 * https://status.appuio.cloud[Status 🔗^]
 * https://portal.appuio.cloud[Portal 🔗^]
