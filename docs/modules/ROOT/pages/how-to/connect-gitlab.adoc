@@ -24,8 +24,8 @@ IMPORTANT: Given the shared nature of {product}, the GitLab Agent can't be insta
 On your GitLab instance:
 
 . Create a file named `.gitlab/agents/appuio-cloud/config.yaml` in your GitLab project; commit and push.
-. In GitLab, select the menu:Infrastructure[Kubernetes Clusters] screen and click the btn:[Connect a cluster (agent)].
-. In the popup that opens, click on the menu:[Select an agent or enter a name to create new] menu and select the `appuio-cloud` entry, corresponding to the file created above.
+. In GitLab, select the menu:Infrastructure[Kubernetes Clusters] screen and click the btn:[Connect a cluster (agent)] button.
+. In the popup that opens, click on btn:[Select an agent or enter a name to create new] and select the `appuio-cloud` entry, corresponding to the file created above.
 . Copy the GitLab Agent token shown in the popup, as it won't appear anymore.
 
 In your terminal, perform the following steps:
