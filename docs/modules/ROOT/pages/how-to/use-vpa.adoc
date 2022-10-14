@@ -1,0 +1,80 @@
+= How to use Vertical Pod Autoscaler to adjust Pod Resouce levels
+
+It's complicated to find out good values for xref:how-to/check-cpu-requests.adoc[investigate and resolve fair use ratio violations for a project]. APPUiO Cloud offers the OpenShift https://docs.openshift.com/container-platform/4.11/nodes/pods/nodes-pods-vertical-autoscaler.html[Vertical Pod Autoscaler (VPA)] object to assist DevOps engineers to fine tune the requests and limits of their deployments.
+
+This document explains how to use VPAs. This document assumes that you have a working project with some payload deployed and running.
+
+== Limitations
+
+The VPA operator is provided in APPUiO Cloud with the following limitations:
+
+* The VPA operator only provides recommendations; it doesn't recreate pods automatically with new request and limit values.
+
+== Create the VPA Object
+
+Use the YAML below to define a new VPA object, and `oc apply` it to your namespace.
+
+[source,yaml]
+--
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-recommender
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       vpa-example  # <1>
+  updatePolicy:
+    updateMode: "Auto"
+--
+<1> Specify here the name of your deployment.
+
+== Find Recommendations
+
+The VPA requires a few moments to gather data and provide recommendations from it. After some time, during which your deployment should have been running in order to gather meaningful data, run the following command and you should see output similar to this in your terminal:
+
+[source,bash]
+--
+$ oc get vpa vpa-recommender --output yaml
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  annotations: …
+# …
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vpa-example
+  updatePolicy:
+    updateMode: Auto
+status:
+  conditions:
+  - status: "True"
+    type: RecommendationProvided
+  recommendation:
+    containerRecommendations:
+    - containerName: fortune-container
+      lowerBound:
+        cpu: 25m
+        memory: 262144k
+      target: # <1>
+        cpu: 203m
+        memory: 262144k
+      uncappedTarget:
+        cpu: 203m
+        memory: 262144k
+      upperBound: # <2>
+        cpu: 71383m
+        memory: "6813174422"
+--
+<1> Use this value as `request` in your deployment.
+<2> Use this value as `limit` in your deployment.
+
+== Interpreting the Recommendations
+
+You should use the values provided by the autoscaler in your `Deployment` as follows:
+
+* The `status.recommendation.containerRecommendations[*].target` value should be used as `request` values;
+* The `status.recommendation.containerRecommendations[*].upperBound` value should be used as a sensible `limit`.
