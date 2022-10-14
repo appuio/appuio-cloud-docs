@@ -2,7 +2,7 @@
 
 It's complicated to find out good values for xref:how-to/check-cpu-requests.adoc[investigate and resolve fair use ratio violations for a project]. APPUiO Cloud offers the OpenShift https://docs.openshift.com/container-platform/4.11/nodes/pods/nodes-pods-vertical-autoscaler.html[Vertical Pod Autoscaler (VPA)] object to assist DevOps engineers to fine tune the requests and limits of their deployments.
 
-This document explains how to use VPAs. This document assumes that you have a working project with some payload deployed and running.
+This document explains how to use VPAs. It assumes that you have a working project with some payload deployed and running.
 
 == Limitations
 
