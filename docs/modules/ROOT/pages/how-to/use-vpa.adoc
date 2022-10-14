@@ -26,7 +26,7 @@ spec:
     kind:       Deployment
     name:       vpa-example  # <1>
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: "Off"
 --
 <1> Specify here the name of your deployment.
 
