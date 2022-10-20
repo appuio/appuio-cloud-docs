@@ -63,6 +63,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:how-to/check-cpu-requests.adoc[Investigate and resolve fair use ratio violations]
 
 * Networking
+** xref:how-to/tailscale.adoc[Tailscale VPN]
 ** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
 ** xref:how-to/non-http-services.adoc[Non HTTP Services - TCP & UDP Ingress]
 
