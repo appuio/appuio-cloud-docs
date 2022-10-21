@@ -39,7 +39,7 @@ The developer catalog is available in the OpenShift web console in the "Develope
 Supposing you've installed Tailscale in your Namespace as documented in <<_installation,the previous section>>, the deployment will automatically discover all services in your namespace and make them available in your tailnet.
 To access the services in your Namespace by their Cluster IP, you need to
 
-. Run `tailscale up --accept services` on your client
+. Run `tailscale up --accept-routes` on your client
 . Accept the advertised routes in the https://login.tailscale.com/admin/machines[Tailscale admin console]
 +
 [TIP]
