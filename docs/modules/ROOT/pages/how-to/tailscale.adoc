@@ -2,7 +2,7 @@
 
 image:logos/tailscale.png[role="related thumb right",alt="tailscale logo",width=240,height=240]
 
-https://tailscale.com/[Tailscale^] is a secure network - that just works ™!
+https://tailscale.com/[Tailscale^] is a secure network that works.
 
 > Zero config VPN. Installs on any device in minutes, manages firewall rules for you, and works from anywhere.
 
@@ -12,32 +12,31 @@ It runs in https://tailscale.com/kb/1112/userspace-networking/[Userspace network
 == Use-Cases on {product}
 
 Easy Service Access::
-With Tailscale it's very easy to expose services from a Kubernetes namespace to your tailnet.
-This is especially handy if direct service access is needed from a developer workstation - without the hassle of `[kubectl|oc] port-forward`.
+With Tailscale, it's straightforward to expose services from a Kubernetes namespace to your tailnet, which is especially handy if you need direct service access from a developer workstation without the hassle of `[kubectl|oc] port-forward`.
 
 Service Access from Pods::
-Accessing services which aren't running on (the same) {product} zone from a Pod isn't easy.
-With Tailscale it's possible to access any service available in the tailnet, which allows to securely access firewalled external services.
+Accessing services not running on (the same) {product} zone from a Pod isn't easy.
+With Tailscale it's possible to access any service available in the tailnet, which allows accessing firewalled external services securely.
 
 == Prerequisites
 
-. Account on https://login.tailscale.com/welcome[Tailscale.com^]
-. Understanding on https://tailscale.com/kb/1151/what-is-tailscale/[What's Tailscale?^] and familiarity with https://tailscale.com/kb/1155/terminology-and-concepts/[Terminology and concepts^]
+. An account on https://login.tailscale.com/welcome[Tailscale.com^].
+. Understanding https://tailscale.com/kb/1151/what-is-tailscale/[Tailscale^] and being familiar with its https://tailscale.com/kb/1155/terminology-and-concepts/[terminology and concepts^], in particular, that of a https://tailscale.com/kb/1155/terminology-and-concepts/#tailnet["tailnet."^]
 . An https://tailscale.com/kb/1085/auth-keys/[Auth key^]
 
 == Installation
 
-To deploy Tailscale into your Namespace, simply choose our OpenShift template, available in the OpenShift developer catalog.
+To deploy Tailscale into your namespace, choose our OpenShift template, available in the OpenShift developer catalog.
 
 The only parameter you need to provide is your Tailscale auth key.
-We recommend using a normal key, as this is a long-running Tailscale connection.
-No need to use an ephemeral node key.
+We recommend using a standard key, as this is a long-running Tailscale connection.
+No need to use a temporary node key.
 
 The developer catalog is available in the OpenShift web console in the "Developer" view when clicking on "+Add."
 
 == Access Services on an {product} zone (Ingress)
 
-If you've installed Tailscale in your Namespace as documented in <<_installation,the previous section>>, the deployment will automatically discover all services in your namespace and make them available in your tailnet.
+Supposing you've installed Tailscale in your Namespace as documented in <<_installation,the previous section>>, the deployment will automatically discover all services in your namespace and make them available in your tailnet.
 To access the services in your Namespace by their Cluster IP, you need to
 
 . Run `tailscale up --accept services` on your client
@@ -60,11 +59,11 @@ To avoid having to accept the advertised routes every time you create a new serv
 <1> Replace `you@example.com` with your Tailscale account ID
 ====
 
-If you want to use the cluster-internal DNS names to access services through the tailnet instead of the service cluster IPs you need to
+If you want to use the cluster-internal DNS names to access services through the tailnet instead of the service cluster IPs, you need to:
 
-. Enable Tailscale's "MagicDNS" in the https://login.tailscale.com/admin/dns[admin console]
+. Enable Tailscale's "MagicDNS" in the https://login.tailscale.com/admin/machines[admin console]
 . Add the cluster DNS as an additional nameserver.
-To do so, click "Add nameserver," select "Custom" and enter the following details:
+To do so, click "Add nameserver," select "Custom," and enter the following details:
 +
 [horizontal]
 *Nameserver*:: 172.30.0.10
@@ -73,14 +72,14 @@ To do so, click "Add nameserver," select "Custom" and enter the following detail
 
 === Multiple namespaces
 
-Out of the box, the OpenShift template will only discover services in its own namespace.
+Out of the box, the OpenShift template will only discover services in its namespace.
 Additionally, due to the restrictive default network policies on {product}, the Tailscale deployment won't be able to access services in another namespace.
 
 The easiest way to make services from multiple namespaces available in your tailnet is to deploy a Tailscale instance in each namespace in which you want to access services through the tailnet.
 
 If you want to share a single Tailscale instance between namespaces, you need to
 
-. Configure a networkpolicy in the target namespace which allows ingress traffic from the namespace in which Tailscale runs
+. Configure a `NetworkPolicy` in the target namespace, which allows ingress traffic from the namespace in which Tailscale runs:
 +
 [source,yaml]
 ----
@@ -141,7 +140,7 @@ subjects:
 ----
 <1> Replace `<tailscale-namespace>` with the namespace of the Tailscale deployment and `<target-namespace>` with the target namespace in which you've created the `NetworkPolicy`, `Role` and `RoleBinding`.
 
-The service discovery and dynamic route configuration is done by our https://github.com/appuio/tailscale-service-observer[Tailscale Service Observer] which runs as a sidecar in the Tailscale Pod.
+Our https://github.com/appuio/tailscale-service-observer[Tailscale Service Observer], running as a sidecar in the Tailscale Pod, performs the service discovery and dynamic route configuration.
 
 == Access services in the tailnet from Pods (Egress)
 
@@ -152,11 +151,11 @@ There are two ways to access services in the tailnet from a Pod running on {prod
 
 === Tailscale-native proxy mode
 
-For those applications which support SOCKS5 or HTTP proxies, it's as easy as deploying Tailscale as documented in <<_installation,the installation section>> and set the corresponding proxy environment variables.
+For those applications which support SOCKS5 or HTTP proxies, it's as easy as deploying Tailscale as documented in <<_installation,the installation section>> and setting the corresponding proxy environment variables.
 
 When using our template to deploy Tailscale, a service named `tailscale` gets created in the namespace where Tailscale runs.
 
-The environment variables in your applications' deployment will need to be configured like this:
+The environment variables in your applications' deployment will need to look like this:
 
 [source,yaml]
 ----
@@ -180,11 +179,11 @@ spec:
 
 === TCP-over-SOCKS5 middleman
 
-We provide a simple https://github.com/appuio/tcp-over-socks[TCP-over-SOCKS5] middleman which allows to tunnel TCP connections over a Tailscale SOCKS5 proxy.
+We provide a simple https://github.com/appuio/tcp-over-socks[TCP-over-SOCKS5] middleman, which allows tunneling TCP connections over a Tailscale SOCKS5 proxy.
 
-This is an example how to deploy the `tcp-over-socks` tool and make the TCP connection available as a Kubernetes service.
-Remember to adapt the target address to the tailnet IP of the service you want to access and its port.
-Also, if you don't deploy Tailscale with our template, make sure that the SOCKS5 address and port matches your Tailscale deployment.
+Below is an example of deploying the `tcp-over-socks` tool and making the TCP connection available as a Kubernetes service.
+Remember to adapt the port and target address of the tailnet IP of the service you want to access.
+Also, if you don't deploy Tailscale with our template, ensure that the SOCKS5 address and port match your Tailscale deployment.
 
 [source,yaml]
 ----
@@ -240,6 +239,6 @@ spec:
 .Relationship of Example config
 image::how-to/tailscale-tcp-socks.drawio.svg[]
 
-Now simply access the TCP service from your application via the Kubernetes service named `db`.
+Now access the TCP service from your application via the Kubernetes service named `db`.
 
-Some examples are also provided on GitHub in the https://github.com/appuio/tcp-over-socks/tree/master/examples[`examples/`] directory of the `tcp-over-socks` utility.
+You can find other examples on GitHub in the https://github.com/appuio/tcp-over-socks/tree/master/examples[`examples/`] directory of the `tcp-over-socks` utility.
