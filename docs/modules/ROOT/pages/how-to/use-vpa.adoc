@@ -26,9 +26,10 @@ spec:
     kind:       Deployment
     name:       vpa-example  # <1>
   updatePolicy:
-    updateMode: "Off"
+    updateMode: "Off" <2>
 --
 <1> Specify here the name of your deployment.
+<2> The VPA is deployed to only support recomendation mode. So `Off` is the only supported value there.
 
 == Find Recommendations
 
