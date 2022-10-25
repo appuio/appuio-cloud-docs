@@ -71,7 +71,9 @@ status:
         memory: "6813174422"
 --
 <1> Use this value as `request` in your deployment.
-<2> Use this value as `limit` in your deployment.
+<2> Consider using this value as `limit` in your deployment.
+Analyze the reported `upperBound` carefully before using it as the `limit` in your deployment.
+The recommender will start with a very high upper bound, and update it over time as it observes the running application.
 
 == Interpreting the Recommendations
 
