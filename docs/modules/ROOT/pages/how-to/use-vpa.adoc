@@ -74,7 +74,10 @@ status:
 
 == Interpreting the Recommendations
 
-You should use the values provided by the autoscaler in your `Deployment` as follows:
+You should analyze with care the values provided by the autoscaler for your deployment. Do not blindly apply its recommendations; let your application run for a while and study the numbers closely.
 
-* The `status.recommendation.containerRecommendations[*].target` value should be used as `request` values;
-* The `status.recommendation.containerRecommendations[*].upperBound` value should be used as a sensible `limit`.
+Some tips for your analysis:
+
+* The `status.recommendation.containerRecommendations[*].target` value could be considered indicative for `request` values.
+* The `status.recommendation.containerRecommendations[*].upperBound` value could be used as an indication to set `limit` values.
+* The OpenShift dashboard explained in xref:how-to/check-cpu-requests.adoc[this page] shows utilization numbers for both CPU and memory limits. Those values function as a suitable supplementary information source.
