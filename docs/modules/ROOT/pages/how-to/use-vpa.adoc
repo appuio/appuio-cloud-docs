@@ -74,7 +74,7 @@ status:
 
 == Interpreting the Recommendations
 
-You should analyze with care the values provided by the autoscaler for your deployment. Do not blindly apply its recommendations; let your application run for a while and study the numbers closely.
+You should analyze with care the values provided by the autoscaler for your deployment. Don't blindly apply its recommendations; let your application run for a while and study the numbers closely.
 
 Some tips for your analysis:
 
