@@ -82,6 +82,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 * Monitoring
 ** xref:how-to/monitor-http-endpoints.adoc[Monitor HTTP Endpoints]
 ** xref:how-to/monitor-application.adoc[Monitor Applications]
+** xref:how-to/monitor-pvc-usage.adoc[Monitor PVC Usage]
 
 * Image Registry
 ** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
