@@ -66,10 +66,14 @@ spec:
     - alert: VolumeFreeInodesLow
       expr: |
         (
-          sum(kubelet_volume_stats_inodes_free{persistentvolumeclaim!=""}) by (persistentvolumeclaim)
+          sum(
+            kubelet_volume_stats_inodes_free{persistentvolumeclaim!=""} * on(persistentvolumeclaim) kube_persistentvolumeclaim_info{storageclass!="cephfs-fspool-cluster"} <3>
+          ) by (persistentvolumeclaim)
         /
-          sum(kubelet_volume_stats_inodes{persistentvolumeclaim!=""}) by (persistentvolumeclaim)
-        ) < 0.1 <3>
+          sum(
+            kubelet_volume_stats_inodes{persistentvolumeclaim!=""} * on(persistentvolumeclaim) kube_persistentvolumeclaim_info{storageclass!="cephfs-fspool-cluster"}
+          ) by (persistentvolumeclaim)
+        ) < 0.1 <4>
       for: 5m
       labels:
         severity: critical <2>
@@ -88,7 +92,9 @@ YAML
 ----
 <1> Alert if available space is less than 10%.
 <2> You might want to add a higher threshold with a `warning` severity.
-<3> Alert if free inodes are less than 10%.
+<3> CephFS doesn't store metadata in inode structures and always reports zero free inodes.
+This filter excludes CephFS PVCs from the alert.
+<4> Alert if free inodes are less than 10%.
 +
 [TIP]
 ====
