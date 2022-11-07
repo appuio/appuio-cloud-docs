@@ -185,7 +185,7 @@ spec:
         summary: "There are a lot of requests to the application"
 YAML
 ----
-<1> The alert rule will fire if the application receives more than 60 request in one minute.
+<1> The alert rule will fire if the application receives more than 60 requests in one minute.
 +
 TIP: Look at the https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/[upstream documentation] on writing your own alerting rules.
 
@@ -200,7 +200,7 @@ The alert should be displayed in the list of alerts.
 [TIP]
 ====
 It may take a few minutes for the alert to show up.
-If it doesn't show up that most likely means that the `PrometheusRule` CRD isn't well-formed and might have failed to apply, or that the PromQL expression isn't valid.
+If it doesn't show up, that most likely means that the `PrometheusRule` CRD isn't well-formed and might have failed to apply, or that the PromQL expression isn't valid.
 
 Check if the `PrometheusRule` CRD was created successfully.
 
