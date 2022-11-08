@@ -1,0 +1,448 @@
+= Configure Alerts using Alertmanager
+
+{product} allows you to configure custom alert receivers to notify you when an alert is triggered.
+
+This how-to guide shows you alert receivers and routing basics with examples for Slack, Telegram, and email.
+
+== Prerequisites
+
+* Command Line Access to {product}
+
+== Configure Alertmanager
+
+OpenShift uses Alertmanager to manage alerts and send notifications to the correct receiver.
+
+Alertmanager brings different integrations which can be listed by running `kubectl explain alertmanagerconfigs.spec.receivers`.
+
+The following example shows how to configure Alertmanager to send alerts to Slack, Telegram, and email.
+
+[source,yaml]
+----
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: my-alert-config
+spec:
+  receivers:
+  - name: telegram <1>
+    telegramConfigs:
+    - apiURL: https://api.telegram.org
+      botToken:
+        key: token
+        name: telegram
+      chatID: 1234567890
+      parseMode: HTML
+  - name: default <2>
+    slackConfigs:
+    - apiURL:
+        key: url
+        name: slack
+      channel: '#alerts'
+  - name: out-of-office-hours <3>
+    emailConfigs:
+    - to: alerts@example.com
+      from: my-app@example.com
+      smarthost: smtp.example.com:587
+      authUsername: my-app@example.com
+      authIdentity: my-app@example.com
+      authPassword:
+        key: password
+        name: email
+  route:
+    groupBy: <4>
+    - alertname
+    - instance
+    receiver: default <5>
+    routes: <6>
+    - receiver: out-of-office-hours
+      muteTimeIntervals: <7>
+      - office-hours
+      continue: true <8>
+    - matchers: <9>
+        - matchType: '='
+          name: severity
+          value: critical
+      receiver: telegram
+      continue: true
+  timeIntervals:
+  - name: office-hours <10>
+    timeIntervals:
+    - times:
+      - startTime: "09:00"
+        endTime: "17:00"
+      weekdays:
+      - "monday:friday"
+----
+<1> Configuration for Telegram.
+See <<alertmanager-config-receiver-telegram>> for more information.
+<2> Configuration for Slack.
+Used as the default route if no other route matches.
+See <<alertmanager-config-receiver-slack>> for more information.
+<3> Email configuration for out-of-office-hours.
+See <<alertmanager-config-receiver-email>> for more information.
+Configured to only send alerts during out of office hours.
+<4> Group alerts by alert name and instance.
+There will only be one alert for each combination of alert name and instance.
+<5> All alerts that don't match any other route will be sent to this receiver.
+<6> All routes can have a list of sub-routes.
+Routes are evaluated in order.
+The first route that matches an alert will be used.
+Any matchers of the root route are overridden by a namespace label matcher and `continue` is set to true.
+See <<routing>> for more information.
+<7> Only send to the `out-of-office-hours` receiver outside the defined office hours defined by `.spec.timeIntervals`.
+<8> Continue to evaluate the remaining routes if this route matches.
+This allows you to send alerts to multiple receivers.
+<9> Only send alerts with the severity `critical` to the `telegram` receiver.
+The matchers can be configured to match any label on the alert.
+Multiple matchers are combined with `AND`.
+<10> Define the office hours.
+The office hours are used by the `out-of-office-hours` route to determine if an alert should be sent.
+All times are in UTC.
+
+=== Configure Telegram Receiver [[alertmanager-config-receiver-telegram]]
+
+. Set the namespace the alerts are created in.
++
+[source,bash]
+----
+export APP_NAMESPACE=my-namespace
+----
+
+. Create a Telegram bot by messaging the https://t.me/BotFather[@BotFather].
+See https://core.telegram.org/bots#how-do-i-create-a-bot[Telegram documentation] for more information.
+
+. Create a secret with the bot token returned by the BotFather.
++
+[source,bash]
+----
+TOKEN=<TOKEN> <1>
+kubectl create secret generic telegram "--from-literal=token=${TOKEN}"
+----
+<1> Looks like "123456789:ABCDEF1234567890ABCDEF1234567890ABC"
+
+. Find the Chat ID.
++
+Add the bot to a group chat, and send a message to the group chat, or message the bot directly.
++
+Query the Telegram API to get the Chat ID.
++
+[source,bash]
+----
+curl -X GET "https://api.telegram.org/bot${TOKEN}/getUpdates" | jq '.result[].message | select(. != null)'
+----
++
+There should be an object with a `text` field that contains the message you sent. and a `chat.id` field.
+Save the `chat.id` field for the next step.
++
+[source,bash]
+----
+CHAT_ID=<CHAT_ID>
+----
+
+. Create the AlertmanagerConfig.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: my-telegram-alert-config
+spec:
+  receivers:
+  - name: telegram
+    telegramConfigs:
+    - apiURL: https://api.telegram.org
+      botToken: <1>
+        key: token
+        name: telegram
+      chatID: ${CHAT_ID}
+      parseMode: HTML <2>
+  route:
+    groupBy: [alertname, instance]
+    receiver: default
+YAML
+----
+<1> The secret created earlier.
+<2> The default parse mode is `MarkdownV2` which doesn't work with the default message template.
+Telegram wants every special character to be escaped with a backslash.
+HTML works well with the default Alertmanager template.
+
+. Test the email receiver. See <<test-alerting>>.
+
+=== Configure Slack Receiver [[alertmanager-config-receiver-slack]]
+
+. Set the namespace the alerts are created in.
++
+[source,bash]
+----
+export APP_NAMESPACE=my-namespace
+----
+
+. Get the webhook URL from Slack.
++
+Go to https://my.slack.com/services/new/incoming-webhook/, choose the Workspace in the right upper-most corner, select a channel, and click *Add Incoming webhooks integration*.
++
+Copy the webhook URL.
++
+image::monitoring/alertmanager-slack-webhook.png[Slack Webhook]
+
+. Create a secret with the webhook URL.
++
+[source,bash]
+----
+URL=<URL>
+kubectl create secret generic slack-alert-webhook "--from-literal=url=${URL}"
+----
+
+. Create the AlertmanagerConfig.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: my-slack-alert-config
+spec:
+  receivers:
+  - name: slack
+    - apiURL: <1>
+        key: url
+        name: slack-alert-webhook
+      channel: '#alerts' <2>
+  route:
+    groupBy: [alertname, instance]
+    receiver: default
+YAML
+----
+<1> The secret created earlier.
+<2> The channel to send alerts to.
+
+. Test the email receiver. See <<test-alerting>>.
+
+=== Configure Email Receiver [[alertmanager-config-receiver-email]]
+
+. Set the namespace the alerts are created in.
++
+[source,bash]
+----
+export APP_NAMESPACE=my-namespace
+----
+
+. Create a secret with the email authentication password.
++
+[source,bash]
+----
+PASSWORD=<PASSWORD>
+kubectl create secret generic email-alert-auth "--from-literal=password=${PASSWORD}"
+----
++
+[TIP]
+====
+This tutorial sets up SMTP authentication using PLAIN authentication.
+CRAM-MD5 and LOGIN are also supported.
+See https://prometheus.io/docs/alerting/latest/configuration/#configuration-file[Prometheus documentation] for description of the supported authentication fields.
+====
+
+. Create the AlertmanagerConfig.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: my-alert-config
+spec:
+  receivers:
+  - name: default
+    emailConfigs:
+    - to: alerts@example.com <1>
+      from: my-app@example.com <2>
+      smarthost: smtp.example.com:587 <3>
+      authUsername: my-app@example.com <4>
+      authIdentity: my-app@example.com <5>
+      authPassword: <6>
+        key: password
+        name: email
+  route:
+    groupBy: [alertname, instance]
+    receiver: default
+YAML
+----
+<1> The email address to send alerts to.
+<2> The email address to send alerts from.
+<3> The SMTP server to send alerts through.
+Alertmanager doesn't support unencrypted connections to remote SMTP endpoints.
+<4> The username to authenticate with.
+If empty, Alertmanager doesn't authenticate to the SMTP server.
+<5> The PLAIN identity to authenticate with.
+Can be the same as the username.
+Might be omitted for LOGIN protocol.
+<6> The secret created earlier.
+
+. Test the email receiver. See <<test-alerting>>.
+
+== Routing Alerts [[routing]]
+
+Alerts can be routed to different receivers based on the labels attached to the alerts.
+
+An `AlertmanagerConfig` resource defines a routing tree with a root route and child routes.
+The root route is the default route and is used for all alerts that don't match any of the child routes.
+The matcher of the root route is set by {product} to match the namespace of the `AlertmanagerConfig`.
+All other matchers are ignored.
+
+The child routes are evaluated in order and the first matching route is used to route the alert.
+The `match` field of a route defines the labels that must match for the route to match.
+The `match` field can be omitted to match all alerts.
+
+Setting `continue` to `true` on a route will cause the evaluation to continue to the next route.
+This can be used to send alerts to multiple receivers.
+
+It's possible to mute alerts during certain times of the day.
+This can be done by defining a `timeInterval` and referencing it in the `muteTimeIntervals` field of a route.
+
+Alerts can be grouped by labels using the `groupBy` field.
+Grouping sends multiple alerts that are similar together as a single notification.
+
+See https://prometheus.io/docs/alerting/latest/configuration/#route[Prometheus documentation] for more information about routing.
+
+[INFO]
+====
+Keys need to be mapped from the Prometheus style (snake case) to the Kubernetes CRD style (camel case).
+
+Some fields might not be supported yet by the `AlertmanagerConfig` CRD.
+====
+
+=== Example
+
+This example shows how to route alerts to different receivers based on the labels attached to the alerts.
+
+[source,yaml]
+----
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: my-alert-config
+spec:
+  receivers:
+  - name: default
+  - name: database-team-slack
+  [ ... ]
+  route:
+    receiver: default <1>
+    routes:
+    - match:
+        team: database
+      continue: false <2>
+      receiver: database-team-slack
+      routes:
+      - match: <3>
+          severity: critical
+        receiver: database-team-pagerduty
+        continue: true <4>
+    - match:
+        team: backend
+      continue: false <2>
+      receiver: backend-team-slack
+      muteTimeIntervals: <5>
+      - non-office-hours
+      routes:
+      - match:
+          severity: critical
+        receiver: backend-team-pagerduty
+        continue: true
+    groupBy: [alertname, instance] <6>
+  timeIntervals:
+  # Monday to Friday, midnight to 9am and 5pm to midnight (UTC) and weekends
+  - name: non-office-hours <7>
+    timeIntervals:
+    - times:
+      - startTime: "00:00" <8>
+        endTime: "09:00"
+      - startTime: "17:00"
+        endTime: "24:00"
+      weekdays:
+      - "monday:friday"
+    - weekdays:
+      - "saturday"
+      - "sunday"
+----
+<1> The default receiver.
+All alerts that don't match any team will be routed to this receiver.
+<2> Don't further evaluate the remaining routes.
+The alert will be routed to the given team and won't appear in the default "catch-all" receiver.
+`false` is the default value and only set for demonstration purposes.
+<3> Matches alerts with the label `team=database`, given from the parent route, and `severity=critical`.
+<4> Sets this route as an additional receiver for the alert.
+The alert will be routed to the `database-team-pagerduty` receiver and the parent Slack receiver.
+<5> Mutes the Slack alerts for the back-end team during non-office hours.
+When a route is muted it won't send any notifications, but otherwise act normally, this includes ending the route-matching process if the `continue` option isn't set.
+<6> The labels to group alerts by.
+Grouping sends multiple alerts that are similar together as a single notification.
+<7> Defines a time interval that can be referenced in the `muteTimeIntervals` field of a route.
+<8> All times are in UTC, no other time zones are supported.
+
+== Test Alerting [[test-alerting]]
+
+All changes to alerting routes and receivers should be tested to ensure that receivers are able to correctly receive alerts.
+
+. Set the namespace you created the `AlertmanagerConfig` in.
++
+[source,bash]
+----
+APP_NAMESPACE=my-namespace
+----
+
+. Create a test alert that's always firing.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: test-alert
+spec:
+  groups:
+  - name: test-alert
+    rules:
+    - alert: TestAlert
+      expr: vector(1)
+      for: 10s
+      labels: {} <1>
+      annotations:
+        summary: "Test Alert"
+        description: "This is a test alert"
+YAML
+----
+<1> Add labels to the alert to route it to the correct receiver.
+Usually the default receiver is used if no labels are set.
+
+. Check your configured receivers to see if the alert was received.
++
+See <<troubleshooting>> for debugging tips.
+
+. Delete the test alert.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" delete prometheusrule test-alert
+----
+
+. Repeat the test for all receivers by adding the appropriate labels to the alert.
+
+== Troubleshooting [[troubleshooting]]
+
+OpenShift currently doesn't expose any logs or status information for Alertmanager.
+This makes it difficult to debug issues with Alertmanager.
+The following section describes some common issues and how to debug them.
+
+. Check all secret references.
++
+One missing secret reference blocks the creation of all the receivers in the `AlertmanagerConfig`.
+
+. Check the secret values.
++
+Alertmanager may fail to send alerts when the routing configuration has wrong login credentials or missing certificates.
