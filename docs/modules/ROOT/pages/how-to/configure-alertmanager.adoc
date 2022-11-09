@@ -63,7 +63,7 @@ See https://core.telegram.org/bots#how-do-i-create-a-bot[Telegram documentation]
 [source,bash]
 ----
 TOKEN=<TOKEN> <1>
-kubectl create secret generic telegram "--from-literal=token=${TOKEN}"
+kubectl create secret generic telegram-alert-bot "--from-literal=token=${TOKEN}"
 ----
 <1> Looks like "123456789:ABCDEF1234567890ABCDEF1234567890ABC"
 
@@ -94,7 +94,7 @@ kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: my-telegram-alert-config
+  name: telegram-alert-config
 spec:
   receivers:
   - name: telegram
@@ -102,7 +102,7 @@ spec:
     - apiURL: https://api.telegram.org
       botToken: <1>
         key: token
-        name: telegram
+        name: telegram-alert-bot
       chatID: ${CHAT_ID}
       parseMode: HTML <2>
   route:
@@ -150,7 +150,7 @@ kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: my-slack-alert-config
+  name: slack-alert-config
 spec:
   receivers:
   - name: slack
@@ -200,7 +200,7 @@ kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: my-alert-config
+  name: alert-config
 spec:
   receivers:
   - name: default
@@ -212,7 +212,7 @@ spec:
       authIdentity: my-app@example.com <5>
       authPassword: <6>
         key: password
-        name: email
+        name: email-alert-auth
   route:
     groupBy: [alertname, instance]
     receiver: default
@@ -303,7 +303,7 @@ This example shows how to route alerts to different receivers based on the label
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: my-alert-config
+  name: alert-config
 spec:
   receivers:
   - name: default
