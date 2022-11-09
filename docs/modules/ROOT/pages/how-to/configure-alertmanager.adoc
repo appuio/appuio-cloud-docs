@@ -419,10 +419,173 @@ OpenShift currently doesn't expose any logs or status information for Alertmanag
 This makes it difficult to debug issues with Alertmanager.
 The following section describes some common issues and how to debug them.
 
-. Check all secret references.
-+
+=== Check all secret references.
+
 One missing secret reference blocks the creation of all the receivers in the `AlertmanagerConfig`.
 
-. Check the secret values.
-+
+=== Check the secret values.
+
 Alertmanager may fail to send alerts when the routing configuration has wrong login credentials or missing certificates.
+
+=== Create a Webhook debug server.
+
+A webhook receiver can be used to debug issues with the routing configuration or to check secret values.
+
+[INFO]
+====
+There are webhook debuggers available online, such as https://webhook.site/[webhook.site] or https://requestbin.com/[requestbin.com].
+
+It's not recommended to send sensitive information to these services.
+
+This example creates it's own basic webhook receiver on {product}.
+====
+
+. Create a Webhook Receiver
++
+[source,bash]
+----
+APP_NAMESPACE=my-namespace
+APPS_DOMAIN=apps.ZONE # Replace with your cluster's default app domain from https://portal.appuio.cloud/zones
+
+kubectl -n "${APP_NAMESPACE}" create -f - <<YAML
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logging-webhook
+data:
+  logging_server.go: |
+    package main
+
+    import (
+      "fmt"
+      "io"
+      "net/http"
+      "os"
+    )
+
+    func main() {
+      http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        defer w.WriteHeader(http.StatusNoContent)
+        defer r.Body.Close()
+
+        fmt.Println(r.Method, r.URL)
+        r.Header.Write(os.Stdout)
+        fmt.Print("\n")
+        io.Copy(os.Stdout, r.Body)
+        fmt.Print("\n\n")
+      })
+      panic(http.ListenAndServe(":8080", nil))
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logging-webhook
+  name: logging-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logging-webhook
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: logging-webhook
+    spec:
+      containers:
+      - image: golang
+        name: golang
+        env: [{ name: 'HOME', value: '/tmp' }]
+        ports:
+        - containerPort: 8080
+        resources: {}
+        command: [go, run, "/s/logging_server.go"]
+        volumeMounts:
+        - mountPath: /s
+          name: logging-webhook
+      volumes:
+      - configMap:
+          name: logging-webhook
+        name: logging-webhook
+YAML
+
+kubectl -n "${APP_NAMESPACE}" expose deployment logging-webhook
+kubectl -n "${APP_NAMESPACE}" create ingress logging-webhook "--rule=logging-webhook-${APP_NAMESPACE}.${APPS_DOMAIN}/*=logging-webhook:8080,tls=logging-webhook-tls"
+kubectl -n "${APP_NAMESPACE}" annotate ingress logging-webhook "cert-manager.io/cluster-issuer=letsencrypt-production"
+----
+
+. Convert or create a `AlertmanagerConfig` to use the webhook receiver.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: debug-alert-config
+spec:
+  receivers:
+  - name: default
+    webhookConfigs:
+    - url: https://logging-webhook-${APP_NAMESPACE}.${APPS_DOMAIN}/
+      sendResolved: true
+      httpConfig:
+        authorization:
+          credentials:
+            name: email-alert-auth <1>
+            key: password
+  route:
+    groupBy: [alertname, instance]
+    receiver: default
+YAML
+----
+<1> Can be used to check if secret values are correctly sent to the webhook receiver.
+Will show up in the logs as `Authorization: Bearer secret value`.
+
+. Check the server is up and running.
++
+Getting the TLS certificate may take a few minutes.
++
+[source,bash]
+----
+curl -v https://logging-webhook-${APP_NAMESPACE}.${APPS_DOMAIN}/
+----
+
+. Check the logs of the webhook receiver.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" logs deployment/logging-webhook -f
+----
++
+A log message similar to the following should appear:
++
+....
+POST /
+Authorization: Bearer xxxxxx
+Content-Length: 1206
+Content-Type: application/json
+Forwarded: for=172.18.200.242;host=logging-webhook-my-namespace.apps.lab-cloudscale-rma-0.appuio.cloud;proto=https
+User-Agent: Alertmanager/0.24.0
+X-Forwarded-For: 172.18.200.242
+X-Forwarded-Host: logging-webhook-my-namespace.apps.lab-cloudscale-rma-0.appuio.cloud
+X-Forwarded-Port: 443
+X-Forwarded-Proto: https
+
+{"receiver":"my-namespace/debug-alert-config/default","status":"firing","alerts":[{"status":"firing","labels":{"alertname":"EndpointDown","instance":"my-app:8080","job":"probe/my-namespace/my-app-ingress","namespace":"my-namespace","prometheus":"openshift-user-workload-monitoring/user-workload","severity":"critical"},"annotations":{"summary":"Endpoint my-app:8080 down"},"startsAt":"2022-11-09T13:41:43.399Z","endsAt":"0001-01-01T00:00:00Z","generatorURL":"https://thanos-querier-openshift-monitoring.apps.lab-cloudscale-rma-0.appuio.cloud/api/graph?g0.expr=probe_success%7Bnamespace%3D%22my-namespace%22%7D+%3D%3D+0\u0026g0.tab=1","fingerprint":"972537dc10d0155f"}],"groupLabels":{"alertname":"EndpointDown","instance":"my-app:8080"},"commonLabels":{"alertname":"EndpointDown","instance":"my-app:8080","job":"probe/my-namespace/my-app-ingress","namespace":"my-namespace","prometheus":"openshift-user-workload-monitoring/user-workload","severity":"critical"},"commonAnnotations":{"summary":"Endpoint my-app:8080 down"},"externalURL":"https:///console.lab-cloudscale-rma-0.appuio.cloud/monitoring","version":"4","groupKey":"{}/{namespace=\"my-namespace\"}:{alertname=\"EndpointDown\", instance=\"my-app:8080\"}","truncatedAlerts":0}
+....
+
+. Delete the manifests.
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" delete alertmanagerconfig debug-alert-config
+kubectl -n "${APP_NAMESPACE}" delete ingress logging-webhook
+kubectl -n "${APP_NAMESPACE}" delete service logging-webhook
+kubectl -n "${APP_NAMESPACE}" delete deployment logging-webhook
+kubectl -n "${APP_NAMESPACE}" delete configmap logging-webhook
+kubectl -n "${APP_NAMESPACE}" delete secret logging-webhook-tls
+----
