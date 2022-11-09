@@ -52,7 +52,7 @@ See <<routing>> for more information.
 +
 [source,bash]
 ----
-export APP_NAMESPACE=my-namespace
+APP_NAMESPACE=my-namespace
 ----
 
 . Create a Telegram bot by messaging the https://t.me/BotFather[@BotFather].
@@ -123,7 +123,7 @@ HTML works well with the default Alertmanager template.
 +
 [source,bash]
 ----
-export APP_NAMESPACE=my-namespace
+APP_NAMESPACE=my-namespace
 ----
 
 . Get the webhook URL from Slack.
@@ -174,7 +174,7 @@ YAML
 +
 [source,bash]
 ----
-export APP_NAMESPACE=my-namespace
+APP_NAMESPACE=my-namespace
 ----
 
 . Create a secret with the email authentication password.
