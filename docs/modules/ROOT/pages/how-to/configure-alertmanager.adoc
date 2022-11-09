@@ -240,6 +240,20 @@ The root route is the default route and is used for all alerts that don't match 
 The matcher of the root route is set by {product} to match the namespace of the `AlertmanagerConfig`.
 All other matchers are ignored.
 
+.The routing tree
+[source,yaml]
+----
+route:
+  receiver: default
+  routes:
+  - match: { team: foo }
+    continue: true
+  - match: { team: bar }
+    routes:
+    - match: { severity: warning }
+    - match: { severity: critical }
+----
+
 The child routes are evaluated in order and the first matching route is used to route the alert.
 The `match` field of a route defines the labels that must match for the route to match.
 The `match` field can be omitted to match all alerts.
@@ -250,8 +264,26 @@ This can be used to send alerts to multiple receivers.
 It's possible to mute alerts during certain times of the day.
 This can be done by defining a `timeInterval` and referencing it in the `muteTimeIntervals` field of a route.
 
+.Time intervals
+[source,yaml]
+----
+route:
+  muteTimeIntervals: [weekends]
+timeIntervals:
+- name: weekends
+  timeIntervals:
+  - weekdays: [saturday, sunday]
+----
+
 Alerts can be grouped by labels using the `groupBy` field.
 Grouping sends multiple alerts that are similar together as a single notification.
+
+.Alerts grouped by name
+[source,yaml]
+----
+route:
+  groupBy: [alertname]
+----
 
 See https://prometheus.io/docs/alerting/latest/configuration/#route[Prometheus documentation] for more information about routing.
 
