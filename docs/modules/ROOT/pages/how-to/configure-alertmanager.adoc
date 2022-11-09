@@ -115,7 +115,7 @@ YAML
 Telegram wants every special character to be escaped with a backslash.
 HTML works well with the default Alertmanager template.
 
-. Test the email receiver. See <<test-alerting>>.
+. Test the receiver. See <<test-alerting>>.
 
 === Configure Slack Receiver [[alertmanager-config-receiver-slack]]
 
@@ -166,7 +166,7 @@ YAML
 <1> The secret created earlier.
 <2> The channel to send alerts to.
 
-. Test the email receiver. See <<test-alerting>>.
+. Test the receiver. See <<test-alerting>>.
 
 === Configure Email Receiver [[alertmanager-config-receiver-email]]
 
@@ -229,7 +229,7 @@ Can be the same as the username.
 Might be omitted for LOGIN protocol.
 <6> The secret created earlier.
 
-. Test the email receiver. See <<test-alerting>>.
+. Test the receiver. See <<test-alerting>>.
 
 == Routing Alerts [[routing]]
 
