@@ -1,5 +1,7 @@
 = Monitor HTTP(S) Endpoints Using Blackbox Exporter
 
+include::partial$needs-alert-receiver-setup.adoc[]
+
 == Prerequisites
 
 * Command Line Access to APPUiO Cloud

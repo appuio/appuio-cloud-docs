@@ -1,5 +1,7 @@
 = Monitor PVC Disk Usage
 
+include::partial$needs-alert-receiver-setup.adoc[]
+
 == Overview
 
 {product} exposes `kubelet` metrics that can be used to monitor PVC disk usage.
