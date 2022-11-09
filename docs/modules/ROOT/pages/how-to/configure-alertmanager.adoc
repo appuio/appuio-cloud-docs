@@ -14,90 +14,37 @@ OpenShift uses Alertmanager to manage alerts and send notifications to the corre
 
 Alertmanager brings different integrations which can be listed by running `kubectl explain alertmanagerconfigs.spec.receivers`.
 
-The following example shows how to configure Alertmanager to send alerts to Slack, Telegram, and email.
+The basic structure of the Alertmanager configuration is as follows.
+Click the links below to see a configuration example for each section:
 
 [source,yaml]
 ----
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: my-alert-config
+  name: alert-config
 spec:
   receivers:
-  - name: telegram <1>
-    telegramConfigs:
-    - apiURL: https://api.telegram.org
-      botToken:
-        key: token
-        name: telegram
-      chatID: 1234567890
-      parseMode: HTML
-  - name: default <2>
-    slackConfigs:
-    - apiURL:
-        key: url
-        name: slack
-      channel: '#alerts'
-  - name: out-of-office-hours <3>
-    emailConfigs:
-    - to: alerts@example.com
-      from: my-app@example.com
-      smarthost: smtp.example.com:587
-      authUsername: my-app@example.com
-      authIdentity: my-app@example.com
-      authPassword:
-        key: password
-        name: email
-  route:
-    groupBy: <4>
-    - alertname
-    - instance
-    receiver: default <5>
-    routes: <6>
-    - receiver: out-of-office-hours
-      muteTimeIntervals: <7>
-      - office-hours
-      continue: true <8>
-    - matchers: <9>
-        - matchType: '='
-          name: severity
-          value: critical
-      receiver: telegram
-      continue: true
-  timeIntervals:
-  - name: office-hours <10>
-    timeIntervals:
-    - times:
-      - startTime: "09:00"
-        endTime: "17:00"
-      weekdays:
-      - "monday:friday"
+  - name: telegram
+    telegramConfigs: {} <1>
+  - name: slack
+    slackConfigs: {} <2>
+  - name: email
+    emailConfigs: {} <3>
+  route: <4>
+    receiver: default
+    routes: []
 ----
 <1> Configuration for Telegram.
 See <<alertmanager-config-receiver-telegram>> for more information.
 <2> Configuration for Slack.
-Used as the default route if no other route matches.
 See <<alertmanager-config-receiver-slack>> for more information.
 <3> Email configuration for out-of-office-hours.
 See <<alertmanager-config-receiver-email>> for more information.
 Configured to only send alerts during out of office hours.
-<4> Group alerts by alert name and instance.
-There will only be one alert for each combination of alert name and instance.
-<5> All alerts that don't match any other route will be sent to this receiver.
-<6> All routes can have a list of sub-routes.
-Routes are evaluated in order.
-The first route that matches an alert will be used.
-Any matchers of the root route are overridden by a namespace label matcher and `continue` is set to true.
+<4> Route configuration.
+All alerts are routed to the default receiver.
 See <<routing>> for more information.
-<7> Only send to the `out-of-office-hours` receiver outside the defined office hours defined by `.spec.timeIntervals`.
-<8> Continue to evaluate the remaining routes if this route matches.
-This allows you to send alerts to multiple receivers.
-<9> Only send alerts with the severity `critical` to the `telegram` receiver.
-The matchers can be configured to match any label on the alert.
-Multiple matchers are combined with `AND`.
-<10> Define the office hours.
-The office hours are used by the `out-of-office-hours` route to determine if an alert should be sent.
-All times are in UTC.
 
 === Configure Telegram Receiver [[alertmanager-config-receiver-telegram]]
 
