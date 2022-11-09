@@ -2,6 +2,8 @@
 
 This page explains how to collect and view Prometheus metrics exposed by a sample application on {product} and how to write alerts using them.
 
+include::partial$needs-alert-receiver-setup.adoc[]
+
 == Deploy a Sample Application
 
 . Create a new namespace for the sample application
@@ -226,7 +228,3 @@ Navigate to the OpenShift Web Console https://console.<CLUSTER>.cloud/dev-monito
 The alert should now be firing.
 +
 image::monitoring/custom-metrics-alert-fire.png[Firing alert https://console.<CLUSTER>.cloud/dev-monitoring/ns/<APP_NAMESPACE>/alerts]
-+
-TIP: You can send the alert to a receiver such as email, PagerDuty, or Opsgenie.
-//TODO Fix link
-To do so follow the xref:how-to/alert-routing.adoc[Alert Routing How-to].

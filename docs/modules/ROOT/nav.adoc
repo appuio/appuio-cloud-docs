@@ -80,7 +80,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
 
 * Monitoring
-** xref:how-to/configure-alertmanager.adoc[Configure Alerts]
+** xref:how-to/configure-alertmanager.adoc[Configure Alert Receivers]
 ** xref:how-to/monitor-http-endpoints.adoc[Monitor HTTP Endpoints]
 ** xref:how-to/monitor-application.adoc[Monitor Applications]
 ** xref:how-to/monitor-pvc-usage.adoc[Monitor PVC Usage]

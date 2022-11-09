@@ -1,4 +1,4 @@
-= Configure Alerts using Alertmanager
+= Configure Alert Receivers
 
 {product} allows you to configure custom alert receivers to notify you when an alert is triggered.
 
