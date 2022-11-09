@@ -97,7 +97,7 @@ metadata:
   name: telegram-alert-config
 spec:
   receivers:
-  - name: telegram
+  - name: default
     telegramConfigs:
     - apiURL: https://api.telegram.org
       botToken: <1>
@@ -153,7 +153,8 @@ metadata:
   name: slack-alert-config
 spec:
   receivers:
-  - name: slack
+  - name: default
+    slackConfigs:
     - apiURL: <1>
         key: url
         name: slack-alert-webhook
