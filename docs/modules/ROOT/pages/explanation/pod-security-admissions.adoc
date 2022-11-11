@@ -74,7 +74,7 @@ On OpenShift, Pod Security Admission and Security Context Constraints run in par
 The configuration for a namespace is kept in sync by setting the PSA labels according to the highest privileged SCC which is can be used in the namespace.
 This is handled by the https://github.com/openshift/cluster-policy-controller/tree/master/pkg/psalabelsyncer[Cluster Policy Controller].
 
-Since this results in a PSA configuration that is never more restrictive than SCCs, a pod allowed by an SCC will also be allowed by PSA.
+Since this results in a PSA configuration that's never more restrictive than SCCs, a pod allowed by an SCC will also be allowed by PSA.
 `
 However, PSA will validate workloads before the SCC mutating webhook is applied.
 Therefore, if you leave Security Contexts for your workloads empty and rely on the SCC controller to inject sensible defaults, you will see warnings during deployment.
