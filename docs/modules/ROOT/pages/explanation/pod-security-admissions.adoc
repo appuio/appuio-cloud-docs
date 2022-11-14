@@ -4,7 +4,7 @@ Kubernetes 1.24 removes the Pod Security Policy feature in favor of Pod Security
 
 == Introduction
 
-Up until OpenShift 4.10, OpenShift only had Security Context Constraints (SCCs.)
+Up until OpenShift 4.10, OpenShift only had Security Context Constraints (SCCs).
 Since Kubernetes 1.3, Pod Security Policy (PSP) has been the built-in way to do that for security-related Pod fields.
 However, it turned out that PSPs were too complex, so Kubernetes 1.21 https://kubernetes.io/blog/2021/04/08/kubernetes-1-21-release-announcement/#podsecuritypolicy-deprecation[deprecated] and 1.24 completely dropped them in favor of https://kubernetes.io/docs/concepts/security/pod-security-admission/[Pod Security Admission] (PSA.)
 
