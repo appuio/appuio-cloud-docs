@@ -2,6 +2,13 @@
 
 Kubernetes 1.24 removes the Pod Security Policy feature in favor of Pod Security Admission. This document explains the impact on {product} users.
 
+[IMPORTANT]
+.TL;DR:
+====
+* Check PSA warnings
+* Set security context accordingly in your workload resources.
+====
+
 == Introduction
 
 Up until OpenShift 4.10, OpenShift only had Security Context Constraints (SCCs).
@@ -96,8 +103,10 @@ What's planned for Openshift 4.12, coming December 2022?
 . By the global Pod Security Admission configuration, all namespaces will run in the “restricted” enforcement mode. This Pod Security Admission (PSA) level aligns with the restricted-v2 SCC, so if your workload is categorized into restricted-v2, it will be able to run in a namespace that enforces the PSA as restricted.
 . In cases where the workload has access to higher SCC privileges (via its Service Account,) OpenShift will label namespaces, via the new label synchronization component, to synchronize the PSA enforcement level in order to keep workloads running. 
 
+[IMPORTANT]
+====
 The primary recommendation at this point is to ensure any workload has the security context properly set.
 Therefore, the best path is to ensure the workloads can run with restricted permissions.
 When this is done, your product will run on restricted namespaces on vanilla Kubernetes and will have the best chance of running properly on any other Kubernetes distribution with any vendor within restricted namespaces.
 The application will also have access to the restricted-v2 on OpenShift and won't be rejected by cluster administrators trying to enforce restrictions.  
-
+====
