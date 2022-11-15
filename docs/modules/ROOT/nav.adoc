@@ -105,3 +105,5 @@ include::user:ROOT:partial$shared-nav.adoc[]
 * xref:explanation/unit-prefixes.adoc[Unit Prefixes]
 * xref:explanation/storage-classes.adoc[Storage Classes]
 * xref:explanation/client-throttling.adoc[Client Throttling]
+* xref:explanation/pod-security-admissions.adoc[]
+
