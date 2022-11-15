@@ -48,34 +48,38 @@ Allows the default (minimally specified) Pod configuration.
 |===
 
 On {product}, the default is `baseline` and can not be changed.
-If you need more security and do want to set `restricted`, please visit http://roadmap.appuio.cloud/ and let us know. 
+If you need more security and do want to set `restricted`, please visit http://roadmap.appuio.cloud/ and let us know.
 
 Under Pod Security Admission, the built-in Pod Security admission controller enforces the configured Pod Security Standards.
 Pod security restrictions are managed at the namespace level, and are processed when pods are created.
 The PSA admission controller will deny the creation of workloads (Pods, Deployments, etc.) if they don't adhere to the configured Pod Security Standard of the namespace.
 
-You can configure how PSA will apply for a namespace by setting specific labels on the namespace.
-These labels define which of the predefined Pod Security Standard levels are used for a namespace.
-The selected label defines what action the control plane takes if a potential violation is detected:
+// NOTE
+// NOTE The text commented below describes a mechanism that is not yet enabled on APPUiO Cloud.
+// NOTE Please refer to APUB-347 for more information.
+// NOTE
+//
+//You can configure how PSA will apply for a namespace by setting specific labels on the namespace.
+//These labels define which of the predefined Pod Security Standard levels are used for a namespace.
+//The selected label defines what action the control plane takes if a potential violation is detected:
 
-[cols="1,6"]
-|===
-|*enforce*
-|Policy violations will cause the pod to be rejected.
+//[cols="1,6"]
+//|===
+//|*enforce*
+//|Policy violations will cause the pod to be rejected.
 
-|*audit*
-|Policy violations will trigger the addition of an audit annotation to the event recorded in the audit log but are otherwise allowed.
+//|*audit*
+//|Policy violations will trigger the addition of an audit annotation to the event recorded in the audit log but are otherwise allowed.
 
-|*warn*
-|Policy violations will trigger a user-facing warning but are otherwise allowed.
-|===
+//|*warn*
+//|Policy violations will trigger a user-facing warning but are otherwise allowed.
+//|===
 
-A namespace can configure any or all modes, or even set a different level for different modes.
-Check out https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-namespace-labels/[Enforce Pod Security Standards with Namespace Labels] to see how these can be configured
+//A namespace can configure any or all modes, or even set a different level for different modes.
+//Check out https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-namespace-labels/[Enforce Pod Security Standards with Namespace Labels] to see how these can be configured
 
 .PSA and SCCs
 ****
-
 On OpenShift, Pod Security Admission and Security Context Constraints run in parallel and OpenShift makes sure that PSA and SCCs are kept in sync.
 
 The configuration for a namespace is kept in sync by setting the PSA labels according to the highest privileged SCC which is can be used in the namespace.
@@ -110,3 +114,4 @@ Therefore, the best path is to ensure the workloads can run with restricted perm
 When this is done, your product will run on restricted namespaces on vanilla Kubernetes and will have the best chance of running properly on any other Kubernetes distribution with any vendor within restricted namespaces.
 The application will also have access to the restricted-v2 on OpenShift and won't be rejected by cluster administrators trying to enforce restrictions.  
 ====
+
