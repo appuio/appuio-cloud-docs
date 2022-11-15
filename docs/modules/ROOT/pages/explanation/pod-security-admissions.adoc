@@ -47,8 +47,8 @@ Allows the default (minimally specified) Pod configuration.
 |Heavily restricted policy, following current Pod hardening best practices.
 |===
 
-The most straightforward way to ensure your workloads can work on a restricted namespace, particularly in 4.12, is by labeling the namespaces where they should run by enforcing the restricted policy and verifying if they're admitted and are successfully running.
-You may also check whether they're assigned the restricted-v2 SCC in 4.11. We recommend validating and ensuring the desired behavior by doing functionality end-to-end testing. 
+On {product}, the default is `baseline` and can not be changed.
+If you need more security and do want to set `restricted`, please visit http://roadmap.appuio.cloud/ and let us know. 
 
 Under Pod Security Admission, the built-in Pod Security admission controller enforces the configured Pod Security Standards.
 Pod security restrictions are managed at the namespace level, and are processed when pods are created.
