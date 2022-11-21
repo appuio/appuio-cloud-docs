@@ -84,6 +84,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:how-to/monitor-http-endpoints.adoc[Monitor HTTP Endpoints]
 ** xref:how-to/monitor-application.adoc[Monitor Applications]
 ** xref:how-to/monitor-pvc-usage.adoc[Monitor PVC Usage]
+** xref:how-to/use-custom-grafana.adoc[Custom Grafana]
 
 * Image Registry
 ** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
