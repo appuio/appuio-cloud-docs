@@ -53,7 +53,7 @@ CA=$(kubectl -n "${GRAFANA_NAMESPACE}" get secret grafana-viewer -ojsonpath={.da
 == Add Data Source for Project
 
 NOTE: You'll need to add each project as a separate data source.
-Adding a single data source for multiple project isn't supported.
+Adding a single data source for multiple projects isn't supported.
 
 . Give the service account permission to access the metrics of the project.
 For that you need to grant the service account permission to view pods in the target namespace.
