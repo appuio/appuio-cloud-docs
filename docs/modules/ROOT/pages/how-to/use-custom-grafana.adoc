@@ -145,11 +145,14 @@ Set the following configuration
 
 |===
 +
-[TIP]
+[IMPORTANT]
 ====
 Grafana defaults to the HTTP method `POST`, however we found inconsistencies when using it to access metrics of a single project. 
 We recommend to fall back to `GET`.
-
+====
++
+[NOTE]
+====
 Make sure to not use quotes for the custom query parameters.
 Using `namespace="my-app"` will result in permission errors, use `namespace=my-app`.
 ====
