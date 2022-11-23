@@ -97,6 +97,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 
 .Technical reference
 * https://portal.appuio.cloud/zones[Zones 🔗^]
+* xref:references/node-classes.adoc[]
 * xref:references/default-quota.adoc[Default Quota]
 
 .Explanation
