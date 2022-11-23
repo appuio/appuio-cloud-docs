@@ -9,14 +9,14 @@ The node classes available on a zone are indicated on https://portal.appuio.clou
 See xref:how-to/choose-node-class.adoc[] on how to schedule your workload on a specific node class.
 
 You will find the characteristics of all node classes explained below.
-
+== cloudscale.ch Zones
 
 flex::
 +
-Flex nodes directly map to https://www.cloudscale.ch/en/pricing#flavors-explained[flex instances defined by the infrastrucutre provider].
+Flex nodes directly map to https://www.cloudscale.ch/en/pricing#flavors-explained[flex instances defined by the infrastructure provider].
 They use CPUs shared with other instances.
 This allows for short-term load peaks but can occasionally require your workload to wait for CPU time.
-Workload running on flex nodes will cost you less (see https://products.docs.vshn.ch/products/appuio/cloud/pricing_2022-12-01.html[pricing]).
+Workload running on Flex nodes will cost you less (see https://products.docs.vshn.ch/products/appuio/cloud/pricing.html[pricing]).
 +
 Use this node class for your background jobs, test environments or applications not sensitive to latency.
 +
@@ -26,7 +26,7 @@ plus::
 +
 Flex nodes directly map to https://www.cloudscale.ch/en/pricing#flavors-explained[plus instances defined by the infrastructure provider].
 Plus nodes have dedicated CPU cores.
-This gives you consistent performance but will cost you more (see https://products.docs.vshn.ch/products/appuio/cloud/pricing_2022-12-01.html[pricing]).
+This gives you consistent performance but will cost you more (see https://products.docs.vshn.ch/products/appuio/cloud/pricing.html[pricing]).
 +
 The plus node class is probably the right choice for your production frontends, database and other applications sensitive to latency.
 

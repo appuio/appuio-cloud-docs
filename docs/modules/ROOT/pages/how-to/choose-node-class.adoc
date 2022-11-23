@@ -1,7 +1,7 @@
 = Choose Node Class
 
 Some zones of {product} provide two or more node classes you can choose from to schedule your workload.
-For an explanation of what node groups are and which ones are available, please have a look at xref:references/node-classes.adoc[].
+For an explanation of what node classes are and which ones are available, please have a look at xref:references/node-classes.adoc[].
 
 This page will explain how to have workloads scheduled on a specific node class.
 This works for all workloads within a given namespace, but it can also be done for a single pod.
