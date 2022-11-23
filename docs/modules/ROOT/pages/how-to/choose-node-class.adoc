@@ -3,10 +3,9 @@
 Some zones of {product} provide two or more node classes you can choose from to schedule your workload.
 For an explanation of what node groups are and which ones are available, please have a look at xref:references/node-classes.adoc[].
 
-This page will explain to you how you can have your workload scheduled on a specific node class.
-You can do so for all workloads within a given namespace.
-But you can also do so for a single pod.
-It's even possible, to a node class as default for a namespace, while selected pods run on another node class.
+This page will explain how to have workloads scheduled on a specific node class.
+This works for all workloads within a given namespace, but it can also be done for a single pod.
+It's also possible to set a node class as default for a namespace, while selected pods run on another node class.
 
 [CAUTION]
 ====
