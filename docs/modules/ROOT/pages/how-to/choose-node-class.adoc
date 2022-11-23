@@ -1,16 +1,16 @@
 = Choose Node Class
 
 Some zones of {product} provide two or more node classes you can choose from to schedule your workload.
-For an explanation on what node group are and which one are available, please have a look at xref:references/node-classes.adoc[].
+For an explanation of what node groups are and which ones are available, please have a look at xref:references/node-classes.adoc[].
 
 This page will explain to you how you can have your workload scheduled on a specific node class.
-You can do so for all workload within a given namespace.
+You can do so for all workloads within a given namespace.
 But you can also do so for a single pod.
 It's even possible, to a node class as default for a namespace, while selected pods run on another node class.
 
 [CAUTION]
 ====
-Your workload might may get stuck with pods in status `Pending` with the following error message:
+Your workload might get stuck with pods in the `Pending` status with the following error message:
 
 [source]
 ----
@@ -23,7 +23,7 @@ This happens, when you set a node class that doesn't exist on the system.
 == Setting Namespace Defaults
 
 You can set the node class on a namespace level by setting the `appuio.io/default-node-selector` annotation on the namespace.
-The value of the annotation is a comma separated list of key value pairs that's expanded to a node selector.
+The value of the annotation is a comma-separated list of key-value pairs that are expanded to a node selector.
 
 [source,yaml]
 ----
