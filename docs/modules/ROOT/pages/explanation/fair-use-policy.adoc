@@ -1,0 +1,52 @@
+= Fair Use Policy
+
+== Memory
+
+We set a limit on the amount of memory you can consume per namespace to protect the {product} zone from resource abuse.
+See the xref:references/default-quota.adoc[Default Quota] documentation for details.
+
+We bill all memory usage.
+Additionally we bill memory reservations which exceed the usage.
+See https://products.docs.vshn.ch/products/appuio/cloud/pricing_2021-12-01.html[{product} pricing] for details.
+
+== CPU
+
+We set a limit on the amount of CPU you can consume per namespace to protect the {product} zone from resource abuse.
+See the xref:references/default-quota.adoc[Default Quota] documentation for details.
+
+We currently bill CPU usage or reservations which exceed the fair use ratio determined by the {product} zone's underlying compute resources.
+The fair use memory to CPU ratio for each zone is listed in the https://portal.appuio.cloud/zones[{product} portal].
+See https://products.docs.vshn.ch/products/appuio/cloud/pricing.html[{product} pricing] for details.
+
+== Storage
+
+We set a limit on the amount of PVCs and for some storage classes the amount of storage you can consume per namespace to protect the {product} zone from resource abuse.
+See the xref:references/default-quota.adoc[Default Quota] documentation for details.
+
+We bill storage based on your PVC's sizes.
+See https://products.docs.vshn.ch/products/appuio/cloud/pricing_2021-12-01.html[{product} pricing] for details.
+
+There's currently no well-defined fair use policy for storage bandwidth or IOPS.
+If your namespace doesn't consume more than a few 100MiB/s of storage bandwidth or a couple hundred IOPS on one of the storage classes `cephfs-fspool-cluster` or `rbd-storagepool-cluster`, there's nothing to worry about.
+We may reach out to an organization if we see unusually high storage bandwidth or IOPS utilization for one of their namespaces.
+
+Storage classes `ssd` and `bulk` (and their encrypted counterparts) are backed by cloudscale.ch volumes.
+The fair use policy for cloudscale.ch is defined in their https://www.cloudscale.ch/en/tos.pdf[ToS].
+
+
+== Non-compute cluster resources
+
+We limit the amount of non-compute cluster resources you can consume per namespace to protect the {product} zone from resource abuse.
+See the xref:references/default-quota.adoc[Default Quota] documentation for details.
+
+== Network
+
+We currently don't have a well-defined fair use policy in regards to network bandwidth or concurrent connections.
+Notably, we currently don't configure any limits regarding network bandwidth or connection count on user workloads.
+
+In our experience, the most limiting factor in terms of network utilization on {product} is the amount of concurrent connections.
+However, if the number of concurrent connections to a namespace doesn't exceed a couple hundred connections for longer periods of time, there's nothing to worry about.
+We'll try to reach out to organizations if we see abnormally high connection counts directed to one or more of their namespaces over longer periods of time.
+
+Network bandwidth and packet utilization for a namespace can be checked in the {product} zone's web console in developer mode under "Observe" for the project you're interested in.
+Scroll down to the "Current Network Usage" panel.

@@ -102,6 +102,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 .Explanation
 * xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
 * xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
+* xref:explanation/fair-use-policy.adoc[]
 * xref:explanation/unit-prefixes.adoc[Unit Prefixes]
 * xref:explanation/storage-classes.adoc[Storage Classes]
 * xref:explanation/client-throttling.adoc[Client Throttling]
