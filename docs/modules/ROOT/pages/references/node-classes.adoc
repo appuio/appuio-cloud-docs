@@ -25,7 +25,7 @@ On an {product} zone running on cloudscale.ch, your workload will by default be 
 
 plus::
 +
-Flex nodes directly map to https://www.cloudscale.ch/en/pricing#flavors-explained[plus instances defined by the infrastructure provider].
+Plus nodes directly map to https://www.cloudscale.ch/en/pricing#flavors-explained[plus instances defined by the infrastructure provider].
 Plus nodes have dedicated CPU cores.
 This gives you consistent performance but will cost you more (see https://products.docs.vshn.ch/products/appuio/cloud/pricing.html[pricing]).
 +
