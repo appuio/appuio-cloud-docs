@@ -9,6 +9,7 @@ The node classes available on a zone are indicated on https://portal.appuio.clou
 See xref:how-to/choose-node-class.adoc[] on how to schedule your workload on a specific node class.
 
 You will find the characteristics of all node classes explained below.
+
 == cloudscale.ch Zones
 
 flex::
