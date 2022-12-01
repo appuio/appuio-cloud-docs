@@ -55,6 +55,10 @@ include::user:ROOT:partial$shared-nav.adoc[]
 * xref:tutorials/migration.adoc[Migrating to APPUiO Cloud]
 
 .How-to guides
+
+* Tuning
+** xref:how-to/choose-node-class.adoc[Choose Node Class]
+
 * Projects and Namespaces
 ** xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
 ** xref:how-to/list-namespaces.adoc[List Namespaces]
@@ -97,6 +101,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 
 .Technical reference
 * https://portal.appuio.cloud/zones[Zones 🔗^]
+* xref:references/node-classes.adoc[]
 * xref:references/default-quota.adoc[Default Quota]
 
 .Explanation
