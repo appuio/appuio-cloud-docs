@@ -37,5 +37,6 @@ You can't change it.
 
 [NOTE]
 ====
+The cipher used is `aes-xts-plain64` with a key size of `512`.
 See more details in https://github.com/cloudscale-ch/csi-cloudscale[csi-cloudscale].
 ====
