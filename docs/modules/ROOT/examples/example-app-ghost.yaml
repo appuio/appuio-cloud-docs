@@ -1,0 +1,96 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ghost-data
+  labels:
+    app.kubernetes.io/name: ghost
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost
+  labels:
+    app.kubernetes.io/name: ghost
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: ghost
+# TODO Ingress
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  labels:
+    app.kubernetes.io/name: ghost
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ghost
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ghost
+    spec:
+      containers:
+        - name: ghost
+          image: dockerhub.vshn.net/library/ghost:5-alpine
+          imagePullPolicy: Always
+          env:
+            - name: database__connection__host
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_HOST
+            - name: database__connection__port
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PORT
+            - name: database__connection__database
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_DB
+            - name: database__connection__user
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_USER
+            - name: database__connection__password
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PASSWORD
+            - name: url
+              value: http://localhost:8080
+          ports:
+            - name: https
+              containerPort: 2368
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: ghost-data
+              mountPath: /var/lib/ghost/content
+      volumes:
+        - name: ghost-data
+          persistentVolumeClaim:
+            claimName: ghost-data

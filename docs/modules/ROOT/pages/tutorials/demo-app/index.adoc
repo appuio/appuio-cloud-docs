@@ -1,0 +1,6 @@
+= Application Deployment Demos
+
+We provide the following tutorials to deploy common applications on APPUiO Cloud.
+They make use of the VSHN Application Catalog for datastore services.
+
+TODO Index table

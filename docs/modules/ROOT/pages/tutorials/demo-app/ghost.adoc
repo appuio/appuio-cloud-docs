@@ -1,0 +1,72 @@
+= Application Demo: Ghost Blog
+:app-name: Ghost
+:app-name-long: ghost-blog
+
+image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run {app-name} on {product}.
+
+If you aren't familiar with issuing commands on a terminal session, we recommend familiarize yourself with it before continuing this tutorial.
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+== About the Application
+
+> Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content. It comes with modern tools to build a website, publish content, send newsletters & offer paid subscriptions to members.
+
+== Step 1: Create a Project
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-{app-name-long}-demo"
++
+[source,shell]
+--
+oc new-project "[YOUR_USERNAME]-{app-name-long}-demo"
+--
+
+== Step 2: Deploy the application
+
+IMPORTANT: The following steps are currently only working on the Exoscale {zone}.
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-mysql.yaml[]
+----
++
+This will create a MySQL DBaaS instance. See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+
+. Then we deploy the application:
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-ghost.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+IMPORTANT: This example configuration is not meant for a production ready service.
+
+== What's next?
+
+For a production ready service, we recommend the following parts to be implemented and configured:
+
+* Backup with K8up
+* Monitoring with user workload monitoring
+* Own URL with Let's Encrypt
+* Scaling?
+* Requests and Limits
