@@ -208,7 +208,7 @@ Follow these steps to create a new deploy token in your GitLab project:
 
 image::how-to/gitlab-registry.png[]
 
-NOTE: If no name is provided, GitLab provides a default username of the form `gitlab+deploy-token-{n}`.
+NOTE: If no name is provided, GitLab provides a default username of the form `gitlab+deploy-token-\{n}`.
 
 === Create a Secret
 
