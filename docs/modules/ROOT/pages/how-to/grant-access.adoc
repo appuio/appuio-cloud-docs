@@ -26,3 +26,7 @@ CAUTION: Modifications to RoleBindings can prevent users from accessing their pr
 
 Access can be granted to any OpenShift Group.
 This includes that namespace owned by organization A can be managed by members of organization B or only a team of organization B.
+
+== Examples
+
+See xref:how-to/fine-grained-access-examples.adoc[Fine grained access control examples] for more detailed examples.
