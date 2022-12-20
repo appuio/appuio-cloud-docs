@@ -3,4 +3,9 @@
 We provide the following tutorials to deploy common applications on APPUiO Cloud.
 They make use of the VSHN Application Catalog for datastore services.
 
-TODO Index table
+[cols="^1,^1"]
+|===
+|image:logos/ghost-blog.png[alt="Ghost logo",width=100,height=50]
+|xref:tutorials/demo-app/ghost.adoc[Ghost]
+
+|===

@@ -1,10 +1,8 @@
 = Application Demo: Ghost Blog
-:app-name: Ghost
-:app-name-long: ghost-blog
 
-image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run {app-name} on {product}.
+image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run https://ghost.org/[Ghost^] on {product}.
 
-If you aren't familiar with issuing commands on a terminal session, we recommend familiarize yourself with it before continuing this tutorial.
+If you aren't familiar with issuing commands on a terminal session, we recommend familiarizing yourself with it before continuing this tutorial.
 
 == Requirements
 
@@ -18,18 +16,18 @@ To follow this guide, please make sure that you have the following tools install
 
 == Step 1: Create a Project
 
+IMPORTANT: All the following steps are currently only working on the https://portal.appuio.cloud/zones/exoscale-ch-gva-2-0[Exoscale {zone}] because of the Application Catalog service availability.
+
 include::partial$login-in-terminal.adoc[]
 
-. Create a new project called "[YOUR_USERNAME]-{app-name-long}-demo"
+. Create a new project called "[YOUR_USERNAME]-application-demo"
 +
 [source,shell]
 --
-oc new-project "[YOUR_USERNAME]-{app-name-long}-demo"
+oc new-project "[YOUR_USERNAME]-application-demo"
 --
 
 == Step 2: Deploy the application
-
-IMPORTANT: The following steps are currently only working on the Exoscale {zone}.
 
 To deploy the application we will use standard Kubernetes objects.
 Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
@@ -42,9 +40,25 @@ Save the example YAML Kubernetes resources into a file and apply it with `oc app
 include::example$example-app-exo-mysql.yaml[]
 ----
 +
-This will create a MySQL DBaaS instance. See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+This will create a MySQL DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
 
-. Then we deploy the application:
+. Second, we create an OpenShift route to get the generated URL (required in a following step to configure Ghost)
++
+.Route for the example application
+[source,yaml]
+----
+include::example$example-app-route.yaml[]
+----
+
+. Now we need to get the generated URL:
++
+[source,shell]
+----
+oc get route example-app -o jsonpath='{.spec.host}'
+----
+
+. Update the environment variable `url` in the following YAML with the generated URL you retrieved in the previous step and apply the result to the cluster:
 +
 .Application deployment with all other needed resources
 [source,yaml]
@@ -59,14 +73,33 @@ include::example$example-app-ghost.yaml[]
 oc get pods --watch
 --
 
+You can now access your Ghost blog with the URL you retrieved in step 3.
+
 IMPORTANT: This example configuration is not meant for a production ready service.
 
 == What's next?
 
 For a production ready service, we recommend the following parts to be implemented and configured:
 
-* Backup with K8up
-* Monitoring with user workload monitoring
-* Own URL with Let's Encrypt
-* Scaling?
-* Requests and Limits
+* Review the https://ghost.org/docs/[official Ghost documentation^] to learn more about the configuration and possibilities.
+* While the database is already being backed up because it's a managed service, you should still xref:how-to/use-k8up.adoc[backup your persistent volume with K8up].
+* Add some monitoring for your application:
+** xref:how-to/monitor-http-endpoints.adoc[]
+** xref:how-to/monitor-pvc-usage.adoc[]
+* Use your xref:how-to/getting-a-certificate.adoc[own URL with Let's Encrypt].
+* Maybe you want to use an xref:explanation/storage-classes.adoc[`RWX` storage class] which allows you to scale your application by running multiple Pods.
+* Configure proper xref:how-to/use-vpa.adoc[requests and limits] for your Pod.
+* Ghost needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+* Secure the database connection to use TLS encryption. This is described in the https://ghost.org/docs/config/#database[Ghost documentation]. You can find the CA certificate in the database secret:
++
+[source,shell]
+----
+oc get secret mysql-creds -o jsonpath='{.data.ca\.crt}' | base64 -d
+----
+
+Once you're done evaluating this example application, cleanup again to not cause any unwanted costs:
+
+[source,shell]
+--
+oc delete project [YOUR_USERNAME]-application-demo
+--

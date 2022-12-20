@@ -3,15 +3,5 @@ kind: ExoscaleMySQL
 metadata:
   name: example-app
 spec:
-  parameters:
-    backup:
-      timeOfDay: "12:00:00" 
-    service:
-      zone: ch-dk-2 
-      majorVersion: "8" 
-      mysqlSettings:
-        default_time_zone: "+01:00" 
-    size:
-      plan: hobbyist-2
   writeConnectionSecretToRef:
     name: mysql-creds

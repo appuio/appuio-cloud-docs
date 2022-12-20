@@ -1,35 +1,4 @@
 ---
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: ghost-data
-  labels:
-    app.kubernetes.io/name: ghost
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: "1Gi"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ghost
-  labels:
-    app.kubernetes.io/name: ghost
-spec:
-  type: ClusterIP
-  sessionAffinity: None
-  ports:
-    - name: https
-      port: 443
-      protocol: TCP
-      targetPort: https
-  selector:
-    app.kubernetes.io/name: ghost
-# TODO Ingress
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -79,7 +48,7 @@ spec:
                   name: mysql-creds
                   key: MYSQL_PASSWORD
             - name: url
-              value: http://localhost:8080
+              value: https://URL-RETRIEVED-IN-PREVIOUS-STEP
           ports:
             - name: https
               containerPort: 2368
@@ -94,3 +63,33 @@ spec:
         - name: ghost-data
           persistentVolumeClaim:
             claimName: ghost-data
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ghost-data
+  labels:
+    app.kubernetes.io/name: ghost
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app
+  labels:
+    app.kubernetes.io/name: ghost
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: ghost
