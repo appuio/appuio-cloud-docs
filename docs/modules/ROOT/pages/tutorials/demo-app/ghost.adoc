@@ -82,13 +82,6 @@ IMPORTANT: This example configuration isn't meant for a production ready service
 For a production ready service, we recommend the following parts to be implemented and configured:
 
 * Review the https://ghost.org/docs/[official Ghost documentation^] to learn more about the configuration and possibilities.
-* While the database is already being backed up because it's a managed service, you should still xref:how-to/use-k8up.adoc[backup your persistent volume with K8up].
-* Add some monitoring for your application:
-** xref:how-to/monitor-http-endpoints.adoc[]
-** xref:how-to/monitor-pvc-usage.adoc[]
-* Use your xref:how-to/getting-a-certificate.adoc[own URL with Let's Encrypt].
-* Maybe you want to use an xref:explanation/storage-classes.adoc[`RWX` storage class] which allows you to scale your application by running multiple Pods.
-* Configure proper xref:how-to/use-vpa.adoc[requests and limits] for your Pod.
 * Ghost needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
 * Secure the database connection to use TLS encryption. This is described in the https://ghost.org/docs/config/#database[Ghost documentation]. You can find the CA certificate in the database secret:
 +
@@ -96,6 +89,9 @@ For a production ready service, we recommend the following parts to be implement
 ----
 oc get secret mysql-creds -o jsonpath='{.data.ca\.crt}' | base64 -d
 ----
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
 
 Once you're done evaluating this example application, cleanup again to not cause any unwanted costs:
 
