@@ -1,5 +1,6 @@
 = Application Demo: WordPress
 :app-link: https://wordpress.org/[WordPress^]
+:app-logo: wordpress.png
 
 include::partial$app-demo-partials.adoc[tag=introduction]
 
@@ -7,7 +8,7 @@ include::partial$app-demo-partials.adoc[tag=requirements]
 
 == About the Application
 
-> Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content. It comes with modern tools to build a website, publish content, send newsletters & offer paid subscriptions to members.
+> WordPress is software designed for everyone, emphasizing accessibility, performance, security, and ease of use. We believe great software should work with minimum set up, so you can focus on sharing your story, product, or services freely. The basic WordPress software is simple and predictable so you can easily get started. It also offers powerful features for growth and success.
 
 include::partial$app-demo-partials.adoc[tag=step1]
 
@@ -27,27 +28,14 @@ include::example$example-app-exo-mysql.yaml[]
 This will create a MySQL DBaaS instance with default settings.
 See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
 
-. Second, we create an OpenShift route to get the generated URL (required in a following step to configure Ghost)
-+
-.Route for the example application
-[source,yaml]
-----
-include::example$example-app-route.yaml[]
-----
-
-. Now we need to get the generated URL:
-+
-[source,shell]
-----
-oc get route example-app -o jsonpath='{.spec.host}'
-----
-
-. Update the environment variable `url` in the following YAML with the generated URL you retrieved in the previous step and apply the result to the cluster:
+. Then we deploy the application:
 +
 .Application deployment with all other needed resources
 [source,yaml]
 ----
-include::example$example-app-ghost.yaml[]
+include::example$example-app-wordpress.yaml[]
+---
+include::example$example-app-route.yaml[]
 ----
 
 . Now wait until your pod appears with the status "Running":
@@ -57,19 +45,18 @@ include::example$example-app-ghost.yaml[]
 oc get pods --watch
 --
 
-You can now access your Ghost blog with the URL you retrieved in step 3.
+. Last but not least retrieve the URL of your WordPress blog:
++
+[source,shell]
+--
+oc get route example-app -o jsonpath='{.spec.host}'
+--
 
 include::partial$app-demo-partials.adoc[tag=whats-next]
 
 Especially for this example application:
 
-* Review the https://ghost.org/docs/[official Ghost documentation^] to learn more about the configuration and possibilities.
-* Ghost needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
-* Secure the database connection to use TLS encryption. This is described in the https://ghost.org/docs/config/#database[Ghost documentation]. You can find the CA certificate in the database secret:
-+
-[source,shell]
-----
-oc get secret mysql-creds -o jsonpath='{.data.ca\.crt}' | base64 -d
-----
+* Review the https://github.com/bitnami/containers/blob/main/bitnami/wordpress-nginx/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
+* WordPress needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
 
 include::partial$app-demo-partials.adoc[tag=cleanup]

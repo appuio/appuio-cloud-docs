@@ -8,8 +8,8 @@ They make use of the VSHN Application Catalog for datastore services.
 |image:logos/ghost-blog.png[alt="Ghost logo",width=100,height=50]
 |xref:tutorials/demo-app/ghost.adoc[Ghost]
 
-|image:logos/wordpress.png[alt="WordPress logo",width=100,height=50]
-|xref:tutorials/demo-app/wordpress.adoc[Ghost]
+|image:logos/wordpress.png[alt="WordPress logo",width=150,height=50]
+|xref:tutorials/demo-app/wordpress.adoc[WordPress]
 
 |===
 

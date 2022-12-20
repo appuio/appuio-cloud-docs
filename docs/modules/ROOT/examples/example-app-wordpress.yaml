@@ -1,0 +1,112 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app.kubernetes.io/name: wordpress
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wordpress
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wordpress
+    spec:
+      containers:
+        - name: wordpress
+          image: docker.io/bitnami/wordpress-nginx:6
+          imagePullPolicy: Always
+          env:
+            - name: WORDPRESS_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_HOST
+            - name: WORDPRESS_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PORT
+            - name: WORDPRESS_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_DB
+            - name: WORDPRESS_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_USER
+            - name: WORDPRESS_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PASSWORD
+            - name: WORDPRESS_ENABLE_DATABASE_SSL
+              value: "yes"
+            - name: WORDPRESS_DATABASE_SSL_CA_FILE
+              value: /srv/db-ca/ca.crt
+            - name: WORDPRESS_ENABLE_HTTPS
+              value: "yes"
+            - name: WORDPRESS_ENABLE_REVERSE_PROXY
+              value: "yes"
+            - name: WORDPRESS_BLOG_NAME
+              value: "APPUiO Cloud Demo"
+          ports:
+            - name: https
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: wordpress-data
+              mountPath: /var/www/html
+            - name: db-ca
+              mountPath: /srv/db-ca
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-data
+        - name: db-ca
+          secret:
+            secretName: mysql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: ca.crt
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: wordpress-data
+  labels:
+    app.kubernetes.io/name: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app
+  labels:
+    app.kubernetes.io/name: wordpress
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: https
+      port: 8080
+      protocol: TCP
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: wordpress
