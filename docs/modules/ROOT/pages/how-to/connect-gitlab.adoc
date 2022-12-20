@@ -151,6 +151,7 @@ To configure your {product} project as a Kubernetes cluster in GitLab, follow th
 
 . Create a service account in your project.
 . Add an elevated role to this service account.
+. Create a secret associated to the service account.
 . Create a local `KUBECONFIG` variable and log in to your OpenShift cluster.
 . Create a variable named `KUBECONFIG` in the GitLab settings.
 
@@ -161,13 +162,22 @@ The following commands show the steps in detail:
 oc project [PROJECT-NAME]
 oc create serviceaccount gitlab-ci
 oc policy add-role-to-user admin -z gitlab-ci --rolebinding-name gitlab-ci
+oc apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+    name: gitlab-ci-secret
+    annotations:
+        kubernetes.io/service-account.name: gitlab-ci
+type: kubernetes.io/service-account-token
+EOF
 ----
 
 Create a local KUBECONFIG variable and login to your OpenShift cluster using the gitlab-ci service account:
 
 [source, bash]
 ----
-TOKEN=$(oc sa get-token gitlab-ci)
+TOKEN=$(oc get secret/gitlab-ci-secret -ogo-template='{{.data.token|base64decode}}')
 export KUBECONFIG=gitlab-ci.kubeconfig
 oc login --server=$OPENSHIFT_API_URL --token=$TOKEN <1>
 unset KUBECONFIG
