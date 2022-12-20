@@ -75,7 +75,7 @@ oc get pods --watch
 
 You can now access your Ghost blog with the URL you retrieved in step 3.
 
-IMPORTANT: This example configuration is not meant for a production ready service.
+IMPORTANT: This example configuration isn't meant for a production ready service.
 
 == What's next?
 
