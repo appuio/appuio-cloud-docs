@@ -49,6 +49,10 @@ oc get route example-app -o jsonpath='{.spec.host}'
 [source,yaml]
 ----
 include::example$example-app-ghost.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
 ----
 
 . Now wait until your pod appears with the status "Running":

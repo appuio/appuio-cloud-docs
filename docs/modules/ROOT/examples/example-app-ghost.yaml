@@ -1,95 +1,79 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ghost
   labels:
-    app.kubernetes.io/name: ghost
+    app.kubernetes.io/name: demo-app
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: ghost
+      app.kubernetes.io/name: demo-app
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: ghost
+        app.kubernetes.io/name: demo-app
     spec:
       containers:
         - name: ghost
-          image: dockerhub.vshn.net/library/ghost:5-alpine
+          image: docker.io/bitnami/ghost:latest
           imagePullPolicy: Always
           env:
-            - name: database__connection__host
+            - name: GHOST_DATABASE_HOST
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_HOST
-            - name: database__connection__port
+            - name: GHOST_DATABASE_PORT_NUMBER
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_PORT
-            - name: database__connection__database
+            - name: GHOST_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_DB
-            - name: database__connection__user
+            - name: GHOST_DATABASE_USER
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_USER
-            - name: database__connection__password
+            - name: GHOST_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_PASSWORD
-            - name: url
-              value: https://URL-RETRIEVED-IN-PREVIOUS-STEP
+            - name: GHOST_DATABASE_ENABLE_SSL
+              value: "yes"
+            - name: GHOST_DATABASE_SSL_CA_FILE
+              value: /srv/db-ca/ca.crt
+            - name: GHOST_BLOG_TITLE
+              value: "APPUiO Cloud Demo"
+            - name: GHOST_ENABLE_HTTPS
+              value: "yes"
           ports:
-            - name: https
+            - name: web
               containerPort: 2368
               protocol: TCP
           resources:
             limits: {}
             requests: {}
           volumeMounts:
-            - name: ghost-data
+            - name: app-data
               mountPath: /var/lib/ghost/content
+            - name: db-ca
+              mountPath: /srv/db-ca
       volumes:
-        - name: ghost-data
+        - name: app-data
           persistentVolumeClaim:
-            claimName: ghost-data
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: ghost-data
-  labels:
-    app.kubernetes.io/name: ghost
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: "1Gi"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: example-app
-  labels:
-    app.kubernetes.io/name: ghost
-spec:
-  type: ClusterIP
-  sessionAffinity: None
-  ports:
-    - name: https
-      port: 443
-      protocol: TCP
-      targetPort: https
-  selector:
-    app.kubernetes.io/name: ghost
+            claimName: app-data
+        - name: db-ca
+          secret:
+            secretName: mysql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: ca.crt
