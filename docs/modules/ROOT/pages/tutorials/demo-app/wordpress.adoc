@@ -35,6 +35,10 @@ See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more 
 ----
 include::example$example-app-wordpress.yaml[]
 ---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
+---
 include::example$example-app-route.yaml[]
 ----
 
@@ -52,10 +56,16 @@ oc get pods --watch
 oc get route example-app -o jsonpath='{.spec.host}'
 --
 
+You can now login to your WordPress instance on `/wp-admin` with the default credentials by the image:
+
+* Username: user
+* Password: bitnami
+
 include::partial$app-demo-partials.adoc[tag=whats-next]
 
 Especially for this example application:
 
+* Change the default username and password immediately.
 * Review the https://github.com/bitnami/containers/blob/main/bitnami/wordpress-nginx/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
 * WordPress needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
 

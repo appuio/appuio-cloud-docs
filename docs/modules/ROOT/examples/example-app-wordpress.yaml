@@ -58,7 +58,7 @@ spec:
             - name: WORDPRESS_BLOG_NAME
               value: "APPUiO Cloud Demo"
           ports:
-            - name: https
+            - name: web
               containerPort: 8080
               protocol: TCP
           resources:
@@ -80,33 +80,3 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: wordpress-data
-  labels:
-    app.kubernetes.io/name: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: "1Gi"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: example-app
-  labels:
-    app.kubernetes.io/name: wordpress
-spec:
-  type: ClusterIP
-  sessionAffinity: None
-  ports:
-    - name: https
-      port: 8080
-      protocol: TCP
-      targetPort: https
-  selector:
-    app.kubernetes.io/name: wordpress
