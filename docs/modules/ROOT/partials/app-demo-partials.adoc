@@ -26,6 +26,7 @@ For a production ready service, we recommend the following parts to be implement
 * Use your xref:how-to/getting-a-certificate.adoc[own URL with Let's Encrypt].
 * Maybe you want to use an xref:explanation/storage-classes.adoc[`RWX` storage class] which allows you to scale your application by running multiple Pods.
 * Configure proper xref:how-to/use-vpa.adoc[requests and limits] for your Pod.
+* Use a pinned image version and set the `imagePullPolicy` to `IfNotPresent`.
 // end::whats-next[]
 
 // tag::step1[]

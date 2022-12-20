@@ -4,7 +4,7 @@ metadata:
   name: example-app
 spec:
   port:
-    targetPort: https
+    targetPort: web
   to:
     kind: Service
     name: example-app

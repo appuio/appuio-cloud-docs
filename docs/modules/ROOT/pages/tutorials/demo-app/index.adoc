@@ -9,3 +9,5 @@ They make use of the VSHN Application Catalog for datastore services.
 |xref:tutorials/demo-app/ghost.adoc[Ghost]
 
 |===
+
+Thanks to https://bitnami.com/[Bitnami^] for providing very robust application images, which we're making use of in our examples.
