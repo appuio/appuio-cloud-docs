@@ -1,4 +1,24 @@
+// tag::introduction[]
+image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run {app-link} on {product}.
+
+If you aren't familiar with issuing commands on a terminal session, we recommend familiarizing yourself with it before continuing this tutorial.
+// end::introduction[]
+
+// tag::requirements[]
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry
+// end::requirements[]
+
 // tag::whats-next[]
+IMPORTANT: This example configuration isn't meant for a production ready service.
+
+== What's next?
+
+For a production ready service, we recommend the following parts to be implemented and configured:
+
 * While the database is already being backed up because it's a managed service, you should still xref:how-to/use-k8up.adoc[backup your persistent volume with K8up].
 * Add some monitoring for your application:
 ** xref:how-to/monitor-http-endpoints.adoc[]
@@ -7,3 +27,27 @@
 * Maybe you want to use an xref:explanation/storage-classes.adoc[`RWX` storage class] which allows you to scale your application by running multiple Pods.
 * Configure proper xref:how-to/use-vpa.adoc[requests and limits] for your Pod.
 // end::whats-next[]
+
+// tag::step1[]
+== Step 1: Create a Project
+
+IMPORTANT: All the following steps are currently only working on the https://portal.appuio.cloud/zones/exoscale-ch-gva-2-0[Exoscale {zone}] because of the Application Catalog service availability.
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-application-demo"
++
+[source,shell]
+--
+oc new-project "[YOUR_USERNAME]-application-demo"
+--
+// end::step1[]
+
+// tag::cleanup[]
+Once you're done evaluating this example application, cleanup again to not cause any unwanted costs:
+
+[source,shell]
+--
+oc delete project [YOUR_USERNAME]-application-demo
+--
+// end::cleanup[]

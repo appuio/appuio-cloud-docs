@@ -1,31 +1,15 @@
 = Application Demo: Ghost Blog
+:app-link: https://ghost.org/[Ghost^]
 
-image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run https://ghost.org/[Ghost^] on {product}.
+include::partial$app-demo-partials.adoc[tag=introduction]
 
-If you aren't familiar with issuing commands on a terminal session, we recommend familiarizing yourself with it before continuing this tutorial.
-
-== Requirements
-
-To follow this guide, please make sure that you have the following tools installed:
-
-`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+include::partial$app-demo-partials.adoc[tag=requirements]
 
 == About the Application
 
 > Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content. It comes with modern tools to build a website, publish content, send newsletters & offer paid subscriptions to members.
 
-== Step 1: Create a Project
-
-IMPORTANT: All the following steps are currently only working on the https://portal.appuio.cloud/zones/exoscale-ch-gva-2-0[Exoscale {zone}] because of the Application Catalog service availability.
-
-include::partial$login-in-terminal.adoc[]
-
-. Create a new project called "[YOUR_USERNAME]-application-demo"
-+
-[source,shell]
---
-oc new-project "[YOUR_USERNAME]-application-demo"
---
+include::partial$app-demo-partials.adoc[tag=step1]
 
 == Step 2: Deploy the application
 
@@ -75,11 +59,9 @@ oc get pods --watch
 
 You can now access your Ghost blog with the URL you retrieved in step 3.
 
-IMPORTANT: This example configuration isn't meant for a production ready service.
+include::partial$app-demo-partials.adoc[tag=whats-next]
 
-== What's next?
-
-For a production ready service, we recommend the following parts to be implemented and configured:
+Especially for this example application:
 
 * Review the https://ghost.org/docs/[official Ghost documentation^] to learn more about the configuration and possibilities.
 * Ghost needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
@@ -90,12 +72,4 @@ For a production ready service, we recommend the following parts to be implement
 oc get secret mysql-creds -o jsonpath='{.data.ca\.crt}' | base64 -d
 ----
 
-include::partial$app-demo-partials.adoc[tag=whats-next]
-
-
-Once you're done evaluating this example application, cleanup again to not cause any unwanted costs:
-
-[source,shell]
---
-oc delete project [YOUR_USERNAME]-application-demo
---
+include::partial$app-demo-partials.adoc[tag=cleanup]
