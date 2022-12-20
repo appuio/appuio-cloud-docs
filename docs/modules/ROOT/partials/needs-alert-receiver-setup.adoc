@@ -1,0 +1,6 @@
+[IMPORTANT]
+====
+To get notified about firing alerts you need to setup an alert receiver.
+
+See xref:how-to/configure-alertmanager.adoc[Configure Alert Receivers] for more information.
+====

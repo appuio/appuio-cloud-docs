@@ -1,0 +1,167 @@
+= Use Custom Grafana
+
+This page describes how to access the metrics of your projects in a custom Grafana instance.
+
+It doesn't describe how to set up and configure Grafana itself, but assumes that you have a Grafana instance running on the same {product} Zone.
+You can follow the https://grafana.com/docs/grafana/latest/setup-grafana/installation/kubernetes/[official documentation] to set up and configure Grafana on {product}.
+
+IMPORTANT: Grafana needs to run on the same {product} Zone.
+The Zone's metrics aren't exposed outside the cluster.
+
+== Prerequisites
+
+* A Grafana instance running on {product}
+* Access to one or more projects to monitor
+
+== Create Service Account
+
+Grafana will need a Kubernetes service account to be able to access metrics from {product}
+
+. Create service account for Grafana
++
+[source,shell]
+----
+GRAFANA_NAMESPACE="my-grafana" <1>
+
+kubectl -n "${GRAFANA_NAMESPACE}" apply -f - <<YAML
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana-viewer
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: grafana-viewer
+  annotations:
+    kubernetes.io/service-account.name: grafana-viewer
+YAML
+----
+<1> The namespace of the Grafana deployment.
+
+. Extract token and certificate authority
++
+[source,shell]
+----
+TOKEN=$(kubectl -n "${GRAFANA_NAMESPACE}" get secret grafana-viewer -ojsonpath={.data.token} | base64 -d)
+CA=$(kubectl -n "${GRAFANA_NAMESPACE}" get secret grafana-viewer -ojsonpath={.data."service-ca\.crt"} | base64 -d)
+----
+
+
+== Add Data Source for Project
+
+NOTE: You'll need to add each project as a separate data source.
+Adding a single data source for multiple projects isn't supported.
+
+. Give the service account permission to access the metrics of the project.
+For that you need to grant the service account permission to view pods in the target namespace.
++
+[source,shell]
+----
+APP_NAMESPACE="my-app"<1>
+
+kubectl -n "${APP_NAMESPACE}" create rolebinding grafana-viewer --clusterrole=appuio:metrics-reader --serviceaccount="${GRAFANA_NAMESPACE}:grafana-viewer"
+----
+<1> The project you want to monitor.
+
+. Add data source to Grafana.
++
+Login to your Grafana instance and add a Prometheus data source by navigating to `Configuration>Data sources>Add data source>Prometheus`
++
+Set the following configuration
++
+[cols="1,4a"]
+|===
+| *HTTP*
+|
+
+[cols="1,7"]
+!===
+
+! URL
+! `\https://thanos-querier.openshift-monitoring.svc:9092`
+
+!===
+
+| *Auth*
+|
+
+[cols="1,3"]
+!===
+
+! With Credentials
+! `True`
+
+! With CA Cert
+! `True`
+
+!===
+
+| *TLS/SSL Auth Details*
+|
+
+[cols="1,3a"]
+!===
+
+! CA Cert
+! `$CA` 
+
+!===
+
+| Custom HTTP Headers
+|
+
+[cols="1,3"]
+!===
+
+! *Header:* `Authorization`
+! *Value:* `Bearer: $TOKEN`
+
+!===
+
+| Alerting
+|
+
+[cols="1,3"]
+!===
+
+! HTTP Method
+! `GET`
+
+!===
+
+| Misc
+|
+
+[cols="1,3"]
+!===
+
+! Custom query parameters
+! `namespace=${APP_NAMESPACE}`
+
+!===
+
+|===
++
+[IMPORTANT]
+====
+Grafana defaults to the HTTP method `POST`, however we found inconsistencies when using it to access metrics of a single project. 
+We recommend to fall back to `GET`.
+====
++
+[NOTE]
+====
+You need to substitute `$CA`, `$TOKEN`, and `${APP_NAMESPACE}` with the values of the environment variables set earlier.
+You can easily display their contents using `echo`.
+
+Make sure to not use quotes for the custom query parameters.
+Using `namespace="my-app"` will result in permission errors, use `namespace=my-app`.
+====
++
+image::monitoring/grafana_datasource_top.png[Configuration for data source]
++
+image::monitoring/grafana_datasource_bottom.png[Configuration for data source]
+
+. You should now be able to create dashboards using the metrics exported by the target project.
