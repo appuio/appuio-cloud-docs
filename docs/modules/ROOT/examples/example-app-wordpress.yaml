@@ -4,18 +4,18 @@ kind: Deployment
 metadata:
   name: wordpress
   labels:
-    app.kubernetes.io/name: wordpress
+    app.kubernetes.io/name: demo-app
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: wordpress
+      app.kubernetes.io/name: demo-app
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: wordpress
+        app.kubernetes.io/name: demo-app
     spec:
       containers:
         - name: wordpress
@@ -65,14 +65,14 @@ spec:
             limits: {}
             requests: {}
           volumeMounts:
-            - name: wordpress-data
+            - name: app-data
               mountPath: /var/www/html
             - name: db-ca
               mountPath: /srv/db-ca
       volumes:
-        - name: wordpress-data
+        - name: app-data
           persistentVolumeClaim:
-            claimName: wordpress-data
+            claimName: app-data
         - name: db-ca
           secret:
             secretName: mysql-creds
