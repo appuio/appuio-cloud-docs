@@ -1,0 +1,101 @@
+= Application Demo: WordPress
+
+image:logos/wordpress.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run https://wordpress.org/[WordPress^] on {product}.
+
+If you aren't familiar with issuing commands on a terminal session, we recommend familiarizing yourself with it before continuing this tutorial.
+
+== Requirements
+
+To follow this guide, please make sure that you have the following tools installed:
+
+`oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
+
+== About the Application
+
+> Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content. It comes with modern tools to build a website, publish content, send newsletters & offer paid subscriptions to members.
+
+== Step 1: Create a Project
+
+IMPORTANT: All the following steps are currently only working on the https://portal.appuio.cloud/zones/exoscale-ch-gva-2-0[Exoscale {zone}] because of the Application Catalog service availability.
+
+include::partial$login-in-terminal.adoc[]
+
+. Create a new project called "[YOUR_USERNAME]-application-demo"
++
+[source,shell]
+--
+oc new-project "[YOUR_USERNAME]-application-demo"
+--
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-mysql.yaml[]
+----
++
+This will create a MySQL DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+
+. Second, we create an OpenShift route to get the generated URL (required in a following step to configure Ghost)
++
+.Route for the example application
+[source,yaml]
+----
+include::example$example-app-route.yaml[]
+----
+
+. Now we need to get the generated URL:
++
+[source,shell]
+----
+oc get route example-app -o jsonpath='{.spec.host}'
+----
+
+. Update the environment variable `url` in the following YAML with the generated URL you retrieved in the previous step and apply the result to the cluster:
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-ghost.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+You can now access your Ghost blog with the URL you retrieved in step 3.
+
+IMPORTANT: This example configuration isn't meant for a production ready service.
+
+== What's next?
+
+For a production ready service, we recommend the following parts to be implemented and configured:
+
+* Review the https://ghost.org/docs/[official Ghost documentation^] to learn more about the configuration and possibilities.
+* Ghost needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+* Secure the database connection to use TLS encryption. This is described in the https://ghost.org/docs/config/#database[Ghost documentation]. You can find the CA certificate in the database secret:
++
+[source,shell]
+----
+oc get secret mysql-creds -o jsonpath='{.data.ca\.crt}' | base64 -d
+----
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+
+Once you're done evaluating this example application, cleanup again to not cause any unwanted costs:
+
+[source,shell]
+--
+oc delete project [YOUR_USERNAME]-application-demo
+--
