@@ -1,5 +1,5 @@
 // tag::introduction[]
-image:logos/ghost-blog.png[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run {app-link} on {product}.
+image:logos/{app-logo}[role="related thumb right",alt="Demo application logo",width=120,height=120] This tutorial explains how to run {app-link} on {product}.
 
 If you aren't familiar with issuing commands on a terminal session, we recommend familiarizing yourself with it before continuing this tutorial.
 // end::introduction[]

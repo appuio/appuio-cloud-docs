@@ -1,5 +1,6 @@
 = Application Demo: Ghost Blog
 :app-link: https://ghost.org/[Ghost^]
+:app-logo: ghost-blog.png
 
 include::partial$app-demo-partials.adoc[tag=introduction]
 
