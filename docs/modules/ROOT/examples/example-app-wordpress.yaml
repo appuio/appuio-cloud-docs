@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app.kubernetes.io/name: demo-app
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app
+    spec:
+      containers:
+        - name: wordpress
+          image: docker.io/bitnami/wordpress:latest
+          imagePullPolicy: Always
+          env:
+            - name: WORDPRESS_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_HOST
+            - name: WORDPRESS_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PORT
+            - name: WORDPRESS_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_DB
+            - name: WORDPRESS_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_USER
+            - name: WORDPRESS_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PASSWORD
+            - name: WORDPRESS_ENABLE_DATABASE_SSL
+              value: "yes"
+            - name: WORDPRESS_DATABASE_SSL_CA_FILE
+              value: /srv/db-ca/ca.crt
+            - name: WORDPRESS_ENABLE_HTTPS
+              value: "yes"
+            - name: WORDPRESS_ENABLE_REVERSE_PROXY
+              value: "yes"
+            - name: WORDPRESS_BLOG_NAME
+              value: "APPUiO Cloud Demo"
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: app-data
+              mountPath: /bitnami
+            - name: db-ca
+              mountPath: /srv/db-ca
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: app-data
+        - name: db-ca
+          secret:
+            secretName: mysql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: ca.crt
