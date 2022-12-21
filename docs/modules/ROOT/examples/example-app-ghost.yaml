@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  labels:
+    app.kubernetes.io/name: demo-app
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app
+    spec:
+      containers:
+        - name: ghost
+          image: docker.io/bitnami/ghost:latest
+          imagePullPolicy: Always
+          env:
+            - name: GHOST_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_HOST
+            - name: GHOST_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PORT
+            - name: GHOST_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_DB
+            - name: GHOST_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_USER
+            - name: GHOST_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PASSWORD
+            - name: GHOST_DATABASE_ENABLE_SSL
+              value: "yes"
+            - name: GHOST_DATABASE_SSL_CA_FILE
+              value: /srv/db-ca/ca.crt
+            - name: GHOST_BLOG_TITLE
+              value: "APPUiO Cloud Demo"
+            - name: GHOST_ENABLE_HTTPS
+              value: "yes"
+          ports:
+            - name: web
+              containerPort: 2368
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: app-data
+              mountPath: /bitnami/ghost
+            - name: db-ca
+              mountPath: /srv/db-ca
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: app-data
+        - name: db-ca
+          secret:
+            secretName: mysql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: ca.crt
