@@ -1,0 +1,74 @@
+= Application Demo: WordPress
+:app-link: https://wordpress.org/[WordPress^]
+:app-logo: wordpress.png
+
+include::partial$app-demo-partials.adoc[tag=introduction]
+
+include::partial$app-demo-partials.adoc[tag=requirements]
+
+== About the Application
+
+> WordPress is the world's most popular blogging and content management platform. Powerful yet simple, everyone from students to global corporations use it to build beautiful, functional websites.
+
+include::partial$app-demo-partials.adoc[tag=step1]
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-mysql.yaml[]
+----
++
+This will create a MySQL DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+
+. Then we deploy the application:
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-wordpress.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
+---
+include::example$example-app-route.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+. Last but not least retrieve the URL of your WordPress blog:
++
+[source,shell]
+--
+oc get route example-app -o jsonpath='{.spec.host}'
+--
+
+You can now login to your WordPress instance on `/wp-admin` with the default credentials by the image:
+
+* Username: user
+* Password: bitnami
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+Especially for this example application:
+
+* Change the default username and password immediately.
+* Review the https://github.com/bitnami/containers/blob/main/bitnami/wordpress-nginx/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
+* WordPress needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+
+include::partial$app-demo-partials.adoc[tag=cleanup]
+
+include::partial$app-demo-partials.adoc[tag=contactus]
