@@ -1,0 +1,102 @@
+= Application Demo: Mastodon
+:app-link: https://www.joinmastodon.org/[Mastodon^]
+:app-logo: mastodon.svg
+
+CAUTION: This application needs a lot of services to be able to run. For production a lot of fine-tuning and configuration settings need to be adapted.
+
+include::partial$app-demo-partials.adoc[tag=introduction]
+
+include::partial$app-demo-partials.adoc[tag=requirements]
+
+== About the Application
+
+> Your home feed should be filled with what matters to you most, not what a corporation thinks you should see. Radically different social media, back in the hands of the people.
+
+include::partial$app-demo-partials.adoc[tag=step1]
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database and a cache:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-postgresql.yaml[]
+---
+include::example$example-app-exo-redis.yaml[]
+----
++
+This will create a PosgtreSQL and a Redis DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs for PostgreSQL] and xref:appcat:ROOT:exoscale-dbaas/redis/create.adoc[the AppCat docs for Redis] for more information.
+
+. And we need some other supporting services for Mastodon to be able to work:
++
+.Supporting services
+[source,yaml]
+----
+include::example$example-app-inbucket.yaml[]
+---
+include::example$example-app-redis-tunnel.yaml[]
+----
++
+This will create an https://github.com/inbucket/inbucket[Inbucket^] mail catcher to catch mails sent by Mastodon and a Redis tunnel to proxy unencrypted Redis connections (Mastodon currently only supports unencrypted connections, see https://github.com/mastodon/mastodon/issues/19824[GitHub Issue #19824^]).
+
+. Before we can deploy the application, a few parameters need to be replaced: +
+-> All the secret values in the `mastodon-secrets` secret (Replace `CHANGEMESECRET` with a random string, for example generated with `pwgen 32`. All values need to be different.) +
+-> Replace `CHANGEMEURL` in the environment variables `LOCAL_DOMAIN`,`WEB_DOMAIN` and `MASTODON_STREAMING_API_BASE_URL` of the Deployment with `[YOUR_USERNAME]-application-demo` +
+-> Replace `CHANGEMEURL` in Ingress object with `[YOUR_USERNAME]-application-demo`
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-mastodon.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
+----
+
+. Now wait until your pods appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+You can now login to your Mastodon instance with the default credentials by the image under https://`[YOUR_USERNAME]-application-demo`.apps.exoscale-ch-gva-2-0.appuio.cloud:
+
+* Username: \user@example.com
+* Password: bitnami1
+
+To see what mails Mastodon sends, you can access Inbucket by doing a port-forward:
+
+[source,shell]
+--
+oc port-forward svc/inbucket-web 8080:8080
+--
+
+And then open a browser at http://localhost:8080[localhost:8080^].
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+Especially for this example application:
+
+* Change the default username and password immediately.
+* Review the https://github.com/bitnami/containers/blob/main/bitnami/mastodon/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
+* Mastodon needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+
+Mastodon isn't particularly easy to run in production, some thoughts for improvements on this demo deployment:
+
+* Sidekick is configured as second container in the same Pod as the web application. This isn't a good idea, it should run as a separate Pod which can be scaled accordingly, because Sidekick is where the hard work happens. For this to work there must be shared storage available, therefore choose an `RWX` volume for that.
+* As the Mastodon instance grows, a lot of tuning is needed. Some useful resources about that topic:
+** https://docs.joinmastodon.org/admin/scaling/[Scaling up your server^]
+** https://nora.codes/post/scaling-mastodon-in-the-face-of-an-exodus/[Scaling Mastodon in the Face of an Exodus^]
+** https://thomas-leister.de/en/scaling-up-mastodon/[Scaling up your Mastodon Sidekiq workers for better performance^]
+* Follow the https://docs.joinmastodon.org/admin/config/#secrets[official documentation^] about the secrets to create better secrets.
+
+include::partial$app-demo-partials.adoc[tag=cleanup]
+
+include::partial$app-demo-partials.adoc[tag=contactus]

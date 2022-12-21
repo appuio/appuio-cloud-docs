@@ -1,0 +1,7 @@
+apiVersion: exoscale.appcat.vshn.io/v1
+kind: ExoscalePostgreSQL
+metadata:
+  name: example-app
+spec:
+  writeConnectionSecretToRef:
+    name: postgresql-creds

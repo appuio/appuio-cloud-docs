@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-tunnel
+  labels:
+    app.kubernetes.io/name: redis-tunnel
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis-tunnel
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis-tunnel
+    spec:
+      containers:
+        - name: redis-stunnel
+          image: ghcr.io/appuio/stunnel-docker:latest
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT
+              value: "0.0.0.0:6379"
+            - name: CONNECT_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: redis-creds
+                  key: REDIS_HOST
+            - name: CONNECT_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: redis-creds
+                  key: REDIS_PORT
+            - name: CLIENT
+              value: "yes"
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-tunnel
+  labels:
+    app.kubernetes.io/name: redis-tunnel
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+      targetPort: redis
+  selector:
+    app.kubernetes.io/name: redis-tunnel
