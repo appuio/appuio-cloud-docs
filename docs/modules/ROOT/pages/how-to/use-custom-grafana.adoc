@@ -117,7 +117,7 @@ Set the following configuration
 !===
 
 ! *Header:* `Authorization`
-! *Value:* `Bearer: $TOKEN`
+! *Value:* `Bearer $TOKEN`
 
 !===
 
