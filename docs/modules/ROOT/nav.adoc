@@ -68,6 +68,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:how-to/list-namespaces.adoc[List Namespaces]
 ** xref:how-to/using-templates.adoc[Using OpenShift Templates]
 ** xref:how-to/grant-access.adoc[Granting Access]
+** xref:how-to/fine-grained-access-examples.adoc[]
 ** xref:how-to/check-cpu-requests.adoc[Investigate and resolve fair use ratio violations]
 ** xref:how-to/use-vpa.adoc[]
 

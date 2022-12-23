@@ -1,0 +1,108 @@
+= Fine grained access control examples
+
+{product} allows fine-grained control over which projects a user may access through standard RBAC roles.
+
+This is useful for organizations that have multiple projects and want to restrict some users access to only certain projects.
+
+You can either create https://portal.appuio.cloud/teams[Teams], which show up as an OpenShift group `organization+team` or assign users directly.
+
+The examples below assume the following structure:
+
+[source]
+----
+mycompany (organization)
+├── mycompany-user1 (user)
+├── developers (team)
+└── operations (team)
+----
+
+== Prerequisites for all examples
+
+For this guide, it's assumed that:
+
+* You are logged in to {product} using the `oc login` command.
+
+== User may access only certain projects in the organization [[access-certain-projects]]
+
+[WARNING]
+OpenShift has no notion of group hierarchy, so you need to add the user to all groups that should have access to the project.
+
+[INFO]
+====
+There are two relevant RoleBindings in each Namespace:
+* `admin` - allows the user to manage most resources in the Namespace
+* `namespace-owner` - allows the user to manage (including delete) the Namespace itself
+====
+
+. Remove the user from the `mycompany` organization
+
+. Add the user to the `developers` team
++
+The hierarchy should now look like this:
++
+[source]
+----
+mycompany (organization)
+├── developers (team)
+│   └── mycompany-user1 (user)
+└── operations (team)
+----
+
+. Allow only organization `mycompany` and team `mycompany+developers` access to your project
++
+[source,bash]
+----
+ORGANIZATION=mycompany
+TEAM=developers
+PROJECT=mycompany-web-portal
+
+oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}+${TEAM}
+"""
+----
+
+.. The user can be referenced directly as well.
++
+[source,bash]
+----
+ORGANIZATION=mycompany
+USER=mycompany-user1
+PROJECT=mycompany-web-portal
+
+oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${USER}
+"""
+----
+
+== User may not create new projects in their organization
+
+. Remove the user from the `organization` group
+
+. Add the user to a team that has access to the required projects
++
+The hierarchy should now look like this:
++
+[source]
+----
+mycompany (organization)
+├── developers (team)
+│   └── mycompany-user1 (user)
+└── operations (team)
+    └── mycompany-user1 (user)
+----
+
+. Allow access to the required projects
++
+See <<access-certain-projects>> for an example.
