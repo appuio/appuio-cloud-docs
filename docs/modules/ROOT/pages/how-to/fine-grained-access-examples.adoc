@@ -21,7 +21,6 @@ mycompany (organization)
 For this guide, it's assumed that:
 
 * You are logged in to {product} using the `oc login` command.
-* You have installed `kubectl`.
 
 == User may access only certain projects in the organization [[access-certain-projects]]
 
@@ -57,7 +56,7 @@ ORGANIZATION=mycompany
 TEAM=developers
 PROJECT=mycompany-web-portal
 
-kubectl -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group
@@ -76,7 +75,7 @@ ORGANIZATION=mycompany
 USER=mycompany-user1
 PROJECT=mycompany-web-portal
 
-kubectl -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group
