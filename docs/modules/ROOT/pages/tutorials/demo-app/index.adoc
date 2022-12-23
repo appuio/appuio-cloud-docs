@@ -11,6 +11,9 @@ They make use of the VSHN Application Catalog for datastore services.
 |image:logos/wordpress.png[alt="WordPress logo",width=150,height=50]
 |xref:tutorials/demo-app/wordpress.adoc[WordPress]
 
+|image:logos/mastodon.svg[alt="Mastodon logo",width=150,height=50]
+|xref:tutorials/demo-app/mastodon.adoc[Mastodon]
+
 |===
 
 Thanks to https://bitnami.com/[Bitnami^] for providing very robust application images, which we're making use of in our examples.

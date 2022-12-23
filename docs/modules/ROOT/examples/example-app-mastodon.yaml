@@ -1,0 +1,292 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mastodon-secrets
+stringData:
+  SECRET_KEY_BASE: CHANGEMESECRET
+  OTP_SECRET: CHANGEMESECRET
+  VAPID_PRIVATE_KEY: CHANGEMESECRET
+  VAPID_PUBLIC_KEY: CHANGEMESECRET
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mastodon
+  labels:
+    app.kubernetes.io/name: demo-app
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app
+    spec:
+      containers:
+        - name: mastodon-web
+          image: docker.io/bitnami/mastodon:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mastodon-secrets
+          env:
+            - name: MASTODON_MODE
+              value: web
+            - name: MASTODON_HTTPS_ENABLED
+              value: "true"
+            - name: LOCAL_DOMAIN
+              value: "CHANGEMEURL.apps.exoscale-ch-gva-2-0.appuio.cloud"
+            - name: WEB_DOMAIN
+              value: "CHANGEMEURL.apps.exoscale-ch-gva-2-0.appuio.cloud"
+            - name: MASTODON_STREAMING_API_BASE_URL
+              value: "wss://CHANGEMEURL.apps.exoscale-ch-gva-2-0.appuio.cloud/streaming"
+            - name: MASTODON_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_HOST
+            - name: MASTODON_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PORT
+            - name: MASTODON_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_DB
+            - name: MASTODON_DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_USER
+            - name: MASTODON_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PASSWORD
+            - name: MASTODON_REDIS_HOST
+              value: redis-tunnel
+            - name: MASTODON_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-creds
+                  key: REDIS_PASSWORD
+            - name: MASTODON_ELASTICSEARCH_ENABLED
+              value: "false"
+            - name: SMTP_SERVER
+              value: inbucket-smtp
+            - name: SMTP_PORT
+              value: "2500"
+            - name: SMTP_FROM_ADDRESS
+              value: mastodon-demo-app@appuio.cloud
+          ports:
+            - name: web
+              containerPort: 3000
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: app-data
+              mountPath: /bitnami/mastodon
+        - name: mastodon-sidekiq
+          image: docker.io/bitnami/mastodon:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mastodon-secrets
+          env:
+            - name: MASTODON_MODE
+              value: sidekiq
+            - name: MASTODON_WEB_HOST
+              value: localhost
+            - name: MASTODON_WEB_PORT_NUMBER
+              value: "3000"
+            - name: MASTODON_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_HOST
+            - name: MASTODON_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PORT
+            - name: MASTODON_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_DB
+            - name: MASTODON_DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_USER
+            - name: MASTODON_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PASSWORD
+            - name: MASTODON_REDIS_HOST
+              value: redis-tunnel
+            - name: MASTODON_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-creds
+                  key: REDIS_PASSWORD
+            - name: MASTODON_ELASTICSEARCH_ENABLED
+              value: "false"
+            - name: SMTP_SERVER
+              value: inbucket-smtp
+            - name: SMTP_PORT
+              value: "2500"
+            - name: SMTP_FROM_ADDRESS
+              value: mastodon-demo-app@appuio.cloud
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: app-data
+              mountPath: /bitnami/mastodon
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: app-data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mastodon-streaming
+  labels:
+    app.kubernetes.io/name: demo-app-streaming
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app-streaming
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app-streaming
+    spec:
+      containers:
+        - name: mastodon-streaming
+          image: docker.io/bitnami/mastodon:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mastodon-secrets
+          env:
+            - name: MASTODON_MODE
+              value: streaming
+            - name: MASTODON_WEB_HOST
+              value: example-app
+            - name: MASTODON_WEB_PORT_NUMBER
+              value: "443"
+            - name: MASTODON_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_HOST
+            - name: MASTODON_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PORT
+            - name: MASTODON_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_DB
+            - name: MASTODON_DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_USER
+            - name: MASTODON_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PASSWORD
+            - name: MASTODON_REDIS_HOST
+              value: redis-tunnel
+            - name: MASTODON_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-creds
+                  key: REDIS_PASSWORD
+            - name: MASTODON_ELASTICSEARCH_ENABLED
+              value: "false"
+            - name: DB_SSLMODE
+              value: "true"
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/usr/local/share/ca-certificates/dbaas-postgresql-ca.crt"
+          ports:
+            - name: web
+              containerPort: 4000
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: db-ca
+              mountPath: /usr/local/share/ca-certificates
+      volumes:
+        - name: db-ca
+          secret:
+            secretName: postgresql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: dbaas-postgresql-ca.crt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mastodon-streaming
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: web
+      port: 4000
+      protocol: TCP
+      targetPort: web
+  selector:
+    app.kubernetes.io/name: demo-app-streaming
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mastodon
+  annotations:
+    route.openshift.io/termination: "edge"
+spec:
+  rules:
+  - host: CHANGEMEURL.apps.exoscale-ch-gva-2-0.appuio.cloud
+    http:
+      paths:
+      - backend:
+          service:
+            name: example-app
+            port:
+              number: 443
+        path: /
+        pathType: Prefix
+  - host: CHANGEMEURL.apps.exoscale-ch-gva-2-0.appuio.cloud
+    http:
+      paths:
+      - backend:
+          service:
+            name: mastodon-streaming
+            port:
+              number: 4000
+        path: /streaming
+        pathType: Prefix
