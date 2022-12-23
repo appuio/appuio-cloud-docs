@@ -1,0 +1,10 @@
+apiVersion: appcat.vshn.io/v1
+kind: ObjectBucket
+metadata:
+  name: example-app
+spec:
+  parameters:
+    bucketName: [YOUR_USERNAME]-my-example-app-bucket
+    region: ch-gva-2
+  writeConnectionSecretToRef:
+    name: objectbucket-creds
