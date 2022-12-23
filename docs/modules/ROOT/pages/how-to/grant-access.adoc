@@ -29,4 +29,4 @@ This includes that namespace owned by organization A can be managed by members o
 
 == Examples
 
-See xref:how-to/fine-grained-access-examples.adoc[Fine grained access control examples] for more detailed examples.
+See xref:how-to/fine-grained-access-examples.adoc[] for more detailed examples.
