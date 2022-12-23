@@ -24,7 +24,9 @@ For a production ready service, we recommend the following parts to be implement
 ** xref:how-to/monitor-http-endpoints.adoc[]
 ** xref:how-to/monitor-pvc-usage.adoc[]
 * Use your xref:how-to/getting-a-certificate.adoc[own URL with Let's Encrypt].
-* Choose an appropriate size for your persistent storage volume.
+* Choose appropriate sizing:
+** Persistent storage volume size
+** https://products.docs.vshn.ch/products/appcat/exoscale_dbaas.html[Application Catalog DBaaS plan]
 * Maybe you want to use an xref:explanation/storage-classes.adoc[`RWX` storage class] which allows you to scale your application by running multiple Pods.
 * Configure proper xref:how-to/use-vpa.adoc[requests and limits] for your Pod.
 * Use a pinned image version and set the `imagePullPolicy` to `IfNotPresent`.
