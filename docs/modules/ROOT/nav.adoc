@@ -56,6 +56,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:tutorials/demo-app/ghost.adoc[Ghost]
 ** xref:tutorials/demo-app/wordpress.adoc[WordPress]
 ** xref:tutorials/demo-app/odoo.adoc[Odoo]
+** xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 
 * xref:tutorials/migration.adoc[Migrating to APPUiO Cloud]
 
