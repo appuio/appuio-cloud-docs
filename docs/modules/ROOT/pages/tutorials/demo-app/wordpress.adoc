@@ -66,7 +66,7 @@ include::partial$app-demo-partials.adoc[tag=whats-next]
 Especially for this example application:
 
 * Change the default username and password immediately.
-* Review the https://github.com/bitnami/containers/blob/main/bitnami/wordpress-nginx/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
+* Review the https://github.com/bitnami/containers/blob/main/bitnami/wordpress/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
 * WordPress needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
 
 include::partial$app-demo-partials.adoc[tag=cleanup]
