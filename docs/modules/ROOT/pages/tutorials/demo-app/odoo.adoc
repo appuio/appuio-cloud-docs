@@ -1,0 +1,74 @@
+= Application Demo: Odoo
+:app-link: https://www.odoo.com/[Odoo^]
+:app-logo: odoo.svg
+
+include::partial$app-demo-partials.adoc[tag=introduction]
+
+include::partial$app-demo-partials.adoc[tag=requirements]
+
+== About the Application
+
+> Amazing employees deserve amazing software
+> 
+> The only platform you will ever need to help run your business: integrated apps, kept simple, and loved by millions of happy users.
+
+include::partial$app-demo-partials.adoc[tag=step1]
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-postgresql.yaml[]
+----
++
+This will create a PostgreSQL DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+
+. Then we deploy the application:
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-odoo.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
+---
+include::example$example-app-route.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+. Last but not least retrieve the URL of your Odoo instance:
++
+[source,shell]
+--
+oc get route example-app -o jsonpath='{.spec.host}'
+--
+
+You can now login to your Odoo instance with the default credentials by the image:
+
+* Username: \user@example.com
+* Password: bitnami
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+Especially for this example application:
+
+* Change the default username and password immediately.
+* Review the https://github.com/bitnami/containers/blob/main/bitnami/odoo/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
+* Odoo needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+
+include::partial$app-demo-partials.adoc[tag=cleanup]

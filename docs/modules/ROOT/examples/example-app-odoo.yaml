@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+  labels:
+    app.kubernetes.io/name: demo-app
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app
+    spec:
+      containers:
+        - name: odoo
+          ## Until https://github.com/bitnami/containers/issues/17806 is solved
+          ## we have to use a temporary image which is built with the proposed
+          ## fix in https://github.com/bitnami/containers/pull/17885
+          #image: docker.io/bitnami/odoo:latest
+          image: docker.io/tobru/bitnami-odoo:dev
+          imagePullPolicy: Always
+          env:
+            - name: ODOO_DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_HOST
+            - name: ODOO_DATABASE_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PORT
+            - name: ODOO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_USER
+            - name: ODOO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_PASSWORD
+            - name: ODOO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-creds
+                  key: POSTGRESQL_DB
+            - name: ODOO_LOAD_DEMO_DATA
+              value: "yes"
+            - name: ODOO_SKIP_BOOTSTRAP
+              value: "no"
+            - name: ODOO_EMAIL
+              value: "user@example.com"
+          ports:
+            - name: web
+              containerPort: 8069
+              protocol: TCP
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+            - name: app-data
+              mountPath: /bitnami/odoo
+            - name: db-ca
+              mountPath: /srv/db-ca
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: app-data
+        - name: db-ca
+          secret:
+            secretName: postgresql-creds
+            optional: false
+            items:
+              - key: ca.crt
+                path: ca.crt
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-db-postgres
+spec:
+  ttlSecondsAfterFinished: 240
+  template:
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - |
+          psql \
+          "postgres://${ODOO_DATABASE_USER}:${ODOO_DATABASE_PASSWORD}@${ODOO_DATABASE_HOST}:${ODOO_DATABASE_PORT_NUMBER}/${ODOO_DATABASE_NAME}?sslmode=require" \
+          -c 'CREATE DATABASE postgres WITH OWNER=avnadmin'
+        image: docker.io/bitnami/postgresql:latest
+        name: create-db-postgres
+        env:
+          - name: ODOO_DATABASE_HOST
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_HOST
+          - name: ODOO_DATABASE_PORT_NUMBER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_PORT
+          - name: ODOO_DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_USER
+          - name: ODOO_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_PASSWORD
+          - name: ODOO_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_DB
+        resources:
+          limits: {}
+          requests: {}
+      restartPolicy: OnFailure
