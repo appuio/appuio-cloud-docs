@@ -3,20 +3,36 @@
 We provide the following tutorials to deploy common applications on APPUiO Cloud.
 They make use of the VSHN Application Catalog for datastore services.
 
-[cols="^1,^1"]
+[cols="^1,^1,^1", options="header"]
 |===
-|image:logos/ghost-blog.png[alt="Ghost logo",width=100,height=50]
+|Application
+|Link to Tutorial
+|AppCat Services used
+
+|image:logos/ghost-blog.png[alt="Ghost logo",width=100,height=50,link="https://ghost.org/",window=_blank]
 |xref:tutorials/demo-app/ghost.adoc[Ghost]
+|xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[ExoscaleMySQL]
 
-|image:logos/wordpress.png[alt="WordPress logo",width=150,height=50]
+|image:logos/wordpress.png[alt="WordPress logo",width=150,height=50,link="https://wordpress.org/",window=_blank]
 |xref:tutorials/demo-app/wordpress.adoc[WordPress]
+|xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[ExoscaleMySQL]
 
-|image:logos/odoo.svg[alt="Odoo logo",width=150,height=50]
+|image:logos/odoo.svg[alt="Odoo logo",width=150,height=50,link="https://www.odoo.com/",window=_blank]
 |xref:tutorials/demo-app/odoo.adoc[Odoo]
+|xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[ExoscalePostgreSQL]
 
-|image:logos/mastodon.svg[alt="Mastodon logo",width=150,height=50]
+|image:logos/mastodon.svg[alt="Mastodon logo",width=150,height=50,link="https://www.joinmastodon.org/",window=_blank]
 |xref:tutorials/demo-app/mastodon.adoc[Mastodon]
+|
+xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[ExoscalePostgreSQL] +
+xref:appcat:ROOT:exoscale-dbaas/redis/create.adoc[ExoscaleRedis]
+
+|image:logos/takahe.png[alt="Takahe logo",width=50,height=50,link="https://jointakahe.org/",window=_blank]
+|xref:tutorials/demo-app/takahe.adoc[Takahē]
+|
+xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[ExoscalePostgreSQL] +
+xref:appcat:ROOT:appcat/object-storage/create.adoc[ObjectBucket]
 
 |===
 
-Thanks to https://bitnami.com/[Bitnami^] for providing very robust application images, which we're making use of in our examples.
+Thanks to https://bitnami.com/[Bitnami^] for providing very robust application images, which we're making use of in most of our examples.
