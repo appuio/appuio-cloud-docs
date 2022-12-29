@@ -2,7 +2,7 @@
 :app-link: https://www.joinmastodon.org/[Mastodon^]
 :app-logo: mastodon.svg
 
-CAUTION: This application needs a lot of services to be able to run. For production a lot of fine-tuning and configuration settings need to be adapted.
+CAUTION: This application needs a lot of services to be able to run. For production a lot of <<_whats_next, fine-tuning and configuration settings need to be adapted>>. A lightweight alternative could be xref:tutorials/demo-app/takahe.adoc[Takahē].
 
 include::partial$app-demo-partials.adoc[tag=introduction]
 

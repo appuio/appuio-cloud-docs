@@ -28,7 +28,7 @@ include::example$example-app-exo-postgresql.yaml[]
 ----
 +
 This will create a PostgreSQL DBaaS instance with default settings.
-See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs] for more information.
 
 . Then we deploy the application:
 +

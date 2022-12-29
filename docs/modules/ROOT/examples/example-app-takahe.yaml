@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: takahe-secrets
+stringData:
+  TAKAHE_SECRET_KEY: CHANGEMESECRET
+  TAKAHE_EMAIL_SERVER: smtp://user:pass@inbucket-smtp:2500/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: takahe-config
+data:
+  TAKAHE_MEDIA_BACKEND: "s3://sos-ch-gva-2.exo.io/CHANGEMEBUCKETNAME"
+  TAKAHE_USE_PROXY_HEADERS: "true"
+  TAKAHE_AUTO_ADMIN_EMAIL: myuser@example.com
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo-app
+    spec:
+      containers:
+        - name: webserver
+          image: jointakahe/takahe:0.6
+          args:
+            - "gunicorn"
+            - "takahe.wsgi:application"
+            - "-w"
+            - "6"
+            - "-b"
+            - "0.0.0.0:8000"
+          envFrom:
+            - configMapRef:
+                name: takahe-config
+            - secretRef:
+                name: takahe-secrets
+            - secretRef:
+                name: objectbucket-creds
+          env:
+          - name: TAKAHE_DEBUG
+            value: "false"
+          - name: TAKAHE_DATABASE_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_URL
+          ports:
+            - containerPort: 8000
+              name: web
+          resources:
+            requests:
+              cpu: 10m
+            limits:
+              memory: "1024Mi"
+              cpu: 1
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 2
+            failureThreshold: 30
+            periodSeconds: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stator
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: stator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: stator
+    spec:
+      containers:
+        - name: stator
+          image: jointakahe/takahe:0.6
+          args:
+            - python3
+            - manage.py
+            - runstator
+          envFrom:
+            - configMapRef:
+                name: takahe-config
+            - secretRef:
+                name: takahe-secrets
+            - secretRef:
+                name: objectbucket-creds
+          env:
+          - name: TAKAHE_DATABASE_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_URL
+          resources:
+            requests:
+              cpu: 10m
+            limits:
+              memory: "1024Mi"
+              cpu: 1
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+spec:
+  ttlSecondsAfterFinished: 120
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: webserver
+          image: jointakahe/takahe:0.6
+          args: ["python3", "manage.py", "migrate"]
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: takahe-config
+            - secretRef:
+                name: takahe-secrets
+            - secretRef:
+                name: objectbucket-creds
+          env:
+          - name: TAKAHE_DATABASE_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: postgresql-creds
+                key: POSTGRESQL_URL
+          resources:
+            requests:
+              cpu: 10m
+            limits:
+              memory: "1024Mi"
+              cpu: 1

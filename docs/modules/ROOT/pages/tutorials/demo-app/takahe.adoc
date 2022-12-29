@@ -1,0 +1,94 @@
+= Application Demo: Takahē
+:app-link: https://jointakahe.org/[Takahē^]
+:app-logo: takahe.png
+
+include::partial$app-demo-partials.adoc[tag=introduction]
+
+include::partial$app-demo-partials.adoc[tag=requirements]
+
+== About the Application
+
+> Takahē is a new ActivityPub server, designed for efficient use on small- to medium-size installations, and which allows you to host multiple domains on the same infrastructure.
+
+include::partial$app-demo-partials.adoc[tag=step1]
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database and an object storage bucket: +
+-> Replace `[YOUR_USERNAME]` before applying to the cluster, as bucket names need to be unique.
++
+.Service ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-postgresql.yaml[]
+---
+include::example$example-app-objectbucket.yaml[]
+----
++
+This will create a PostgreSQL DBaaS instance with default settings, and an object storage bucket.
+See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs for PostgreSQL] and xref:appcat:ROOT:appcat/object-storage/create.adoc[the AppCat docs for ObjectBucket] for more information.
+
+. And we need some other supporting services for Takahē:
++
+.Supporting services
+[source,yaml]
+----
+include::example$example-app-inbucket.yaml[]
+----
++
+This will create an https://github.com/inbucket/inbucket[Inbucket^] mail catcher to catch mails sent by Takahē.
+
+. Before we can deploy the application, a few parameters need to be replaced: +
+-> The secret value in the `takahe-secrets` secret (Replace `CHANGEMESECRET` with a random string, for example generated with `pwgen 32`. +
+-> Replace `CHANGEMEBUCKETNAME` with the name of the bucket ordered in step 1.
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-takahe.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-route.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+. Last but not least retrieve the URL of your WordPress blog:
++
+[source,shell]
+--
+oc get route example-app -o jsonpath='{.spec.host}'
+--
+
+You can now register to your Takahē instance on `/auth/signup/` with the user `myuser@example.com` (this one will automatically become the admin user, as per the configuration).
+
+The registration link can be retrieved in the Inbucket instance:
+
+[source,shell]
+--
+oc port-forward svc/inbucket-web 8080:8080
+--
+
+And then open a browser at http://localhost:8080[localhost:8080^].
+
+The E-Mail will contain a wrong URL, just catch the `/auth/reset/...` part and append it to the URL retrieved in step 5.
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+Especially for this example application:
+
+* Review the https://docs.jointakahe.org/en/latest/installation/[documentation of the used image^] to learn more about the configuration and possibilities.
+* Takahē needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
+
+include::partial$app-demo-partials.adoc[tag=cleanup]
+
+include::partial$app-demo-partials.adoc[tag=contactus]
