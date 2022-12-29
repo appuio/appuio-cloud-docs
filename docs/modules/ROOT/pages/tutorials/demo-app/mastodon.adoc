@@ -19,7 +19,7 @@ include::partial$app-demo-partials.adoc[tag=step1]
 To deploy the application we will use standard Kubernetes objects.
 Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
 
-. First, we need a database and a cache:
+. First, we need a database, a cache and a search index:
 +
 .Database ordering from the VSHN Application Catalog
 [source,yaml]
@@ -27,10 +27,12 @@ Save the example YAML Kubernetes resources into a file and apply it with `oc app
 include::example$example-app-exo-postgresql.yaml[]
 ---
 include::example$example-app-exo-redis.yaml[]
+---
+include::example$example-app-exo-opensearch.yaml[]
 ----
 +
-This will create a PosgtreSQL and a Redis DBaaS instance with default settings.
-See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs for PostgreSQL] and xref:appcat:ROOT:exoscale-dbaas/redis/create.adoc[the AppCat docs for Redis] for more information.
+This will create a PosgtreSQL, a Redis and an OpenSearch DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs for PostgreSQL], xref:appcat:ROOT:exoscale-dbaas/redis/create.adoc[the AppCat docs for Redis] and xref:appcat:ROOT:exoscale-dbaas/opensearch/create.adoc[the AppCat docs for OpenSearch] for more information.
 
 . And we need some other supporting services for Mastodon to be able to work:
 +

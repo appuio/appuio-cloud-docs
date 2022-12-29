@@ -77,7 +77,27 @@ spec:
                   name: redis-creds
                   key: REDIS_PASSWORD
             - name: MASTODON_ELASTICSEARCH_ENABLED
-              value: "false"
+              value: "true"
+            - name: MASTODON_ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_HOST
+            - name: MASTODON_ELASTICSEARCH_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PORT
+            - name: MASTODON_ELASTICSEARCH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_USER
+            - name: MASTODON_ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PASSWORD
             - name: SMTP_SERVER
               value: inbucket-smtp
             - name: SMTP_PORT
@@ -140,7 +160,27 @@ spec:
                   name: redis-creds
                   key: REDIS_PASSWORD
             - name: MASTODON_ELASTICSEARCH_ENABLED
-              value: "false"
+              value: "true"
+            - name: MASTODON_ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_HOST
+            - name: MASTODON_ELASTICSEARCH_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PORT
+            - name: MASTODON_ELASTICSEARCH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_USER
+            - name: MASTODON_ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PASSWORD
             - name: SMTP_SERVER
               value: inbucket-smtp
             - name: SMTP_PORT
@@ -223,7 +263,27 @@ spec:
                   name: redis-creds
                   key: REDIS_PASSWORD
             - name: MASTODON_ELASTICSEARCH_ENABLED
-              value: "false"
+              value: "true"
+            - name: MASTODON_ELASTICSEARCH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_HOST
+            - name: MASTODON_ELASTICSEARCH_PORT_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PORT
+            - name: MASTODON_ELASTICSEARCH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_USER
+            - name: MASTODON_ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opensearch-creds
+                  key: OPENSEARCH_PASSWORD
             - name: DB_SSLMODE
               value: "true"
             - name: NODE_EXTRA_CA_CERTS
