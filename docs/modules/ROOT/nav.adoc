@@ -59,7 +59,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 ** xref:tutorials/demo-app/takahe.adoc[Takahē]
 
-* xref:tutorials/migration.adoc[Migrating to APPUiO Cloud]
+* xref:tutorials/migration.adoc[Migrating from APPUiO Public]
 
 .How-to guides
 
@@ -120,6 +120,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 * xref:references/default-quota.adoc[Default Quota]
 
 .Explanation
+* xref:explanation/kubernetes.adoc[Differences to plain Kubernetes]
 * xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
 * xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
 * xref:explanation/fair-use-policy.adoc[]

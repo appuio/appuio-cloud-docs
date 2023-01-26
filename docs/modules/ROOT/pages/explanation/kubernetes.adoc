@@ -1,0 +1,162 @@
+= Differences to Plain Kubernetes
+
+Even though OpenShift 4 strives to be as compatible with upstream Kubernetes as possible, there are some differences that need to be considered when deploying workloads to APPUiO Cloud.
+
+This page lists the main differences, and how to work around them.
+
+
+== Key Differences
+
+* <<random-uid,Apps will run with a random UID>>
+* <<readonly-fs,Container file systems are read-only>>
+* <<network-policies,Containers in different namespaces can't communicate directly by default>>
+
+
+[#random-uid]
+== Random User IDs
+
+[.lead]
+Processes in containers started by OpenShift will run with a random user ID for security reasons.
+
+Contrary to your local Docker installation or vanilla Kubernetes clusters, processes in containers started by OpenShift WON'T run with `uid=0` and `gid=0`.
+Instead, a random, very high (> 1000000000) UID will be used.
+
+This has some implications, for example:
+
+* Images that try to bind to ports < 1024 won't work
+* Images that try to `setuid` during their startup process won't work
+
+Most modern software allows you to configure the ports it binds on, and not take assumptions about user or group IDs.
+For example Nginx, in its default configuration, will try to bind to port 80, and then drop to an unprivileged user using `setuid`/`setgid`.
+In order to run Nginx in OpenShift, its configuration must be amended to bind to ports > 1024, and any `user` or `group` directives removed.
+
+Note that if you are using persistent volumes, you don't have to worry about `chown`ing the contents, OpenShift will do this for you automatically when a volume is mounted.
+
+
+[#readonly-fs]
+== Read-only Container File Systems
+
+[.lead]
+Most paths in containers are read-only.
+
+As a nice side-effect of the previous point (random user IDs), most paths inside the container image are read-only. In most cases this isn't an issue, as processes running inside containers shouldn't just write to random paths.
+Some tools however need to write some temporary files to work, and this could cause problems on OpenShift.
+
+[TIP]
+====
+Note that we're not talking about PersistentVolumes here.
+Kubernetes will always make sure that your container processes can write to them.
+====
+
+To work around this issue, you can use an https://kubernetes.io/docs/concepts/storage/volumes/#emptydir[`emptyDir` volume].
+`emptyDir` will mount an empty directory (what a surprise, given the name) to the path you specified, just as a volume.
+
+=== Example
+
+[source,yaml]
+.Basic usage of `emptyDir` volumes
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  template:
+    spec:
+      containers:
+        - name: myapp
+          image: registry.example.com/corp/myapp:v1.5.3
+          volumeMounts:
+            - name: cache
+              mountPath: /var/cache/myapp  # <1>
+      volumes:
+        - name: cache
+          emptyDir:
+            sizeLimit: 512Mi  # <2>
+----
+<1> Mount at whatever path your app needs to write to
+<2> `sizeLimit` is optional
+
+
+[#network-policies]
+== Network Namespace Isolation
+
+[.lead]
+While on many vanilla Kubernetes clusters, all pods can communicate with each other over the network, OpenShift enforces the use of https://kubernetes.io/docs/concepts/services-networking/network-policies/[Network Policies].
+By default, all INCOMING traffic must be allowed explicitly, while all OUTGOING traffic is allowed.
+
+Upon Namespace/Project creation, APPUiO Cloud will provision some default NetworkPolicies that ensure that
+
+- containers within the same namespace can communicate with each other
+- containers can be accessed from infrastructure components (monitoring, IngressController, etc.)
+
+[TIP]
+====
+See xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies] on how to change this.
+====
+
+For most use cases this is enough, components that need to communicate directly tend to be deployed in the same namespace.
+In some cases however, we want components in different namespaces to be able to talk to each other.
+
+=== Example
+
+Let's assume our Application `myapp` consist of two parts, `frontend` and `api`.
+Each part
+
+- is deployed in its own namespace (`corp-myapp-frontend-prod` and `corp-myapp-api-prod` respectively)
+- consists of three pods
+- has a service pointing to it (named `frontend` and `api`)
+- is exposed via a Route/Ingress (using `myapp.example.com` and `api.example.com` as the URI)
+
+.Our example application
+image::explanation/network-policies.drawio.svg[]
+
+Let's also assume our frontend needs to talk to the API directly. To achieve this, we've 2 options:
+
+==== Use a Route/Ingress
+
+Since our API is already exposed to the world via an ingress, we can just configure our frontend to use `\https://api.example.com` as the API URL. This should work out of the box, no further configuration is needed.
+
+==== Create a Custom NetworkPolicy
+
+If our API isn't exposed to the internet directly, or we don't want our traffic to leave the cluster, we can create a NetworkPolicy that allows the frontend pods to talk to our API pods directly:
+
+[source,yaml]
+----
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-frontend  # <1>
+  namespace: corp-myapp-api-prod  # <2>
+spec:
+  policyTypes:
+    - Ingress
+  podSelector:
+    matchLabels:
+      app: api  # <3>
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: corp-myapp-frontend-prod  # <4>
+          podSelector:
+            matchLabels:
+              app: frontend  # <5>
+      ports:
+        - protocol: TCP
+          port: 3000  # <6>
+----
+<1> Give your policy a telling name, so you can identify what it's supposed to do later
+<2> The NetworkPolicy must be created in the DESTINATION namespace
+<3> Select which DESTINATION pods are affected by this NetworkPolicy
+<4> Select which SOURCE namespaces you want to allow traffic from. Labels must be used to select namespaces; the `kubernetes.io/metadata.name` label is added automatically to all namespaces
+<5> Select which specific SOURCE pods in the selected namespaces are allowed
+<6> Configure which ports traffic is allowed from
+
+[WARNING]
+====
+Please carefully read the upstream documentation, especially the part about https://kubernetes.io/docs/concepts/services-networking/network-policies/#behavior-of-to-and-from-selectors[Behavior of `to` and `from` selector] to avoid accidentally allowing traffic from all namespaces.
+====
+
+Once the NetworkPolicy has been applied to the cluster, you can reconfigure your frontend to use `\http://api.corp-myapp-api-prod.svc:3000` as the API URL.
+Kubernetes will automatically route the traffic to the correct pods, and our new NetworkPolicy will ensure that the traffic is permitted.
