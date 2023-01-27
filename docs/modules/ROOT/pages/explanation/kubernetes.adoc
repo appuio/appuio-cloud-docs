@@ -30,7 +30,7 @@ Most modern software allows you to configure the ports it binds on, and not take
 For example Nginx, in its default configuration, will try to bind to port 80, and then drop to an unprivileged user using `setuid`/`setgid`.
 In order to run Nginx in OpenShift, its configuration must be amended to bind to ports > 1024, and any `user` or `group` directives removed.
 
-Note that if you are using persistent volumes, you don't have to worry about `chown`ing the contents, OpenShift will do this for you automatically when a volume is mounted.
+NOTE: If you are using persistent volumes, you don't have to worry about `chown`ing the contents, OpenShift will do this for you automatically when a volume is mounted.
 
 
 [#readonly-fs]
@@ -82,8 +82,7 @@ spec:
 == Network Namespace Isolation
 
 [.lead]
-While on many vanilla Kubernetes clusters, all pods can communicate with each other over the network, OpenShift enforces the use of https://kubernetes.io/docs/concepts/services-networking/network-policies/[Network Policies].
-By default, all INCOMING traffic must be allowed explicitly, while all OUTGOING traffic is allowed.
+On most Kubernetes clusters, including OpenShift, all pods can communicate with each other through the clusters internal network. APPUiO Cloud by default, only allows this for pods within the same namespace. https://kubernetes.io/docs/concepts/services-networking/network-policies/[Network Policies] must be used to allow incomming trafic from other namespaces. Incomming trafic from ingress is always allowed.
 
 Upon Namespace/Project creation, APPUiO Cloud will provision some default NetworkPolicies that ensure that
 
