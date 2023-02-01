@@ -85,7 +85,7 @@ stringData:
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
-  name: ${APP_PROJECT}-alert-config
+  name: ${APP_NAMESPACE}-alert-config
 spec:
   receivers:
   - name: pushover
