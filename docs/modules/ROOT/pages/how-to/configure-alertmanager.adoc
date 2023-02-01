@@ -46,6 +46,64 @@ Configured to only send alerts during out of office hours.
 All alerts are routed to the default receiver.
 See <<routing>> for more information.
 
+=== Configure Pushover Receiver
+
+. Set the namespace the alerts are created in.
++
+[source,bash]
+----
+APP_NAMESPACE=my-namespace
+----
+
+. Create an application in the Pushover console.
+
+. Create secrets for your user key and the API key of your newly created application:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pushover-user-key
+type: Opaque
+stringData:
+  value: ${PUSHOVER_USER_KEY}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pushover-api-key
+type: Opaque
+stringData:
+  value: ${PUSHOVER_API_KEY}
+----
+
+. Create an `AlertmanagerConfig` using the secrets created above:
++
+[source,yaml]
+----
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: ${APP_PROJECT}-alert-config
+spec:
+  receivers:
+  - name: pushover
+    pushoverConfigs:
+    - userKey:
+        key: value
+        name: pushover-user-key
+      token:
+        key: value
+        name: pushover-api-key
+  route:
+    receiver: pushover
+    routes:
+    - match:
+        severity: critical
+      continue: true
+----
+
 === Configure Telegram Receiver [[alertmanager-config-receiver-telegram]]
 
 . Set the namespace the alerts are created in.
