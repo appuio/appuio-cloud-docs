@@ -126,7 +126,7 @@ oc process -f 3_grafana.yaml --param-file=variables | oc apply -f -
 .. Skip the screen asking you to change your password.
 . Create a new data source by clicking on the "Add your first data source" button.
 .. Select "Prometheus" (first entry on the list)
-.. Follow the xref:how-to/use-custom-grafana.adoc[APPUiO Cloud docs instructions] to configure Prometheus as a data source.
+.. Follow the xref:how-to/use-custom-grafana.adoc[instructions] to configure Prometheus as a data source.
 . Get the values of the token and certificates from the deployment.
 +
 [source,bash]
