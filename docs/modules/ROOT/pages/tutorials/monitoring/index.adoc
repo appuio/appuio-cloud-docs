@@ -66,7 +66,7 @@ PUSHOVER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 == Deploy the Fortune in Go Application
 
-The first step is to deploy the Fortune in Go application on its APPUiO Cloud project. To make this happen, we require three familiar objects: a Deployment, a Service, and an Ingress object. The Deployment specifies the container to use: `registry.gitlab.com/vshn/applications/fortune-go:latest`.
+The first step is to deploy the Fortune in Go application on its APPUiO Cloud project. To make this happen, we require three familiar objects: a `Deployment`, a `Service`, and an `Ingress` object. The Deployment specifies the container to use: `registry.gitlab.com/vshn/applications/fortune-go:latest`.
 
 . Execute the following commands:
 +
@@ -84,9 +84,11 @@ oc process -f 1_deployment.yaml --param-file=variables | oc apply -f -
 
 After deploying the application, we will configure AlertManager and Prometheus to consume the usage information reported by the application. Doing so requires the following objects:
 
-* A ServiceMonitor object;
-* A PrometheusRule object specifying the expression to be used as a rule to determine whether an alert should be raised. In our case, we will be using this rule: `rate(fortune_generated_message[1m]) > 5`
-* And an AlertmanagerConfig object. This last object requires two Secret objects, specifying Pushover's "user key" and "API key."
+* A `ServiceMonitor` object;
+* A `PrometheusRule` object specifying the expression to be used as a rule to determine whether an alert should be raised. In our case, we will be using this rule: `rate(fortune_generated_message[1m]) > 5`
+* And an `AlertmanagerConfig` object. This last object requires two Secret objects, specifying Pushover's "user key" and "API key."
+
+NOTE: `AlertmanagerConfig` objects can be configured with a variety of services such as Telegram, Slack, and others. The xref:how-to/configure-alertmanager.adoc[AlertManager configuration page] provides more information.
 
 Follow these steps:
 
