@@ -42,7 +42,7 @@ func fortune() string {
 
 For this tutorial, we will need an account at https://pushover.net/[Pushover].
 
-. Open a free account at Pushover, or login into your existing account if you have one; copy your "user key".
+. Open a free account at Pushover, or login into your existing account if you have one; copy your "user key" shown on the user interface.
 . Create a new application in the Pushover interface and copy the provided API key.
 +
 image::monitoring/tutorial/pushover-new-application.png[]
@@ -105,9 +105,9 @@ image::monitoring/tutorial/console-monitoring-alerts-firing.png[]
 
 . The Pushover interface should show that an alert arrived, and the Pushover client should show the notification, including the error message specified in the YAML file.
 +
-image::monitoring/tutorial/pushover-view-application.png
+image::monitoring/tutorial/pushover-view-application.png[]
 +
-image::monitoring/tutorial/pushover-web-client.png
+image::monitoring/tutorial/pushover-web-client.png[]
 
 == Deploy Grafana
 
