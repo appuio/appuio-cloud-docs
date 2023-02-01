@@ -48,19 +48,21 @@ See <<routing>> for more information.
 
 === Configure Pushover Receiver
 
-. Set the namespace the alerts are created in.
+. Create a new application on the https://pushover.net/[Pushover] console.
+. Set the namespace the alerts are created in, as well as the two Pushover secrets: the user key and the API key.
 +
 [source,bash]
 ----
 APP_NAMESPACE=my-namespace
+PUSHOVER_USER_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+PUSHOVER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ----
-
-. Create an application in the Pushover console.
 
 . Create secrets for your user key and the API key of your newly created application:
 +
-[source,yaml]
+[source,bash]
 ----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: v1
 kind: Secret
 metadata:
@@ -68,7 +70,12 @@ metadata:
 type: Opaque
 stringData:
   value: ${PUSHOVER_USER_KEY}
----
+YAML
+----
++
+[source,bash]
+----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: v1
 kind: Secret
 metadata:
@@ -76,12 +83,14 @@ metadata:
 type: Opaque
 stringData:
   value: ${PUSHOVER_API_KEY}
+YAML
 ----
 
 . Create an `AlertmanagerConfig` using the secrets created above:
 +
-[source,yaml]
+[source,bash]
 ----
+kubectl -n "${APP_NAMESPACE}" apply -f - <<YAML
 apiVersion: monitoring.coreos.com/v1beta1
 kind: AlertmanagerConfig
 metadata:
@@ -102,6 +111,7 @@ spec:
     - match:
         severity: critical
       continue: true
+YAML
 ----
 
 === Configure Telegram Receiver [[alertmanager-config-receiver-telegram]]
