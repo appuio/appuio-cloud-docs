@@ -112,6 +112,8 @@ image::monitoring/tutorial/pushover-view-application.png[]
 +
 image::monitoring/tutorial/pushover-web-client.png[]
 
+NOTE: In case of trouble, please check the xref:how-to/configure-alertmanager.adoc[Troubleshooting section] of the "Configure Alert Receivers" page.
+
 == Deploy Grafana
 
 The final step consists of deploying and connecting a custom Grafana instance to the Fortune in Go application. Deploying Grafana, once again, requires a Deployment, a Service, and an Ingress object.
