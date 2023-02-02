@@ -57,12 +57,13 @@ image::monitoring/tutorial/pushover-new-application.png[]
 +
 [source]
 --
-APPUIO_CLOUD_ZONE=cloudscale-lpg-2     (or exoscale-ch-gva-2-0)
+APPUIO_CLOUD_ZONE=cloudscale-lpg-2 <1>
 APP_PROJECT=xxxxx-fortune
 GRAFANA_PROJECT=xxxxx-grafana
 PUSHOVER_USER_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 PUSHOVER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 --
+<1> You can use other APPUiO Cloud Zones too. See https://portal.appuio.cloud/zones for a list of alternatives.
 
 == Deploy the Fortune in Go Application
 
