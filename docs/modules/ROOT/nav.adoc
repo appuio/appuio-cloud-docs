@@ -61,6 +61,8 @@ include::user:ROOT:partial$shared-nav.adoc[]
 
 * xref:tutorials/migration.adoc[Migrating from APPUiO Public]
 
+* xref:tutorials/monitoring/index.adoc[Monitoring Applications]
+
 .How-to guides
 
 * Tuning
