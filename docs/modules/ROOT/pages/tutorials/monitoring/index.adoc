@@ -134,10 +134,10 @@ oc process -f 3_grafana.yaml --param-file=variables | oc apply -f -
 +
 [source,bash]
 --
-TOKEN=$(oc get secret $GRAFANA_PROJECT-viewer -ojsonpath={.data.token} | base64 -d)
-CA=$(oc get secret $GRAFANA_PROJECT-viewer -ojsonpath={.data."service-ca\.crt"} | base64 -d)
-echo $CA
-echo "Bearer $TOKEN"
+# Your Certificat Authority (CA)
+oc get secret $GRAFANA_PROJECT-viewer -ojsonpath={.data."service-ca\.crt"} | base64 -d
+# Your Bearer HTTP access token
+echo "Bearer $(oc get secret $GRAFANA_PROJECT-viewer -ojsonpath={.data.token} | base64 -d)"
 --
 
 . Create a new dashboard.
