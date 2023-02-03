@@ -20,7 +20,9 @@ This differs from the default behavior in OpenShift, where the default `admin` R
 
 In addition, the RoleBinding named `namespace-owner` gives the group named equal to the Organization of the Namespace object permissions to view, edit and delete objects within the namespace.
 
-Both RoleBindings can be changed or deleted and replaced by something else.
+Finally, the RoleBindings `monitoring-edit`, `monitoring-edit-probe` and `alert-routing-edit` grant the group named equal to the Organization owning the Project or Namespace privileges to create, modify and delete user workload monitoring configurations.
+
+Any of the RoleBindings can be changed or deleted and replaced by something else.
 
 CAUTION: Modifications to RoleBindings can prevent users from accessing their projects; in other words, you might end up locked out of your project!
 

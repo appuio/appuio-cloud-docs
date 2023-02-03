@@ -27,11 +27,13 @@ For this guide, it's assumed that:
 [WARNING]
 OpenShift has no notion of group hierarchy, so you need to add the user to all groups that should have access to the project.
 
-[INFO]
+[TIP]
 ====
-There are two relevant RoleBindings in each Namespace:
+There are multiple relevant RoleBindings in each Namespace:
+
 * `admin` - allows the user to manage most resources in the Namespace
 * `namespace-owner` - allows the user to manage (including delete) the Namespace itself
+* `monitoring-edit`, `monitoring-edit-probe`, `alert-routing-edit` - allow the user to manage user workload monitoring related resources.
 ====
 
 . Remove the user from the `mycompany` organization
@@ -48,7 +50,7 @@ mycompany (organization)
 └── operations (team)
 ----
 
-. Allow only organization `mycompany` and team `mycompany+developers` access to your project
+. Allow only organization `mycompany` and team `mycompany+developers` access to your project (including access to the user workload monitoring)
 +
 [source,bash]
 ----
@@ -56,7 +58,8 @@ ORGANIZATION=mycompany
 TEAM=developers
 PROJECT=mycompany-web-portal
 
-oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+for rb in admin monitoring-edit monitoring-edit-probe alert-routing-edit; do
+oc -n "${PROJECT}" patch rolebinding "${rb}" -oyaml --patch """
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group
@@ -65,6 +68,7 @@ subjects:
     kind: Group
     name: ${ORGANIZATION}+${TEAM}
 """
+done
 ----
 
 .. The user can be referenced directly as well.
@@ -75,7 +79,8 @@ ORGANIZATION=mycompany
 USER=mycompany-user1
 PROJECT=mycompany-web-portal
 
-oc -n "${PROJECT}" patch rolebinding admin -oyaml --patch """
+for rb in admin monitoring-edit monitoring-edit-probe alert-routing-edit; do
+oc -n "${PROJECT}" patch rolebinding "${rb}" -oyaml --patch """
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group
@@ -84,6 +89,7 @@ subjects:
     kind: User
     name: ${USER}
 """
+done
 ----
 
 == User may not create new projects in their organization
@@ -106,3 +112,28 @@ mycompany (organization)
 . Allow access to the required projects
 +
 See <<access-certain-projects>> for an example.
+
+== Give a team or user edit permissions for user workload monitoring resources in a project
+
+. Remove the user from the `organization` group
+
+. Add the user or team which should have access to user workload monitoring to role bindings `monitoring-edit`, `monitoring-edit-probe` and `alert-routing-edit` in the required projects.
++
+[source,bash]
+----
+ORGANIZATION=mycompany
+TEAM=developers
+PROJECT=mycompany-web-portal
+
+for rb in monitoring-edit monitoring-edit-probe alert-routing-edit; do
+oc -n "${PROJECT}" patch rolebinding "${rb}" -oyaml --patch """
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}+${TEAM}
+"""
+done
+----
