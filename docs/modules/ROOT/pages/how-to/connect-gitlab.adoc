@@ -186,7 +186,7 @@ unset KUBECONFIG
 
 You should now have a file named `gitlab-ci.kubeconfig` in your current working directory.
 Copy its contents and create a variable named `KUBECONFIG` in the GitLab settings with the value of the file (that's under menu:Settings[CI/CD > Variables > Expand > Add Variable]).
-Remember to set the "environment" scope for the variable and to disable any previous Kubernetes integration, as the `KUBECONFIG` variable might collide with this new variable.
+Remember to set the type "File" and "environment" scope for the variable and to disable any previous Kubernetes integration, as the `KUBECONFIG` variable might collide with this new variable.
 
 == Connecting {product} to the GitLab Container Registry
 
