@@ -5,12 +5,12 @@ This page describes how you can mitigate very long Pod startup times and `Create
 == Explanation
 
 When a Pod mounts a volume which contains many files, the Pod startup time can be very long.
-This is caused because the container runtime updates the SELinux labels of all the files in the volume on Pod startup.
+This is caused because the container runtime updates the group ownership and SELinux labels of all the files in the volume on Pod startup.
 Depending on the number of files, relabeling can take a long time.
 
 When relabeling takes too long, the Pod goes into `CreateContainerError` status after some time.
-When the container is created again, the container runtime continues relabeling files where it left off.
-Depending on the amount of files, multiple container restarts are required before the relabeling is done.
+When the container is created again, the container runtime continues updating group ownership and relabeling files where it left off.
+Depending on the amount of files, multiple container restarts are required before the group ownership updates and relabeling is done.
 Once the relabeling is complete, the Pod will go into status `Running`.
 
 == Implementation
@@ -48,19 +48,23 @@ spec:
   template:
     spec:
       securityContext:
+        fsGroupChangePolicy: OnRootMismatch <1>
         seLinuxOptions:
-          type: spc_t
+          type: spc_t <2>
 ...
 --
+<1> Configure the deployment to only change permissions and ownership for files in the volume if the permission and ownership of the root directory doesn't not match the expected permissions.
+<2> Use SELinux option `spc_t` to ensure the container runtime doesn't try to relabel all files on the volume.
 
 You can also use `oc patch` to change the `securityContext` of the Deployment:
 
 [source,shell]
 --
-oc patch deployment [YOUR_DEPLOYMENT_NAME] -p '{"spec":{"template":{"spec":{"securityContext":{"seLinuxOptions":{"type":"spc_t"}}}}}}'
+oc patch deployment [YOUR_DEPLOYMENT_NAME] -p '{"spec":{"template":{"spec":{"securityContext":{"fsGroupChangePolicy":"OnRootMismatch","seLinuxOptions":{"type":"spc_t"}}}}}}'
 --
 
-For more information, see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#selinuxoptions-v1-core[SELinuxOptions Spec].
+For more information on `fsGroupChangePolicy`, see the https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods[Kubernetes documentation on configuring volume permission and ownership change].
+For more information on SELinux options, see the https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#selinuxoptions-v1-core[SELinuxOptions Spec].
 
 [IMPORTANT]
 ====
