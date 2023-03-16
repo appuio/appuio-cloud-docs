@@ -23,12 +23,14 @@ spec:
           env:
             - name: GITEA__database__DB_TYPE
               value: mysql
-            - name: GITEA__database__HOST
+            - name: GITEA__database__HOSTNAME
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
                   key: MYSQL_HOST
-            - name: GITEA__database__PORTLOLNOPE
+            - name: GITEA__database__HOST
+              value: "$(GITEA__database__HOSTNAME):$(GITEA__database__PORT)"
+            - name: GITEA__database__PORT
               valueFrom:
                 secretKeyRef:
                   name: mysql-creds
