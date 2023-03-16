@@ -1,13 +1,16 @@
 include::user:ROOT:partial$shared-nav.adoc[]
 
 .About
-* https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
+* https://status.appuio.cloud[Status 🔗^]
+* https://portal.appuio.cloud[Portal 🔗^]
+* xref:contact.adoc[Contact]
 * https://discuss.appuio.cloud/[Community Discussions 🔗^]
 * https://community.appuio.ch/[Community Chat 🔗^]
 * https://roadmap.appuio.cloud/[Roadmap 🔗^]
+* https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
 
-.Tutorials
-* xref:tutorials/getting-started.adoc[Getting Started]
+.Getting Started
+* xref:tutorials/getting-started.adoc[Deploy your first application]
 ** On the OpenShift Web Console
 *** xref:tutorials/getting-started/c-web.adoc[C]
 *** xref:tutorials/getting-started/cpp-web.adoc[C++]
@@ -52,82 +55,77 @@ include::user:ROOT:partial$shared-nav.adoc[]
 *** xref:tutorials/getting-started/swift-terminal.adoc[Swift]
 *** xref:tutorials/getting-started/typescript-terminal.adoc[TypeScript]
 
-* xref:tutorials/demo-app/index.adoc[Demo Applications]
+* xref:tutorials/demo-app/index.adoc[Common Applications]
 ** xref:tutorials/demo-app/ghost.adoc[Ghost]
 ** xref:tutorials/demo-app/wordpress.adoc[WordPress]
 ** xref:tutorials/demo-app/odoo.adoc[Odoo]
 ** xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 ** xref:tutorials/demo-app/takahe.adoc[Takahē]
 
-* xref:tutorials/migration.adoc[Migrating from APPUiO Public]
-
-* xref:tutorials/monitoring/index.adoc[Monitoring Applications]
-
-.How-to guides
-
-* Tuning
-** xref:how-to/choose-node-class.adoc[Choose Node Class]
-
-* Projects and Namespaces
-** xref:how-to/manage-projects-and-namespaces.adoc[Managing Projects and Namespaces]
-** xref:how-to/list-namespaces.adoc[List Namespaces]
-** xref:how-to/using-templates.adoc[Using OpenShift Templates]
-** xref:how-to/grant-access.adoc[Granting Access]
-** xref:how-to/fine-grained-access-examples.adoc[]
-** xref:how-to/check-cpu-requests.adoc[Investigate and resolve fair use ratio violations]
-** xref:how-to/use-vpa.adoc[]
-
-* Networking
-** xref:how-to/tailscale.adoc[Tailscale VPN]
-** xref:how-to/remove-default-networkpolicies.adoc[Remove Default NetworkPolicies]
-** xref:how-to/non-http-services.adoc[Non HTTP Services - TCP & UDP Ingress]
-
-* Storage
-** xref:how-to/encrypted-volumes.adoc[Setup Encrypted Volumes]
-** xref:how-to/use-k8up.adoc[Backups with K8up]
-** xref:how-to/long-pod-startup.adoc[Fix Long Pod Startup time (CreateContainerError)]
-
-* Security
-** xref:how-to/getting-a-certificate.adoc[Generate Certificates]
-
-* Logging
-** xref:how-to/access-logs-through-kibana.adoc[Access logs through Kibana]
-
-* Monitoring
-** xref:how-to/configure-alertmanager.adoc[Configure Alert Receivers]
-** xref:how-to/monitor-http-endpoints.adoc[Monitor HTTP Endpoints]
-** xref:how-to/monitor-application.adoc[Monitor Applications]
-** xref:how-to/monitor-pvc-usage.adoc[Monitor PVC Usage]
-** xref:how-to/use-custom-grafana.adoc[Custom Grafana]
-
-* Image Registry
-** xref:how-to/use-integrated-registry.adoc[Using the integrated registry]
-
 * Databases
-** xref:how-to/install-postgres-db-helm.adoc[Install PostgreSQL via Helm]
+** xref:how-to/install-postgres-db-helm.adoc[PostgreSQL]
 
-* DevOps
-** xref:how-to/connect-gitlab.adoc[Connect GitLab]
-** xref:how-to/use-github-actions.adoc[Using GitHub Actions]
-** xref:how-to/use-tilt.adoc[Using Tilt]
-** xref:how-to/use-skaffold.adoc[Using Skaffold]
-** xref:how-to/use-odo.adoc[Using odo]
-** xref:how-to/use-devspace.adoc[Using DevSpace]
+* Migrating from APPUiO Public
+** xref:tutorials/migration.adoc[Tutorial]
+** xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
+** xref:explanation/kubernetes.adoc[Differences to plain Kubernetes]
 
-* xref:how-to/use-oc-cli.adoc[oc CLI usage]
+.Projects and Namespaces
+* xref:how-to/manage-projects-and-namespaces.adoc[]
+* xref:how-to/list-namespaces.adoc[]
+* xref:how-to/using-templates.adoc[]
 
-.Technical reference
-* https://portal.appuio.cloud/zones[Zones 🔗^]
-* xref:references/node-classes.adoc[]
-* xref:references/default-quota.adoc[Default Quota]
-
-.Explanation
-* xref:explanation/kubernetes.adoc[Differences to plain Kubernetes]
-* xref:explanation/differences-to-public.adoc[Differences to APPUiO Public]
-* xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]
-* xref:explanation/fair-use-policy.adoc[]
-* xref:explanation/unit-prefixes.adoc[Unit Prefixes]
-* xref:explanation/storage-classes.adoc[Storage Classes]
-* xref:explanation/client-throttling.adoc[Client Throttling]
+.Security and Compliance
+* xref:how-to/grant-access.adoc[]
+* xref:explanation/organizations-and-rbac.adoc[]
+* xref:how-to/getting-a-certificate.adoc[]
 * xref:explanation/pod-security-admissions.adoc[]
+* xref:how-to/fine-grained-access-examples.adoc[]
 
+.Networking
+* xref:how-to/tailscale.adoc[]
+* xref:how-to/remove-default-networkpolicies.adoc[]
+* xref:how-to/non-http-services.adoc[]
+
+.Storage
+* xref:explanation/storage-classes.adoc[]
+* xref:how-to/encrypted-volumes.adoc[]
+* xref:how-to/long-pod-startup.adoc[]
+
+.Registry
+* xref:how-to/use-integrated-registry.adoc[]
+
+.DevOps and CI/CD
+* xref:how-to/use-oc-cli.adoc[oc]
+* xref:how-to/use-odo.adoc[odo]
+* xref:how-to/connect-gitlab.adoc[GitLab]
+* xref:how-to/use-github-actions.adoc[GitHub Actions]
+* xref:how-to/use-tilt.adoc[Tilt]
+* xref:how-to/use-skaffold.adoc[Skaffold]
+* xref:how-to/use-devspace.adoc[DevSpace]
+* xref:explanation/client-throttling.adoc[Client Throttling]
+
+.Scheduling Workloads
+* xref:references/node-classes.adoc[]
+* xref:how-to/choose-node-class.adoc[]
+
+.Logging
+* xref:how-to/access-logs-through-kibana.adoc[]
+
+.Monitoring
+* xref:tutorials/monitoring/index.adoc[Getting Started]
+* xref:how-to/configure-alertmanager.adoc[]
+* xref:how-to/monitor-http-endpoints.adoc[]
+* xref:how-to/monitor-application.adoc[]
+* xref:how-to/monitor-pvc-usage.adoc[]
+* xref:how-to/use-custom-grafana.adoc[]
+
+.Backup and Restore
+* xref:how-to/use-k8up.adoc[]
+
+.Scalability and Performance
+* xref:explanation/fair-use-policy.adoc[]
+* xref:references/default-quota.adoc[]
+* xref:how-to/use-vpa.adoc[]
+* xref:how-to/check-cpu-requests.adoc[]
+* xref:explanation/unit-prefixes.adoc[]
