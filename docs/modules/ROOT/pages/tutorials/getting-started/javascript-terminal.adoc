@@ -13,9 +13,9 @@ To follow this guide, please make sure that you have the following tools install
 
 `oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
 
-`docker` or `podman`:: You can download them from https://www.docker.com[docker.com^] and https://podman.io[podman.io^].
+`docker` or `podman`:: You can download them from https://www.docker.com[^] and https://podman.io[^].
 
-`curl`:: Available from https://curl.se[curl.se^].
+`curl`:: Available from https://curl.se[^].
 
 == About the Application
 
@@ -87,7 +87,7 @@ Or to see a plain text version:
 curl http://localhost:8080 --header "Accept: text/plain"
 --
 
-You can also open a browser and navigate to http://localhost:8080[localhost:8080^] to get your fortune cookie of the day.
+You can also open a browser and navigate to http://localhost:8080[^] to get your fortune cookie of the day.
 
 === Dockerfile
 
