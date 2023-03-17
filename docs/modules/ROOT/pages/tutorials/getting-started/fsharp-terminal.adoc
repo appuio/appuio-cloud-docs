@@ -13,17 +13,15 @@ To follow this guide, please make sure that you have the following tools install
 
 `oc`:: You can download the OpenShift command directly from {product}, selecting the help menu (marked as a question mark) and selecting the "Command line tools" entry.
 
-`docker` or `podman`:: You can download them from https://www.docker.com and https://podman.io.
+`docker` or `podman`:: You can download them from https://www.docker.com[^] and https://podman.io[^].
 
-`curl`:: Available from https://curl.se.
+`curl`:: Available from https://curl.se[^].
 
 == About the Application
 
-To demo how to run applications written in the https://fsharp.org/[F#] programming language on {product}, we will use a small demo application using the https://giraffe.wiki/[Giraffe Framework], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://fsharp.org/[F#^] programming language on {product}, we will use a small demo application using the https://giraffe.wiki/[Giraffe Framework^], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
-You can browse the full source code of this application on GitLab:
-
-* https://gitlab.com/vshn/applications/fortune-fsharp
+You can browse the full source code of this application on https://gitlab.com/vshn/applications/fortune-fsharp[GitLab^].
 
 The "Fortune in F#" application does a few simple things:
 
@@ -31,11 +29,11 @@ The "Fortune in F#" application does a few simple things:
 * When invoked with an HTTP request including the `Accept: application/json` header, it returns the same information in JSON format.
 * Finally, when invoked with an HTTP request including the `Accept: text/plain` header, it returns the same information in plain text format.
 
-Learn more about the `fortune-fsharp` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/README.adoc[project README].
+Learn more about the `fortune-fsharp` application, including how to edit and build it, on the https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/README.adoc[project README^].
 
 === The Application Router
 
-The code below shows the main router of the application in the F# programming language, located at https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/Program.fs[Program.fs], courtesy of the https://giraffe.wiki/[Giraffe Framework].
+The code below shows the main router of the application in the F# programming language, located at https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/Program.fs[Program.fs^], courtesy of the https://giraffe.wiki/[Giraffe Framework^].
 
 [source,fsharp,indent=0]
 --
@@ -94,11 +92,11 @@ Or to see a plain text version:
 curl http://localhost:8080 --header "Accept: text/plain"
 --
 
-You can also open a browser and navigate to http://localhost:8080 to get your fortune cookie of the day.
+You can also open a browser and navigate to http://localhost:8080[^] to get your fortune cookie of the day.
 
 === Dockerfile
 
-The application includes a https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/Dockerfile[Dockerfile] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
+The application includes a https://gitlab.com/vshn/applications/fortune-fsharp/-/blob/master/Dockerfile[Dockerfile^] ready to build a container fully compatible with OpenShift. The snippet below shows the instructions used to build the actual running image:
 
 [source,dockerfile,indent=0]
 --
@@ -280,7 +278,7 @@ The "Fortune in  F#" application is now running on {product}. Congratulations! H
 What's next? To run your own application written in F# or using the Giraffe Framework on {product}, follow these steps:
 
 * Containerize the application making sure it's compatible with {product}. The `Dockerfile` above can serve as a starting point.
-* Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm] chart.
+* Enhance the deployment for your application with liveness and health probes, or better yet, create a https://helm.sh/[Helm^] chart.
 * Configure your CI/CD system to automatically deploy your application to your preferred {product} zone.
 
 Finally, when you're done testing the fortune application, delete the `fortune-fsharp` project with the following command:
