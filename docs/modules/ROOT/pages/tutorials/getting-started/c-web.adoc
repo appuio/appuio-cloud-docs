@@ -13,13 +13,11 @@ This tutorial doesn't require anything else than an {product} account and a mode
 
 == About the Application
 
-To demo how to run applications written in the https://en.wikipedia.org/wiki/C11_%28C_standard_revision%29[C] programming language on {product}, we will use a small demo application using the https://www.gnu.org/software/libmicrohttpd/[GNU libmicrohttpd library], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
+To demo how to run applications written in the https://en.wikipedia.org/wiki/C11_%28C_standard_revision%29[C^] programming language on {product}, we will use a small demo application using the https://www.gnu.org/software/libmicrohttpd/[GNU libmicrohttpd library^], bundled as a container thanks to its corresponding `Dockerfile`, and ready to be used on {product}.
 
 The "Fortune in C" application does one simple thing: when invoked on the browser, it returns a random number and a funny quote. That's all!
 
-You can browse the full source code of this application on GitLab:
-
-* https://gitlab.com/vshn/applications/fortune-c
+You can browse the full source code of this application on https://gitlab.com/vshn/applications/fortune-c[GitLab^].
 
 == Step 1: Deploy a Container
 
