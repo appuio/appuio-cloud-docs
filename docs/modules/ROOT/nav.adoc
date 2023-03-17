@@ -1,13 +1,13 @@
 include::user:ROOT:partial$shared-nav.adoc[]
 
 .About
-* https://status.appuio.cloud[Status 🔗^]
-* https://portal.appuio.cloud[Portal 🔗^]
+* https://status.appuio.cloud[Status^]
+* https://portal.appuio.cloud[Portal^]
 * xref:contact.adoc[Contact]
-* https://discuss.appuio.cloud/[Community Discussions 🔗^]
-* https://community.appuio.ch/[Community Chat 🔗^]
-* https://roadmap.appuio.cloud/[Roadmap 🔗^]
-* https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description 🔗^]
+* https://discuss.appuio.cloud/[Community Discussions^]
+* https://community.appuio.ch/[Community Chat^]
+* https://roadmap.appuio.cloud/[Roadmap^]
+* https://products.docs.vshn.ch/products/appuio/cloud/index.html[Product Description^]
 
 .Getting Started
 * xref:tutorials/getting-started.adoc[Deploy your first application]
