@@ -28,6 +28,15 @@ If you are more of a command line person, you can also copy the Kubernetes API U
 
 == Step 5: Get Started with OpenShift
 
+[WARNING]
+=====
+There is a slight delay (usually less than 3 minutes) between the very first login to a zone and the default organization setup.
+
+During this time you might see error messages like `admission webhook ... denied the request` when creating a new project.
+These errors are temporary and will disappear after the setup is done on the zone.
+=====
+
+
 Follow the "Getting Started" instructions of OpenShift; download the command line tools if you haven't already, create a new project, and deploy your first application in just a few steps.
 
 image::getting-started/openshift-welcome.png[]
