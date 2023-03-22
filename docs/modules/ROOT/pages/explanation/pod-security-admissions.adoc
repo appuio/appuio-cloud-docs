@@ -48,7 +48,7 @@ Allows the default (minimally specified) Pod configuration.
 |===
 
 On {product}, the default is `baseline` and can not be changed.
-If you need more security and do want to set `restricted`, please visit http://roadmap.appuio.cloud/ and let us know.
+If you need more security and do want to set `restricted`, please visit https://roadmap.appuio.cloud/ and let us know.
 
 Under Pod Security Admission, the built-in Pod Security admission controller enforces the configured Pod Security Standards.
 Pod security restrictions are managed at the namespace level, and are processed when pods are created.
