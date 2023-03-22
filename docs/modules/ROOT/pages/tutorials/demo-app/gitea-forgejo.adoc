@@ -11,14 +11,14 @@ include::partial$app-demo-partials.adoc[tag=requirements]
 > Gitea - Git with a cup of tea
 >
 > A painless self-hosted Git service.
-> 
-> Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
+>
+> Gitea is a community managed lightweight code hosting solution written in Go. It's published under the MIT license.
 
 > Forgejo - Beyond coding. We forge.
-> 
+>
 > Forgejo is a self-hosted lightweight software forge.
 > Easy to install and low maintenance, it just does the job.
-> Brought to you by an inclusive community under the umbrella of Codeberg e.V., a democratic non-profit organization, Forgejo can be trusted to be exclusively Free Software. It is a "soft" fork of Gitea with a focus on scaling, federation and privacy. 
+> Brought to you by an inclusive community under the umbrella of Codeberg e. V., a democratic non-profit organization, Forgejo can be trusted to be exclusively Free Software. It's a "soft" fork of Gitea with a focus on scaling, federation and privacy.
 
 include::partial$app-demo-partials.adoc[tag=step1]
 
@@ -66,17 +66,33 @@ oc get pods --watch
 oc get route example-app -o jsonpath='{.spec.host}'
 --
 
-You can now login to your Odoo instance with the default credentials by the image:
+== Configure Gitea
 
-* Username: \user@example.com
-* Password: bitnami
+Gitea will display a configuration screen where you need to enter the connection details of your database. You can use this script to display them at the terminal:
+
+[source,shell]
+--
+#!/usr/bin/env bash
+
+# Database
+PGDATABASE=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_DB' | base64 -d)
+PGUSER=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_USER' | base64 -d)
+PGPASSWORD=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_PASSWORD' | base64 -d)
+PGPORT=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_PORT' | base64 -d)
+PGHOST=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_HOST' | base64 -d)
+
+echo "Host:          $PGHOST:$PGPORT"
+echo "Username:      $PGUSER"
+echo "Password:      $PGPASSWORD"
+echo "Database name: $PGDATABASE"
+--
+
+IMPORTANT: Remember to create a default account by expanding the "Administrator Account Settings" section at the bottom of the form!
+
+Click the btn:[Install Gitea] button. The installation should only take a few seconds.
+
+You can now login to your Gitea instance clicking on the btn:[Sign In] button on the top right and using the credentials entered during the installation.
 
 include::partial$app-demo-partials.adoc[tag=whats-next]
-
-Especially for this example application:
-
-* Change the default username and password immediately.
-* Review the https://github.com/bitnami/containers/blob/main/bitnami/odoo/README.md[documentation of the used image^] to learn more about the configuration and possibilities.
-* Odoo needs a proper mail sending configuration in production, we recommend using a managed mail sending service for that, for example https://www.mailgun.com/[Mailgun^].
 
 include::partial$app-demo-partials.adoc[tag=cleanup]

@@ -18,40 +18,8 @@ spec:
     spec:
       containers:
         - name: demoapp
-          image: docker.io/gitea/gitea:latest
+          image: quay.io/gpte-devops-automation/gitea:1.19.0
           imagePullPolicy: Always
-          env:
-            - name: GITEA__database__DB_TYPE
-              value: mysql
-            - name: GITEA__database__HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-creds
-                  key: MYSQL_HOST
-            - name: GITEA__database__HOST
-              value: "$(GITEA__database__HOSTNAME):$(GITEA__database__PORT)"
-            - name: GITEA__database__PORT
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-creds
-                  key: MYSQL_PORT
-            - name: GITEA__database__NAME
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-creds
-                  key: MYSQL_DB
-            - name: GITEA__database__USER
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-creds
-                  key: MYSQL_USER
-            - name: GITEA__database__PASSWD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-creds
-                  key: MYSQL_PASSWORD
-            - name: GITEA__database__SSL_MODE
-              value: skip-verify
           ports:
             - name: web
               containerPort: 3000
