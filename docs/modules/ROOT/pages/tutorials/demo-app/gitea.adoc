@@ -1,0 +1,92 @@
+= Application Demo: Gitea
+:app-link: https://www.gitea.io/[Gitea^]
+:app-logo: gitea.svg
+
+include::partial$app-demo-partials.adoc[tag=introduction]
+
+include::partial$app-demo-partials.adoc[tag=requirements]
+
+== About the Application
+
+> Gitea - Git with a cup of tea
+>
+> A painless self-hosted Git service.
+>
+> Gitea is a community managed lightweight code hosting solution written in Go. It's published under the MIT license.
+
+include::partial$app-demo-partials.adoc[tag=step1]
+
+== Step 2: Deploy the application
+
+To deploy the application we will use standard Kubernetes objects.
+Save the example YAML Kubernetes resources into a file and apply it with `oc apply -f <myfile.yaml>`.
+
+. First, we need a database:
++
+.Database ordering from the VSHN Application Catalog
+[source,yaml]
+----
+include::example$example-app-exo-mysql.yaml[]
+----
++
+This will create a MySQL DBaaS instance with default settings.
+See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+
+. Then we deploy the application:
++
+.Application deployment with all other needed resources
+[source,yaml]
+----
+include::example$example-app-gitea.yaml[]
+---
+include::example$example-app-service.yaml[]
+---
+include::example$example-app-pvc.yaml[]
+---
+include::example$example-app-route.yaml[]
+----
+
+. Now wait until your pod appears with the status "Running":
++
+[source,shell]
+--
+oc get pods --watch
+--
+
+. Last but not least retrieve the URL of your Gitea instance:
++
+[source,shell]
+--
+oc get route example-app -o jsonpath='{.spec.host}'
+--
+
+== Configure Gitea
+
+Gitea will display a configuration screen where you need to enter the connection details of your database. You can use this script to display them at the terminal:
+
+[source,shell]
+--
+#!/usr/bin/env bash
+
+# Database
+PGDATABASE=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_DB' | base64 -d)
+PGUSER=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_USER' | base64 -d)
+PGPASSWORD=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_PASSWORD' | base64 -d)
+PGPORT=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_PORT' | base64 -d)
+PGHOST=$(oc get secret mysql-creds -ojson | jq -r '.data.MYSQL_HOST' | base64 -d)
+
+echo "Host:          $PGHOST:$PGPORT"
+echo "Username:      $PGUSER"
+echo "Password:      $PGPASSWORD"
+echo "Database name: $PGDATABASE"
+--
+
+IMPORTANT: Remember to create a default account by expanding the "Administrator Account Settings" section at the bottom of the form!
+
+Click the btn:[Install Gitea] button. The installation should only take a few seconds.
+
+You can now login to your Gitea instance clicking on the btn:[Sign In] button on the top right and using the credentials entered during the installation.
+
+include::partial$app-demo-partials.adoc[tag=whats-next]
+
+include::partial$app-demo-partials.adoc[tag=cleanup]

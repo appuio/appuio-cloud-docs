@@ -31,7 +31,12 @@ xref:appcat:ROOT:exoscale-dbaas/redis/create.adoc[ExoscaleRedis]
 |xref:tutorials/demo-app/takahe.adoc[Takahē]
 |
 xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[ExoscalePostgreSQL] +
-xref:appcat:ROOT:appcat/object-storage/create.adoc[ObjectBucket]
+xref:appcat:ROOT:object-storage/create.adoc[ObjectBucket]
+
+|
+image:logos/gitea.svg[alt="Gitea logo",width=100,height=50,link="https://gitea.io/",window=_blank]
+|xref:tutorials/demo-app/gitea.adoc[Gitea]
+|xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[ExoscaleMySQL]
 
 |===
 
