@@ -61,7 +61,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 ** xref:tutorials/demo-app/odoo.adoc[Odoo]
 ** xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 ** xref:tutorials/demo-app/takahe.adoc[Takahē]
-** xref:tutorials/demo-app/gitea-forgejo.adoc[Gitea or Forgejo]
+** xref:tutorials/demo-app/gitea.adoc[Gitea]
 
 * Databases
 ** xref:how-to/install-postgres-db-helm.adoc[PostgreSQL]

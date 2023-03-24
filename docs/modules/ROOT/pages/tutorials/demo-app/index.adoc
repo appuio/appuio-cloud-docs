@@ -35,8 +35,7 @@ xref:appcat:ROOT:object-storage/create.adoc[ObjectBucket]
 
 |
 image:logos/gitea.svg[alt="Gitea logo",width=100,height=50,link="https://gitea.io/",window=_blank]
-image:logos/forgejo.svg[alt="Forgejo logo",width=100,height=50,link="https://forgejo.org/",window=_blank]
-|xref:tutorials/demo-app/gitea-forgejo.adoc[Gitea or Forgejo]
+|xref:tutorials/demo-app/gitea.adoc[Gitea]
 |xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[ExoscaleMySQL]
 
 |===
