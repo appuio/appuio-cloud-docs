@@ -1,5 +1,3 @@
-include::user:ROOT:partial$shared-nav.adoc[]
-
 .About
 * https://status.appuio.cloud[Status^]
 * https://portal.appuio.cloud[Portal^]
@@ -130,3 +128,7 @@ include::user:ROOT:partial$shared-nav.adoc[]
 * xref:how-to/use-vpa.adoc[]
 * xref:how-to/check-cpu-requests.adoc[]
 * xref:explanation/unit-prefixes.adoc[]
+
+.VSHN Application Catalog
+* https://docs.appcat.ch[User Documentation^]
+* https://products.docs.vshn.ch/products/appcat/index.html[Product Description^]
