@@ -29,7 +29,7 @@ include::example$example-app-objectbucket.yaml[]
 ----
 +
 This will create a PostgreSQL DBaaS instance with default settings, and an object storage bucket.
-See xref:appcat:ROOT:exoscale-dbaas/postgresql/create.adoc[the AppCat docs for PostgreSQL] and xref:appcat:ROOT:appcat/object-storage/create.adoc[the AppCat docs for ObjectBucket] for more information.
+See https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[the AppCat docs for PostgreSQL] and https://docs.appcat.ch/object-storage/create.html[the AppCat docs for ObjectBucket] for more information.
 
 . And we need some other supporting services for Takahē:
 +

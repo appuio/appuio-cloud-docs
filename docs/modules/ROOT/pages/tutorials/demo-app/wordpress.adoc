@@ -26,7 +26,7 @@ include::example$example-app-exo-mysql.yaml[]
 ----
 +
 This will create a MySQL DBaaS instance with default settings.
-See xref:appcat:ROOT:exoscale-dbaas/mysql/create.adoc[the AppCat docs] for more information.
+See https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[the AppCat docs] for more information.
 
 . Then we deploy the application:
 +
