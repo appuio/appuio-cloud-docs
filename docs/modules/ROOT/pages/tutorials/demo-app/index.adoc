@@ -11,32 +11,32 @@ They make use of the VSHN Application Catalog for datastore services.
 
 |image:logos/ghost-blog.png[alt="Ghost logo",width=100,height=50,link="https://ghost.org/",window=_blank]
 |xref:tutorials/demo-app/ghost.adoc[Ghost]
-|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL]
+|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL^]
 
 |image:logos/wordpress.png[alt="WordPress logo",width=150,height=50,link="https://wordpress.org/",window=_blank]
 |xref:tutorials/demo-app/wordpress.adoc[WordPress]
-|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL]
+|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL^]
 
 |image:logos/odoo.svg[alt="Odoo logo",width=150,height=50,link="https://www.odoo.com/",window=_blank]
 |xref:tutorials/demo-app/odoo.adoc[Odoo]
-|https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL]
+|https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL^]
 
 |image:logos/mastodon.svg[alt="Mastodon logo",width=150,height=50,link="https://www.joinmastodon.org/",window=_blank]
 |xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 |
-https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL] +
-https://docs.appcat.ch/exoscale-dbaas/redis/index.html[ExoscaleRedis]
+https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL^] +
+https://docs.appcat.ch/exoscale-dbaas/redis/index.html[ExoscaleRedis^]
 
 |image:logos/takahe.png[alt="Takahe logo",width=50,height=50,link="https://jointakahe.org/",window=_blank]
 |xref:tutorials/demo-app/takahe.adoc[Takahē]
 |
-https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL] +
-https://docs.appcat.ch/object-storage/create.html[ObjectBucket]
+https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[ExoscalePostgreSQL^] +
+https://docs.appcat.ch/object-storage/create.html[ObjectBucket^]
 
 |
 image:logos/gitea.svg[alt="Gitea logo",width=100,height=50,link="https://gitea.io/",window=_blank]
 |xref:tutorials/demo-app/gitea.adoc[Gitea]
-|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL]
+|https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL^]
 
 |===
 

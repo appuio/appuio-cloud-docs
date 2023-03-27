@@ -30,7 +30,7 @@ include::example$example-app-exo-redis.yaml[]
 ----
 +
 This will create a PosgtreSQL and a Redis DBaaS instance with default settings.
-See https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[the AppCat docs for PostgreSQL] and https://docs.appcat.ch/exoscale-dbaas/redis/index.html[the AppCat docs for Redis] for more information.
+See https://docs.appcat.ch/exoscale-dbaas/postgresql/index.html[the AppCat docs for PostgreSQL^] and https://docs.appcat.ch/exoscale-dbaas/redis/index.html[the AppCat docs for Redis^] for more information.
 
 . And we need some other supporting services for Mastodon to be able to work:
 +
