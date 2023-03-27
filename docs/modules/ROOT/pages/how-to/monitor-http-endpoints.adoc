@@ -65,9 +65,9 @@ spec:
 YAML
 ----
 <1> The URL of the Blackbox Exporter may be different if you're using different Helm values or a different release name.
-Check with `kubectl get svc -n ${EXPORTER_NAMESPACE}`.
+Check with `kubectl get svc -n $\{EXPORTER_NAMESPACE}`.
 <2> You can configure a cluster-local probe by providing the name and port of the application's in-cluster service.
-The suffix `.${APP_NAMESPACE}.svc` can be omitted if you've installed the Blackbox Exporter in the same namespace as your application.
+The suffix `.$\{APP_NAMESPACE}.svc` can be omitted if you've installed the Blackbox Exporter in the same namespace as your application.
 <3> You can configure a probe to the public address of your application.
 This is only relevant if you're setting up a probe for an application which is exposed through an `Ingress` or `Route`.
 You may want to explicitly probe both the `https://` and `http://` URLs to test the HTTPS redirect.
