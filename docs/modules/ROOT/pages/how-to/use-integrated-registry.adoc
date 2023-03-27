@@ -66,6 +66,15 @@ This way, you can be sure that your CI pipelines can only push images to the int
 oc project MYPROJECT <1>
 oc create serviceaccount image-pusher
 oc policy add-role-to-user registry-editor -z image-pusher
+oc apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+    name: image-pusher-secret
+    annotations:
+        kubernetes.io/service-account.name: image-pusher
+type: kubernetes.io/service-account-token
+EOF
 ----
 <1> Select the project in which you want to create the service account.
 
@@ -73,7 +82,7 @@ oc policy add-role-to-user registry-editor -z image-pusher
 +
 [source,bash]
 ----
-token=$(oc sa get-token image-pusher)
+token=$(oc get secret/image-pusher-secret -ogo-template='{{.data.token|base64decode}}')
 ----
 
 . Use the extracted token to login to the registry
