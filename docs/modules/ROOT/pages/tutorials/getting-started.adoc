@@ -16,7 +16,7 @@ Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] using your newly 
 
 The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to add your https://portal.appuio.cloud/billingentities/$new?edit=y[billing information, and then to https://portal.appuio.cloud/organizations/$new[create an organization] for yourself and your team.
 
-WARNING: If you don't choose a default organization, you won't be able to create new projects in the OpenShift web console later.
+WARNING: If you don't https://portal.appuio.cloud/user[choose a default organization], you won't be able to create new projects in the OpenShift web console later.
 
 image::getting-started/create-organization.png[]
 
