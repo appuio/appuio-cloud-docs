@@ -10,7 +10,7 @@ video::GwP172nGp1g[youtube]
 
 == Step 2: Login
 
-Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] using your newly created account. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
+Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] using your newly created account.
 
 == Step 3: Add Billing Information and Create an Organization
 
