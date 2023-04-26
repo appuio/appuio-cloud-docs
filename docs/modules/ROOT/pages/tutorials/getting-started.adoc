@@ -4,17 +4,19 @@ This tutorial describes your first steps with APPUiO Cloud, from signup to your 
 
 == Step 1: Create an Account
 
-To create your APPUiO Cloud account, fill the form https://www.appuio.ch/en/offering/cloud/[in this page]. You will receive an e-mail inviting you to create a password for your newly created account.
+To create your APPUiO Cloud account, open the https://appuio.cloud/register[APPUiO Cloud registration] page. Create your account signing up with your current Google, GitHub, or Microsoft account. The video below shows the registration process.
+
+video::GwP172nGp1g[youtube]
 
 == Step 2: Login
 
-Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] following the instructions in your welcome e-mail. You will be asked to provide a password and setup Two-Factor Authentication (2FA) in your account.
+Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] using your newly created account.
 
-== Step 3: Create an Organization
+== Step 3: Add Billing Information and Create an Organization
 
-The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to create an organization for yourself and your team.
+The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to add your https://portal.appuio.cloud/billingentities/$new?edit=y[billing information], and then to https://portal.appuio.cloud/organizations/$new[create an organization] for yourself and your team.
 
-WARNING: If you don't choose a default organization, you won't be able to create new projects in the OpenShift web console later.
+WARNING: If you don't https://portal.appuio.cloud/user[choose a default organization], you won't be able to create new projects in the OpenShift web console later.
 
 image::getting-started/create-organization.png[]
 
@@ -35,7 +37,6 @@ There is a slight delay (usually less than 3 minutes) between the very first log
 During this time you might see error messages like `admission webhook ... denied the request` when creating a new project.
 These errors are temporary and will disappear after the setup on the zone is done.
 =====
-
 
 Follow the "Getting Started" instructions of OpenShift; download the command line tools if you haven't already, create a new project, and deploy your first application in just a few steps.
 
