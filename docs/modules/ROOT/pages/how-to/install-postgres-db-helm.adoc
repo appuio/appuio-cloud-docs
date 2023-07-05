@@ -1,5 +1,11 @@
 = How to install a PostgreSQL via Helm
 
+[INFO]
+====
+PostgreSQL is https://docs.appcat.ch/vshn-managed/postgresql/create.html[available] on cloudscale.ch through VSHN AppCat.
+Batteries and backups included.
+====
+
 This page explains how to install a current PostgreSQL database via the Helm tool on the {product} platform.
 
 This guide is based on the older guide documented here: https://docs.appuio.ch/en/latest/app/helmcharts.html
