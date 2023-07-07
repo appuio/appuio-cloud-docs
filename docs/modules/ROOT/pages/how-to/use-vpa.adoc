@@ -1,4 +1,4 @@
-= How to use Vertical Pod Autoscaler to adjust Pod Resouce levels
+= How to use Vertical Pod Autoscaler to adjust Pod Resource levels
 
 It's complicated to find out good values for xref:how-to/check-cpu-requests.adoc[investigate and resolve fair use ratio violations for a project]. APPUiO Cloud offers the OpenShift https://docs.openshift.com/container-platform/4.11/nodes/pods/nodes-pods-vertical-autoscaler.html[Vertical Pod Autoscaler (VPA)] object to assist DevOps engineers to fine tune the requests and limits of their deployments.
 
