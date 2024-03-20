@@ -125,6 +125,7 @@
 .Scalability and Performance
 * xref:explanation/fair-use-policy.adoc[]
 * xref:references/default-quota.adoc[]
+** xref:how-to/lower-resource-quotas.adoc[]
 * xref:how-to/use-vpa.adoc[]
 * xref:how-to/check-cpu-requests.adoc[]
 * xref:explanation/unit-prefixes.adoc[]

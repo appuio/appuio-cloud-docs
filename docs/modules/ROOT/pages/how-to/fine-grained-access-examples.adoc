@@ -34,6 +34,7 @@ There are multiple relevant RoleBindings in each Namespace:
 * `admin` - allows the user to manage most resources in the Namespace
 * `namespace-owner` - allows the user to manage (including delete) the Namespace itself
 * `monitoring-edit`, `monitoring-edit-probe`, `alert-routing-edit` - allow the user to manage user workload monitoring related resources.
+* `resource-quota-edit` - allow the user to manage ResourceQuota objects.
 ====
 
 . Remove the user from the `mycompany` organization
