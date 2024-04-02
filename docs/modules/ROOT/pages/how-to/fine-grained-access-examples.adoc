@@ -34,6 +34,7 @@ There are multiple relevant RoleBindings in each Namespace:
 * `admin` - allows the user to manage most resources in the Namespace
 * `namespace-owner` - allows the user to manage (including delete) the Namespace itself
 * `monitoring-edit`, `monitoring-edit-probe`, `alert-routing-edit` - allow the user to manage user workload monitoring related resources.
+* `resource-quota-edit` - allow the user to manage ResourceQuota objects.
 ====
 
 . Remove the user from the `mycompany` organization
@@ -127,6 +128,30 @@ PROJECT=mycompany-web-portal
 
 for rb in monitoring-edit monitoring-edit-probe alert-routing-edit; do
 oc -n "${PROJECT}" patch rolebinding "${rb}" -oyaml --patch """
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: ${ORGANIZATION}+${TEAM}
+"""
+done
+----
+
+== Give a team or user permissions to manage resource quotas in a project
+
+. Remove the user from the `organization` group
+
+. Add the user or team which should have permission to manage resource quotas to the role binding `resource-quota-edit` in the required projects.
++
+[source,bash]
+----
+ORGANIZATION=mycompany
+TEAM=developers
+PROJECT=mycompany-web-portal
+
+oc -n "${PROJECT}" patch rolebinding resource-quota-edit -oyaml --patch """
 subjects:
   - apiGroup: rbac.authorization.k8s.io
     kind: Group

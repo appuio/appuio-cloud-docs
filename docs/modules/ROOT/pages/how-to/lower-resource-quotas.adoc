@@ -1,0 +1,48 @@
+= Lowering Resource Quotas
+
+This page describes how you can set up custom ResourceQuota objects in your projects to lower the quota, for example to protect yourself from unexpected cost.
+
+NOTE: It's not possible to increase a project's resource quota beyond the default values using this method.
+Setting a custom ResourceQuota with a higher-than-default value will have no effect.
+
+== Creating a ResourceQuota object
+
+In each project, you'll find existing ResourceQuota objects that manage the default quotas of {product}.
+These are managed by {product} and can't be edited directly.
+In order to lower the quota for a specific resource, a new ResourceQuota object needs to be created, which contains the new, lower limit.
+
+*resourcequota.yaml*
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: core-object-counts
+spec:
+  hard:
+    requests.cpu: "1" 
+    requests.memory: "1Gi"
+----
+
+To apply the resource quota from the file:
++
+[source,bash]
+----
+oc create -f resourcequota.yaml -n <project-name>
+----
+
+For further reference on ResourceQuota objects, refer to the https://kubernetes.io/docs/concepts/policy/resource-quotas/[official documentation].
+
+== Preventing other users from editing the ResourceQuota object
+
+In a shared project, it's often desirable to restrict access to ResourceQuota objects, to prevent others from circumventing the quota by simply increasing it.
+This can be achieved using Kubernetes RBAC.
+
+Permissions to manage ResourceQuota objects are governed by the `resource-quota-edit` RoleBinding, which is created automatically in each project by {product}.
+{product} users may freely edit this RoleBinding to suit their needs.
+By default, every user in the project's organization has permission to manage ResourceQuota objects.
+
+A more detailed how-to for fine-grained access control within a project can be found in xref:how-to/fine-grained-access-examples.adoc[].
+
+
