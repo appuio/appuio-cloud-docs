@@ -37,9 +37,9 @@ For further reference on ResourceQuota objects, refer to the https://kubernetes.
 == Preventing other users from editing the ResourceQuota object
 
 In a shared project, it's often desirable to restrict access to ResourceQuota objects, to prevent others from circumventing the quota by simply increasing it.
-This can be achieved using Kubernetes rbac.
+This can be achieved using Kubernetes RBAC.
 
-Permissions to managing ResourceQuota objects are governed by the `resource-quota-edit` RoleBinding, which is created automatically in each project by {product}.
+Permissions to manage ResourceQuota objects are governed by the `resource-quota-edit` RoleBinding, which is created automatically in each project by {product}.
 {product} users may freely edit this RoleBinding to suit their needs.
 By default, every user in the project's organization has permission to manage ResourceQuota objects.
 
