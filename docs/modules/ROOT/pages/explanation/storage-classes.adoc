@@ -1,10 +1,14 @@
 = Available Storage Classes
 
-This page describes the different storage classes which are available on {product} zones.
+This page describes the different storage classes available on {product} zones.
 
 NOTE: The available storage classes differ depending on the cloud provider hosting the {product} zone.
 
-== cloudscale.ch
+== Block & File storage
+
+Block (RWO) and File (RWX) storage backed persistent volumes are available on all {product} zones:
+
+=== cloudscale.ch
 
 On cloudscale.ch we provide RWO storage using the https://github.com/cloudscale-ch/csi-cloudscale[csi-cloudscale] CSI driver.
 Additionally, we provide RWX storage on CephFS managed via https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
@@ -61,7 +65,7 @@ The APPUiO Managed Storage Cluster doesn't offer volume-level encryption since t
 ====
 
 
-=== Performance
+==== Performance
 
 We show representative performance numbers (IOPS and bandwidth) for each storage class below.
 Please note that we show the best case for write performance here.
@@ -74,7 +78,7 @@ image::storage_performance/cloudscale_read_bandwidth.png[]
 image::storage_performance/cloudscale_write_iops.png[]
 image::storage_performance/cloudscale_write_bandwidth.png[]
 
-== Exoscale
+=== Exoscale
 
 On Exoscale, we provide both RWO and RWX storage using the https://products.docs.vshn.ch/products/appuio/managed/storage_cluster.html[APPUiO Managed Storage Cluster].
 In the APPUiO Managed Storage Cluster, RWO storage is backed by Ceph-RBD, and RWX storage is backed by CephFS.
@@ -108,7 +112,7 @@ The APPUiO Managed Storage Cluster currently doesn't offer volume-level encrypti
 The CephFS CSI driver doesn't support volume-level encryption, and the RBD CSI driver volume encryption is currently not supported by APPUiO Managed Storage Cluster.
 ====
 
-=== Performance
+==== Performance
 
 We show representative performance numbers (IOPS and bandwidth) for each storage class below.
 Please note that we show the best case for write performance here.
@@ -122,3 +126,7 @@ image::storage_performance/exoscale_read_bandwidth.png[]
 
 image::storage_performance/exoscale_write_iops.png[]
 image::storage_performance/exoscale_write_bandwidth.png[]
+
+== Object storage
+
+S3-compatible object storage is available on all {product} zones. See https://docs.appcat.ch/object-storage/create.html[the VSHN Application Catalog documentation for usage and examples].
