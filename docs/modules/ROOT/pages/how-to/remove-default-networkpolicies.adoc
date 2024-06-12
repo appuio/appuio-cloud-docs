@@ -1,9 +1,10 @@
 = Remove Default NetworkPolicies
 
-In every namespace 2 `NetworkPolicies` are created and maintained by {product}:
+In every namespace 2 `NetworkPolicies` and one `CiliumNetworkPolicy` are created and maintained by {product}:
 
-. `allow-from-other-namespaces`: This policy allows the Router and other system components to connect to the pods.
-. `allow-from-same-namespace`: This policy allows connections between pods in the same namespace.
+. `networkpolicy/allow-from-other-namespaces`: This policy allows the Router and other system components to connect to the pods.
+. `networkpolicy/allow-from-same-namespace`: This policy allows connections between pods in the same namespace.
+. `ciliumnetworkpolicy/allow-from-cluster-nodes`: This policy allows cluster nodes to connect to the pods.
 
 NOTE: {product} automatically reverts any changes made in these policy objects.
 
