@@ -52,6 +52,25 @@ spec:
     app: ggircd
 --
 
+Configure a `CiliumNetworkPolicy` to allow access to all workloads in the namespace from outside the cluster:
+
+[source,yaml]
+--
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-from-world
+spec:
+  endpointSelector: {} <1>
+  ingress: <2>
+  - fromEntities:
+    - world
+--
+<1> By configuring a more restrictive `endpoointSelector` you can restrict which workloads are reachable from outside the cluster
+<2> This example policy allows traffic from anywhere outside the cluster (via https://docs.cilium.io/en/latest/security/policy/language/#entities-based[entity] `world`).
+
+TIP: See the https://docs.cilium.io/en/latest/security/policy/[Cilium Network Policy documentation] for a detailed overview of what configuration options are available with `CiliumNetworkPolicy`.
+
 On the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] zone, the cluster automatically assigns a unique external IPv4 address to this service. To see which IPv4 address has been assigned, go to the OpenShift Web Console and navigate to "Networking/Services." The IP is displayed in the field "External IP."
 
 Using the CLI is also possible:
