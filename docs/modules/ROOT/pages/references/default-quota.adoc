@@ -54,12 +54,20 @@ Generally, that's pods created by Jobs, CronJobs, or OpenShift Builds.
 Notably, {product} only applies the default value for `.spec.activeDeadlineSeconds` for pods which don't have a value for that field already.
 Therefore, if you need a job to run longer than the default 30 minutes, simply set `.spec.activeDeadlineSeconds` accordingly in the Job's pod template.
 
-Additionally, the default value for `activeDeadlineSeconds` can be adjusted per namespace by adding annotation `appuio.io/active-deadline-seconds-override` to the namespace.
-
 [NOTE]
 ====
 This mechanism ensures that all pods created by Jobs, CronJobs and OpenShift builds are considered `Terminating` by the Kubernetes resource quota management.
 That means that the `organization-compute-terminating` quota is relevant for pods created by Jobs, CronJobs and OpenShift builds.
+====
+
+The default value for `activeDeadlineSeconds` can be adjusted per namespace by adding annotation `appuio.io/active-deadline-seconds-override` to the namespace.
+The implementation expects that the value of the annotation is provided in seconds as a plain number, for example `appuio.io/active-deadline-seconds-override: 3600` to set the default deadline to 1 hour.
+
+[NOTE]
+====
+If the value of the annotation can't be parsed as a number, "run-once" pods won't be scheduled correctly.
+Please check the events in the namespace or the relevant pod controller for details regarding the error.
+For example, for a CronJob, check the generated Job object for errors.
 ====
 
 == Checking the Quota and Limit values
