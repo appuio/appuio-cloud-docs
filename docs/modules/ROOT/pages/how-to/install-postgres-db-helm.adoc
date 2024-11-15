@@ -2,8 +2,7 @@
 
 [INFO]
 ====
-PostgreSQL is https://docs.appcat.ch/vshn-managed/postgresql/create.html[available] on cloudscale.ch through VSHN AppCat.
-Batteries and backups included.
+PostgreSQL fully managed by VSHN, on every cloudscale.ch cluster, for every workload. Ready in less than 2 minutes. https://docs.appcat.ch/vshn-managed/postgresql/create.html[Start here]
 ====
 
 This page explains how to install a current PostgreSQL database via the Helm tool on the {product} platform.
