@@ -109,7 +109,8 @@
 * xref:how-to/choose-node-class.adoc[]
 
 .Logging
-* xref:how-to/access-logs-through-kibana.adoc[]
+* xref:tutorials/logging/getting-started.adoc[Getting Started]
+* xref:tutorials/logging/query-logs.adoc[]
 
 .Monitoring
 * xref:tutorials/monitoring/index.adoc[Getting Started]
