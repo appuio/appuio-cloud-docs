@@ -1,4 +1,10 @@
 = Query application logs
+:page-aliases: how-to/access-logs-through-kibana.adoc
+
+[NOTE]
+====
+Kibana is deprecated and has been replaced with LokiStack.
+====
 
 Open the console in the `Administrator` view and switch to `Logs` in the `Observe` section.
 You can query the logs using Grafanas https://grafana.com/docs/loki/latest/logql[LogQL].
