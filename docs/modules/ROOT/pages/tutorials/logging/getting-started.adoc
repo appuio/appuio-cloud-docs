@@ -1,6 +1,6 @@
-= Getting started with logging: Lokistack
+= Getting started with logging
 
-This tutorial explains how to view the logs of an application on Openshift.
+This tutorial explains how to view the logs of an application on the OpenShift Web Console with the LokiStack.
 
 
 == Requirements
