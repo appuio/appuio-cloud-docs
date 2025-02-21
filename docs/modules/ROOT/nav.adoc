@@ -93,6 +93,7 @@
 
 .Registry
 * xref:how-to/use-integrated-registry.adoc[]
+* xref:how-to/setup-image-pull-secret.adoc[]
 
 .DevOps and CI/CD
 * xref:how-to/use-oc-cli.adoc[oc]
