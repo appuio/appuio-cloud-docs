@@ -63,6 +63,8 @@
 
 * Databases
 ** xref:how-to/install-postgres-db-helm.adoc[PostgreSQL]
+** xref:how-to/install-mariadb.adoc[MariaDB]
+** xref:how-to/install-redis.adoc[Redis]
 
 * Migrating from APPUiO Public
 ** xref:tutorials/migration.adoc[Tutorial]

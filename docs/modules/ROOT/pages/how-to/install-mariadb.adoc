@@ -1,0 +1,3 @@
+= Install MariaDB on {product}
+
+Do you want a managed MariaDB that includes Backups, Monitoring, Updates, and optionally 24x7 Support? Check out the https://products.vshn.ch/appcat/mariadb.html[MariaDB by VSHN product description^] and https://docs.appcat.ch/vshn-managed/mariadb/create.html[technical documentation including how to instantiate on {product}^].
