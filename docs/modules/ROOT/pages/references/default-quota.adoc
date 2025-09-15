@@ -88,4 +88,4 @@ oc -n $mynamespace describe limits organization <3>
 +
 TIP: The `oc describe quota` command also shows you how much of each quota you're currently consuming (column "Used").
 
-* Check the default values in the https://github.com/appuio/component-appuio-cloud/blob/master/class/defaults.yml#L37[Commodore Component for APPUiO Cloud]
+* Check the default values in the https://github.com/appuio/component-appuio-cloud/blob/master/class/defaults.yml#L206[Commodore Component for APPUiO Cloud]
