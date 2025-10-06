@@ -1,40 +1,65 @@
 = Remove Default NetworkPolicies
 
+[TIP]
+====
+Also see https://hub.syn.tools/networkpolicy/how-tos/using-customizing-policies.html[Using and customizing policies] if you have a VSHN Managed OpenShift cluster.
+====
+
 In every namespace 2 `NetworkPolicies` and one `CiliumNetworkPolicy` are created and maintained by {product}:
 
-. `networkpolicy/allow-from-other-namespaces`: This policy allows system components such as the monitoring stack to connect to the pods.
-. `networkpolicy/allow-from-same-namespace`: This policy allows connections between pods in the same namespace.
-. `ciliumnetworkpolicy/allow-from-cluster-nodes`: This policy allows the OpenShift ingress router and other system components that run in the host network namespace to connect to the pods.
+. `networkpolicy/syn-internal-set-base`: This policy allows system components such as the monitoring stack to connect to the pods.
+. `networkpolicy/syn-set-default-allow-intra-namespace`: This policy allows connections between pods in the same namespace.
+. `ciliumnetworkpolicy/syn-internal-set-base`: This policy allows system components such as kubelet probes.
 
 NOTE: {product} automatically reverts any changes made in these policy objects.
 
 If you have the need to customize the default policies, you can remove them and provide your own policies.
 You can disable the automatic network policy management of {product} by adding labels to a namespace as shown below.
 
+== Keeping the system required base policy
+
+[TIP]
+====
+This is the recommended setting if you want to customize the default policies.
+====
+
 [source,yaml]
 ----
 apiVersion: v1
 kind: Namespace
 metadata:
-  annotations:
-    openshift.io/description: ""
-    openshift.io/display-name: My cool project
-    openshift.io/requester: my-username
+  labels:
+    appuio.io/organization: my-company
+    kubernetes.io/metadata.name: my-namespace
+    set.network-policies.syn.tools/base: '' <1>
+  name: my-namespace
+----
+<1> Adding this label removes the default intra-namespace policy, but keeps the base policy that allows system components to connect to the pods.
+This is the recommended setting if you want to customize the default policies.
+
+== Removing all policies
+
+[WARNING]
+====
+It's highly recommended to keep the base policy that allows system components to connect to the pods.
+
+Base policies might change over time and if you substitute them with your own you might inadvertently break namespace access during future updates.
+====
+
+[WARNING]
+====
+Unless you've already added a network policy on your own this will effectively allow all traffic in and out of the namespace and can be compared to switching off the firewall for the namespace.
+====
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
   labels:
     appuio.io/organization: my-company
     kubernetes.io/metadata.name: my-namespace
     network-policies.syn.tools/no-defaults: 'true' <1>
-    network-policies.syn.tools/purge-defaults: 'true' <2>
   name: my-namespace
 ----
-<1> Add this label to prevent {product} from reverting changes to the default network policies.
-Note that {product} won't recreate the default network policies (for example if they're accidentally deleted) if this label is set to `true`.
-Also note that {product} won't create the default network policies if this label is set to `true` when the namespace is created.
-<2> Add this label only if you want to completely remove the default network policies.
-Note that {product} will remove any network policy which matches the name of one of the default policies if this label is set to `true`.
-
-[WARNING]
-====
-Removing or modifying the default policies from a namespace without having appropriate replacement policies in place will prevent system components (such as the OpenShift Router) from connecting to applications in the namespace.
-Only do this if you know what you are doing.
-====
+<1> Adding this label purges all default network policies from the namespace.
