@@ -38,6 +38,11 @@ image:logos/gitea.svg[alt="Gitea logo",width=100,height=50,link="https://gitea.i
 |xref:tutorials/demo-app/gitea.adoc[Gitea]
 |https://docs.appcat.ch/exoscale-dbaas/mysql/index.html[ExoscaleMySQL^]
 
+|
+image:logos/nextcloud.svg[alt="Nextcloud logo",width=100,height=50,link="https://nextcloud.com/",window=_blank]
+|xref:tutorials/demo-app/appcat-nextcloud.adoc[Nextcloud]
+|https://docs.appcat.ch/vshn-managed/nextcloud/index.html[Cloudscale Nextcloud^]
+
 |===
 
 Thanks to https://bitnami.com/[Bitnami^] for providing very robust application images, which we're making use of in most of our examples.

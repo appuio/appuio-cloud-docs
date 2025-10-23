@@ -60,6 +60,7 @@
 ** xref:tutorials/demo-app/mastodon.adoc[Mastodon]
 ** xref:tutorials/demo-app/takahe.adoc[Takahē]
 ** xref:tutorials/demo-app/gitea.adoc[Gitea]
+** xref:tutorials/demo-app/appcat-nextcloud.adoc[Nextcloud]
 
 * Databases
 ** xref:how-to/install-postgres-db-helm.adoc[PostgreSQL]

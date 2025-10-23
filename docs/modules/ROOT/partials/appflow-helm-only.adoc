@@ -1,0 +1,14 @@
+[#appflow-helm]
+== Create application and environment with link:++https://www.vshn.ch/en/solutions/appflow/[Appflow]++[AppFlow]
+
+Navigate to https://control.vshn.net/appflow/apps[AppFlow] on the https://control.vshn.net/[VSHN Portal] and click on `Create App with Environment`.
+
+.AppFlow create App
+image::how-to/appflow/appflow-create-app.png[AppFlow create App]
+
+Then you should see the created application with its environment, in this case, `prod`.
+
+.AppFlow download pipeline and CI variables
+image::how-to/appflow/appflow-download-pipeline-secrets.png[AppFlow setup CI]
+<1> Download GitHub workflow
+<2> Show CI variables

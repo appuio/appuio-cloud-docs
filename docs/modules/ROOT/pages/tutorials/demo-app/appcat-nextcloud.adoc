@@ -1,0 +1,128 @@
+= Deploy https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud] to {product}
+
+image:logos/nextcloud.svg[role="related thumb right",alt="Service logo nextcloud",width=120,height=120] This tutorial explains how to run https://nextcloud.com/[Nextcloud] with link:++https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud]++[VSHNNextcloud] on {product} using the pipeline from https://www.vshn.ch/en/solutions/appflow/[Appflow].
+
+== Requirements
+
+This tutorial requires an {product}, a https://github.com[GitHub] account.
+
+== Add the https://products.vshn.ch/appcat/index.html[VSHN Application Catalog] claim
+
+To provision Nextcloud, we need a https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud] claim. The documentation for VSHNNextcloud can be found here: https://docs.appcat.ch/vshn-managed/nextcloud/index.html[Nextcloud by VSHN].
+We start with a very simple setup:
+
+.VSHNNextcloud
+[source,yaml]
+----
+apiVersion: vshn.appcat.vshn.io/v1
+kind: VSHNNextcloud
+metadata:
+  name: appcat-demo-nextcloud-appuio-simple # <1>
+  namespace: vshn2-demo-nextcloud-appuio-simple-prod # <2>
+spec:
+  parameters:
+    service:
+      fqdn:
+      - appuio-nextcloud-demo.apps.cloudscale-lpg-2.appuio.cloud # <3>
+      version: "32" # <4>
+    size: # <5>
+      plan: standard-2
+  writeConnectionSecretToRef:
+    name: nextcloud-creds # <6>
+----
+<1> Instance name
+<2> The namespace where the object will be created
+<3> Your fully qualified domain name. You should be able to change the DNS record for this domain.
+<4> Nextcloud version
+<5> Size of the Nextcloud instance. See https://docs.appcat.ch/vshn-managed/nextcloud/plans.html[Plans and Sizing] for more information.
+<6> Secret where the connection details are provisioned. No secret with this name should exist in this namespace before creation.
+
+== Put the claim under version control
+
+To keep track of what's deployed, we put this claim into our Git repository.
+For that, you need to create a https://github.com/new[new Git repository] on GitHub.
+Now, we store the claim from before under `helm/templates/nextcloud.yaml`.
+You can see the result in the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm/templates[example repository].
+We also need some boilerplate for Helm; you can also find this in the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm[example repository].
+
+== Deploy the claim
+
+If you are a VSHN customer, you can generate the pipeline to deploy Nextcloud in
+xref:#appflow-helm[AppFlow].
+
+Otherwise, you can copy the `.github/workflows` directory from the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/.github[example repository] and
+adapt it where needed.
+For the pipeline to work, you need to add a kubeconfig to your pipeline.
+First, you need to make sure you have the `oc` utility. You can download it from
+the https://console.cloudscale-lpg-2.appuio.cloud/command-line-tools[OpenShift console command line tools].
+Then you can show the command to create your kubeconfig in the https://oauth-openshift.apps.cloudscale-lpg-2.appuio.cloud/oauth/token/display?code=sha256~xhC3o8qafyrrISMXZhKRt9uhIf-687n7LCHL6jpYl5k&state=[OpenShift console].
+
+.Generate kubeconfig for pipeline
+[source,shell]
+----
+KUBECONFIG=./config-for-pipeline
+oc login ...
+cat $KUBECONFIG
+----
+
+Now you need to add this kubeconfig to the GitHub *secrets*. You find them under `Settings → Environments → choose environment → (+) Add secret`. In this case, the environment name is `prod`.
+
+We now have the pipeline and a minimal claim. But there are some steps missing
+to make it production ready.
+
+== Make it Production Ready
+
+To make Nextcloud production ready, you need to configure the following settings:
+
+.VSHNNextcloud: encrypted disk
+[source,yaml]
+----
+apiVersion: vshn.appcat.vshn.io/v1
+kind: VSHNNextcloud
+metadata:
+  name: appcat-demo-nextcloud-appuio-simple
+  namespace: vshn2-demo-nextcloud-appuio-simple-prod
+spec:
+  parameters:
+    backup:
+      retention:
+        keepDaily: 6 # <1>
+    instances: 1 # <2>
+    maintenance: # <3>
+      dayOfWeek: wednesday
+      timeOfDay: '23:42:18'
+    monitoring:
+      email: your@email.com # <4>
+    service:
+      fqdn:
+        - appuio-nextcloud-demo.apps.cloudscale-lpg-2.appuio.cloud
+      version: "32"
+      postgreSQLParameters:
+        encryption:
+          enabled: true
+        service:
+          majorVersion: "17" # <5>
+        monitoring:
+          email: your@email.com # <6>
+        instances: 1 # <7>
+    size:
+      plan: standard-2
+      disk: 16Gi # <8>
+  writeConnectionSecretToRef:
+    name: nextcloud-creds
+----
+<1> The number of daily backups to keep.
+<2> Set to a value greater than 1 if you want to run Nextcloud with High Availability and update it without downtime.
+<3> When the maintenance job should run.
+<4> The email address where user alerts for Nextcloud should be sent.
+<5> The major version for the PostgreSQL instance. Start with the most recent major version.
+<6> The email address where user alerts for the PostgreSQL instance are sent.
+<7> Set to a value greater than 1 if you want to run PostgreSQL with High Availability and update it without downtime.
+<8> The desired disk space for your Nextcloud instance. This can only be increased later.
+
+After you have configured all these settings, you can deploy your Nextcloud.
+You will find the credentials to log in to your Nextcloud in the secret you specified previously.
+You can retrieve this secret using the OpenShift console under https://console.cloudscale-lpg-2.appuio.cloud/k8s/all-namespaces/core~v1~Secret[Workloads > Secret] (Here for cloudscale).
+If you used the provided link, you will need to choose the correct project in the dropdown menu.
+
+include::partial$appflow-helm-only.adoc[AppFlow]
