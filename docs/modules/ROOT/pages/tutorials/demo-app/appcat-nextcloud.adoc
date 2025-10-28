@@ -1,14 +1,18 @@
 = Deploy https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud] to {product}
 
-image:logos/nextcloud.svg[role="related thumb right",alt="Service logo nextcloud",width=120,height=120] This tutorial explains how to run https://nextcloud.com/[Nextcloud] with link:++https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud]++[VSHNNextcloud] on {product} using the pipeline from https://www.vshn.ch/en/solutions/appflow/[Appflow].
+image:logos/nextcloud.svg[role="related thumb right",alt="Service logo nextcloud",width=120,height=120]
+This tutorial explains how to run https://nextcloud.com/[Nextcloud]
+with link:++https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud]++[VSHNNextcloud] on {product} using the pipeline from https://github.com/vshn/appflow-demo[Appflow].
 
 == Requirements
 
-This tutorial requires an {product}, a https://github.com[GitHub] account.
+* Access to {product}
+* A https://github.com[GitHub] account
 
 == Add the https://products.vshn.ch/appcat/index.html[VSHN Application Catalog] claim
 
-To provision Nextcloud, we need a https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud] claim. The documentation for VSHNNextcloud can be found here: https://docs.appcat.ch/vshn-managed/nextcloud/index.html[Nextcloud by VSHN].
+To provision Nextcloud, we need a https://products.vshn.ch/appcat/nextcloud.html[VSHNNextcloud] claim.
+The documentation for VSHNNextcloud can be found here: https://docs.appcat.ch/vshn-managed/nextcloud/index.html[Nextcloud by VSHN].
 We start with a very simple setup:
 
 .VSHNNextcloud
@@ -32,49 +36,66 @@ spec:
 ----
 <1> Instance name
 <2> The namespace where the object will be created
-<3> Your fully qualified domain name. You should be able to change the DNS record for this domain.
+<3> Your fully qualified domain name.
+You should be able to change the DNS record for this domain.
 <4> Nextcloud version
-<5> Size of the Nextcloud instance. See https://docs.appcat.ch/vshn-managed/nextcloud/plans.html[Plans and Sizing] for more information.
-<6> Secret where the connection details are provisioned. No secret with this name should exist in this namespace before creation.
+<5> Size of the Nextcloud instance.
+See https://docs.appcat.ch/vshn-managed/nextcloud/plans.html[Plans and Sizing]
+for more information.
+<6> Secret where the connection details are provisioned.
+No secret with this name should exist in this namespace before creation.
 
 == Put the claim under version control
 
 To keep track of what's deployed, we put this claim into our Git repository.
-For that, you need to create a https://github.com/new[new Git repository] on GitHub.
+For that, you need to create
+a https://github.com/new[new Git repository] on GitHub.
 Now, we store the claim from before under `helm/templates/nextcloud.yaml`.
-You can see the result in the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm/templates[example repository].
-We also need some boilerplate for Helm; you can also find this in the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm[example repository].
+You can see the result in the
+https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm/templates[example repository].
+We also need some boilerplate for Helm;
+you can also find this in the
+https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/helm[example repository].
 
 == Deploy the claim
 
-If you are a VSHN customer, you can generate the pipeline to deploy Nextcloud in
-xref:#appflow-helm[AppFlow].
+If you are a VSHN customer, you can generate the pipeline to deploy Nextcloud in xref:#appflow-helm[AppFlow].
 
-Otherwise, you can copy the `.github/workflows` directory from the https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/.github[example repository] and
-adapt it where needed.
+Otherwise, you can copy the `.github/workflows` directory from the
+https://github.com/vshn/appcat-demo-nextcloud-appuio-simple/tree/main/.github[example repository]
+and adapt it where needed.
 For the pipeline to work, you need to add a kubeconfig to your pipeline.
-First, you need to make sure you have the `oc` utility. You can download it from
-the https://console.cloudscale-lpg-2.appuio.cloud/command-line-tools[OpenShift console command line tools].
-Then you can show the command to create your kubeconfig in the https://oauth-openshift.apps.cloudscale-lpg-2.appuio.cloud/oauth/token/display?code=sha256~xhC3o8qafyrrISMXZhKRt9uhIf-687n7LCHL6jpYl5k&state=[OpenShift console].
+First, you need to make sure you have the `oc` utility.
+You can download it from th
+https://console.cloudscale-lpg-2.appuio.cloud/command-line-tools[OpenShift console command line tools].
 
 .Generate kubeconfig for pipeline
 [source,shell]
 ----
 KUBECONFIG=./config-for-pipeline
-oc login ...
+oc login --web --server https://api.${zone}.cloud:6443
 cat $KUBECONFIG
 ----
 
+You can find the exact URL of your chosen zone in the
+https://portal.appuio.cloud/zones[{product} Portal].
+
+This token is only valid for a short time.
+To create a kubeconfig with a longer lifetime you can either use
+xref:#appflow-helm[AppFlow]
+or follow the
+https://docs.appuio.cloud/user/how-to/use-github-actions.html#_4_configure_secrets[DevOps and CI/CD docs for github].
+
 Now you need to add this kubeconfig to the GitHub *secrets*. You find them under `Settings → Environments → choose environment → (+) Add secret`. In this case, the environment name is `prod`.
+The kubeconfig must be stored as secret with the name `KUBECONFIG_PROD`.
 
-We now have the pipeline and a minimal claim. But there are some steps missing
-to make it production ready.
+We now have the pipeline and a minimal claim. But there are some steps missing.
 
-== Make it Production Ready
+== Best Practices
 
-To make Nextcloud production ready, you need to configure the following settings:
+To follow best practices for your Nextcloud deployment, you need to configure the following settings:
 
-.VSHNNextcloud: encrypted disk
+.VSHNNextcloud: best practice
 [source,yaml]
 ----
 apiVersion: vshn.appcat.vshn.io/v1
@@ -122,7 +143,11 @@ spec:
 
 After you have configured all these settings, you can deploy your Nextcloud.
 You will find the credentials to log in to your Nextcloud in the secret you specified previously.
-You can retrieve this secret using the OpenShift console under https://console.cloudscale-lpg-2.appuio.cloud/k8s/all-namespaces/core~v1~Secret[Workloads > Secret] (Here for cloudscale).
+It takes a while until the VSHNNextcloud is ready
+and it may take even longer until the secret with the credentials is available.
+You can retrieve this secret using the OpenShift console under
+https://console.cloudscale-lpg-2.appuio.cloud/k8s/all-namespaces/core%7Ev1%7ESecret[Workloads > Secret]
+(Here for cloudscale).
 If you used the provided link, you will need to choose the correct project in the dropdown menu.
 
 include::partial$appflow-helm-only.adoc[AppFlow]

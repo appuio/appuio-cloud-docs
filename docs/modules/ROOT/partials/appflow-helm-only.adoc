@@ -1,14 +1,31 @@
 [#appflow-helm]
-== Create application and environment with link:++https://www.vshn.ch/en/solutions/appflow/[Appflow]++[AppFlow]
+== Create an application and environment with link:++https://github.com/vshn/appflow-demo[Appflow]++[AppFlow]
 
 Navigate to https://control.vshn.net/appflow/apps[AppFlow] on the https://control.vshn.net/[VSHN Portal] and click on `Create App with Environment`.
 
-.AppFlow create App
-image::how-to/appflow/appflow-create-app.png[AppFlow create App]
+.AppFlow: Create App
+image::how-to/appflow/appflow-create-app-part1.png[AppFlow create App 1]
+- Name of your application: The name of your application.
+This will be the first part of the namespace name that will be created.
+- Name of environment: The name of the environment.
+This will be the second part of the namespace name that will be created.
+- Cluster: The cluster you want to deploy to.
+- APPUiO Organization: The APPUiO Organization you want to use for
+the deployment.
 
-Then you should see the created application with its environment, in this case, `prod`.
+image::how-to/appflow/appflow-create-app-part2.png[AppFlow create App 2]
+Important settings here are:
 
-.AppFlow download pipeline and CI variables
+- Branches to build: Deploy only the main branch. We'll keep it simple
+and deploy only the main branch to the single prod environment.
+- Deploy using helm-chart: We use a Helm chart to deploy the resources.
+To allow for other files in the repository,
+the Helm chart is located in the `helm` directory.
+- Automatic deployment: A push to the main branch should trigger the deployment of changes.
+
+You should then see the created application with its environment, in this case, `prod`.
+
+.AppFlow: Download pipeline and CI variables
 image::how-to/appflow/appflow-download-pipeline-secrets.png[AppFlow setup CI]
 <1> Download GitHub workflow
 <2> Show CI variables
