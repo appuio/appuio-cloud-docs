@@ -154,7 +154,9 @@ We recommend to fall back to `GET`.
 [NOTE]
 ====
 You need to substitute `$CA`, `$TOKEN`, and `$\{APP_NAMESPACE}` with the values of the environment variables set earlier.
-You can easily display their contents using `echo`.
+You can easily display their contents using `printf "%s" "$CA"`.
+
+Note that using `echo` to output variables might mangle line breaks and could lead to the configuration failing.
 
 Make sure to not use quotes for the custom query parameters.
 Using `namespace="my-app"` will result in permission errors, use `namespace=my-app`.
