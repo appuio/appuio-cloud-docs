@@ -45,7 +45,8 @@ GITLAB_AGENT_TOKEN=<the-token> <1>
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
     --set config.token=${GITLAB_AGENT_TOKEN} \
     --set config.kasAddress=wss://kas.gitlab.com \
-    --set rbac.create=false
+    --set rbac.create=false \
+    --set config.operational_container_scanning.enabled=false
 --
 <1> The GitLab Agent's access token
 
