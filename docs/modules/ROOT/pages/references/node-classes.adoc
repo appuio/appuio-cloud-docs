@@ -31,3 +31,10 @@ This gives you consistent performance but will cost you more (see https://produc
 +
 The plus node class is probably the right choice for your production frontends, database and other applications sensitive to latency.
 
+night::
++
+Night nodes are plus nodes where workload interruptions during (European) office hours are limited as much as possible.
+Regular node maintenance and any other non-emergency node changes are carried out after 22:00 (CET/CEST).
+Night maintenance comes at a premium (see https://products.docs.vshn.ch/products/appuio/cloud/pricing.html[pricing]).
++
+Night nodes are useful for production applications that require minimal downtime but can't be run with multiple replicas in high availability (HA) fashion.
