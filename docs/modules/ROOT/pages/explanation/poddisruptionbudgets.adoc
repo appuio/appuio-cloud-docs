@@ -1,0 +1,41 @@
+= Pod Disruption Budgets (PDB)
+
+Pod disruption budgets allow users to configure how many voluntary disruptions (pod restarts) an application can tolerate if all pods are healthy.
+
+While pod disruption budgets allow users to ensure that highly available applications run smoothly on Kubernetes, some aspects of PDBs tend to impact operation of the cluster itself.
+
+The VSHN Managed OpenShift documentation on https://docs.appuio.ch/managed-openshift/workload/poddisruptionbudgets.html[pod disruption budgets^] also applies to {product}.
+
+The rest of this document discusses deviations from the VSHN Managed OpenShift documentation for {product}.
+
+== Impact on Maintenance
+
+In contrast to a dedicated VSHN Managed OpenShift cluster, {product} uses "node force drain" for all customer workloads in order to minimize impact of badly configured PDBs on maintenance of the shared platform.
+
+The node force drain on {product} is configured with a grace period of 7 minutes for each node.
+Any pods which weren't evicted from the node after the grace period are deleted with an API call that's equivalent to `kubectl delete pod`.
+This API call ignores PDBs, but respects the pod's termination policies, such as `spec.terminationGracePeriodSeconds`.
+
+There's a second grace period of 5 minutes for pods that are deleted during the force drain.
+Pods which get deleted but don't terminate within this second grace period are deleted with an API call that's equivalent to `kubectl delete pod --now`.
+This API call ignores PDBs and the pod's termination policies.
+
+== VSHN recommended practices for user-defined PDBs
+
+The practices documented in the [VSHN Managed OpenShift documentation] also apply for {product}.
+While PDBs can't fully block node drains on {product}, we still recommend that you try to define well-behaved PDBs.
+
+The practices can be summarized as follows:
+
+* Check PDBs defined in Helm charts, especially when deploying a single replica instance of an application with Helm
+* When creating PDBs by hand, prefer `spec.maxUnavailable` with a value greater than 0 over `spec.minAvailable`.
++
+IMPORTANT: Never create a PDB with `spec.maxUnavailable=0` or with `spec.minAvailable` equal to `spec.replicas` of the deployment targeted by the PDB.
+* Always set `spec.unhealthyPodEvictionPolicy=AlwaysAllow` for test and development environments.
+This ensures that pods in `CrashLoopBackOff` don't block node drains.
+
+== References
+
+* https://docs.appuio.ch/managed-openshift/workload/poddisruptionbudgets.html[VSHN Managed OpenShift documentation on PDBs]
+* https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#pod-disruption-budgets[Kubernetes pod disruption budgets]
+* https://kubernetes.io/docs/tasks/run-application/configure-pdb[Specifying a Disruption Budget for your Application]
