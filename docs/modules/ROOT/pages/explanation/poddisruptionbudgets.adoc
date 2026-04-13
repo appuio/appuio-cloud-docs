@@ -22,7 +22,7 @@ This API call ignores PDBs and the pod's termination policies.
 
 == VSHN recommended practices for user-defined PDBs
 
-The practices documented in the [VSHN Managed OpenShift documentation] also apply for {product}.
+The practices documented in the https://docs.appuio.ch/managed-openshift/workload/poddisruptionbudgets.html#_vshn_recommended_practices_for_user_defined_pdbs[VSHN Managed OpenShift documentation] also apply for {product}.
 While PDBs can't fully block node drains on {product}, we still recommend that you try to define well-behaved PDBs.
 
 The practices can be summarized as follows:
