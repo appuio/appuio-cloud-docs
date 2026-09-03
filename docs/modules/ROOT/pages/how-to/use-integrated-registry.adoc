@@ -105,4 +105,4 @@ If you want to implement more fine-grained control for registry access in your n
 Please be aware that users with role `edit` or `admin` for a namespace are granted both the `registry-viewer` and `registry-editor` roles.
 Additionally, users with role `view` for a namespace are granted the `registry-viewer` role.
 
-See the https://docs.openshift.com/container-platform/latest/registry/accessing-the-registry.html#prerequisites[OpenShift docs] for details on how to configure those roles for users.
+See the https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/registry/accessing-the-registry[OpenShift docs] for details on how to configure those roles for users.
