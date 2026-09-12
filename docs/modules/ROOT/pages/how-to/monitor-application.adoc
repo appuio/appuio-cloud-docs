@@ -153,7 +153,7 @@ YAML
 <1> The port on which the application provides the metrics endpoint, defined in the `Service` resource
 <2> A selector that points to the service of the application
 +
-TIP: Consult the https://docs.openshift.com/container-platform/4.11/rest_api/monitoring_apis/servicemonitor-monitoring-coreos-com-v1.html[ServiceMonitor API] for more configuration options.
+TIP: Consult the https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/monitoring_apis/servicemonitor-monitoring-coreos-com-v1[ServiceMonitor API] for more configuration options.
 
 . View the collected metrics
 +

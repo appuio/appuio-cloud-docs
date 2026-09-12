@@ -12,4 +12,4 @@ include::partial$login-in-terminal.adoc[]
 == Get help
 
 Once you have the oc client binary on your computer and have logged in to OpenShift, you can type `oc help` to get information what you can do with it.
-The upstream documentation also provides good help: https://docs.openshift.com/container-platform/4.8/cli_reference/openshift_cli/getting-started-cli.html[Getting started with the OpenShift CLI].
+The upstream documentation also provides good help: https://docs.redhat.com/en/documentation/openshift_container_platform/4.8/html/cli_tools/openshift-cli-oc#cli-getting-started[Getting started with the OpenShift CLI].
