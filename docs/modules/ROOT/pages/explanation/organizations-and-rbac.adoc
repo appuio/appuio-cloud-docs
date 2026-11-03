@@ -25,7 +25,7 @@ Nothing will stop you from removing access to created projects.
 
 == Organization Membership
 
-{product} provides self-management of organizations and organization membership through the https://portal.appuio.cloud/organizations[APPUiO Cloud Webportal].
+{product} provides self-management of organizations and organization membership through the https://portal.appuio.cloud/organizations[APPUiO Webportal].
 
 == Transfer Projects
 

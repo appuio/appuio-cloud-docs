@@ -85,7 +85,7 @@ master:deploy:
 <1> This will print in the CI/CD console of the job runner the list of available contexts, which might be helpful in case of a failure.
 <2> The `username/project-name` value must match those of your project; the `appuio-cloud` name corresponds to the file `.gitlab/agents/appuio-cloud/config.yaml` created previously.
 
-.GitLab connected to GitLab Agent on APPUiO Cloud
+.GitLab connected to GitLab Agent on APPUiO
 image::how-to/gitlab-agent.png[]
 
 === Reusing the GitLab Agent from other Projects

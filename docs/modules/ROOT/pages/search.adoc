@@ -1,5 +1,5 @@
 = Search
-:description: Search through the APPUiO Cloud User Documentation.
+:description: Search through the APPUiO User Documentation.
 :keywords: site search
 
 // This page intentionally left blank.

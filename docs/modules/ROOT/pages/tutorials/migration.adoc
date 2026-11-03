@@ -1,15 +1,15 @@
-= Migration Tutorial: From APPUiO Public to APPUiO Cloud
+= Migration Tutorial: From APPUiO Public to APPUiO
 
-This document provides an overview of all the tasks required to move your applications from APPUiO Public to APPUiO Cloud.
+This document provides an overview of all the tasks required to move your applications from APPUiO Public to APPUiO.
 
 == Main Differences
 
-Before starting the migration of your applications from APPUiO Public to APPUiO Cloud, please check the xref:explanation/differences-to-public.adoc[document explaining all the major differences] between both platforms.
+Before starting the migration of your applications from APPUiO Public to APPUiO, please check the xref:explanation/differences-to-public.adoc[document explaining all the major differences] between both platforms.
 
 == Removed API versions
 
 Several Kubernetes API versions have been removed since Kubernetes 1.11, on which version APPUiO Public was based on.
-This means that manifests from APPUiO Public can be exported, but need to be updated before being applied on APPUiO Cloud.
+This means that manifests from APPUiO Public can be exported, but need to be updated before being applied on APPUiO.
 Often just the API version or group of an object has to be changed.
 For some new API versions however, a different structure or other default values apply.
 This has to be considered, when changing the API version in a manifest object.
@@ -88,7 +88,7 @@ Those tools help in checking this rapidly:
 
 == DNS
 
-Customers transferring their domains from APPUiO Public to APPUiO Cloud should be aware of the following:
+Customers transferring their domains from APPUiO Public to APPUiO should be aware of the following:
 
 . Lowering your TTLs (Time To Live) 24 hours ahead of time will reduce the amount of time that your change takes to propagate.
   You can limit downtime by lowering that value, so the caching servers will check back more frequently.
@@ -105,7 +105,7 @@ IMPORTANT: The ingress IP address isn't guaranteed to be stable.
 
 == Let's Encrypt
 
-In APPUiO Cloud only `Ingress` and `certificates.cert-manager.io/v1` objects can request certificates.
+In APPUiO only `Ingress` and `certificates.cert-manager.io/v1` objects can request certificates.
 
 IMPORTANT: It's not possible to request Let's Encrypt certificates in `Route` objects.
 
@@ -137,12 +137,12 @@ spec:
     - ${ROUTE_HOST}
     secretName: ${ROUTE_HOST}
 --
-<1> Annotation providing automatic provisioning of certificates on APPUiO Cloud.
+<1> Annotation providing automatic provisioning of certificates on APPUiO.
 
 You can find more information in the xref:how-to/getting-a-certificate.adoc[Getting a Certificate through Let’s Encrypt] page.
 
 For reference, it was possible to configure TLS certificates in `Route` objects in APPUiO Public, using a manifest similar to the following.
-This is no longer valid in APPUiO Cloud.
+This is no longer valid in APPUiO.
 
 [source,yaml]
 --
@@ -171,12 +171,12 @@ spec:
 
 == Storage
 
-APPUiO Cloud has different requirements regarding storage.
+APPUiO has different requirements regarding storage.
 This section provides more information.
 
 === Access the RWO volumes from different pods
 
-When migrating your volumes to APPUiO Cloud, please follow these guidelines:
+When migrating your volumes to APPUiO, please follow these guidelines:
 
 . The deployment strategy must change from `RollingUpdate` to `Recreate`, because mounting the volume at different nodes simultaneously isn't possible, or at least not with commonly used file systems, such as https://en.wikipedia.org/wiki/Ext4[ext4].
   https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[This page] in the Kubernetes documentation provides more information about this.
@@ -213,7 +213,7 @@ The following sections provide information about each strategy.
 
 ### Migration with `oc rsync`
 
-The first variant to migrate your application storage from APPUiO Public to APPUiO Cloud consists in using `oc rsync`.
+The first variant to migrate your application storage from APPUiO Public to APPUiO consists in using `oc rsync`.
 Rsync is an often used and well tested tool synchronizing files between systems.
 The manifests below create the required objects on the destination side.
 If you are using your own, at least a pod must be running with the RWO volume mounted, the `oc rsync` can connect to.
@@ -296,7 +296,7 @@ spec:
 
 === Job-Based Migration
 
-The second variant for migrating your storage from APPUiO Public to APPUiO Cloud consists in using jobs.
+The second variant for migrating your storage from APPUiO Public to APPUiO consists in using jobs.
 The manifest below defines the objects required on a destination side.
 
 [source,yaml]
@@ -455,7 +455,7 @@ $ oc -n <namespace> get job <myjob> -o jsonpath={.status.succeeded}
 
 ### Continuous Sync
 
-The third option to migrate your storage to APPUiO Cloud consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created.
+The third option to migrate your storage to APPUiO consists in using a Continuous Sync strategy. The main benefit of this approach is that files are replicated immediately after they're created.
 If the destination pod dies, the sync pod also crashes, but is automatically restarted.
 
 Use the manifests below to create the required objects.
@@ -622,7 +622,7 @@ $ cd <path> && find . -type d -exec sh -c "cd '{}' && echo '{}' && sha1sum -c CO
 
 == Container Images
 
-Since APPUiO Cloud is based on OpenShift 4, there are new requirements for your container images.
+Since APPUiO is based on OpenShift 4, there are new requirements for your container images.
 This section contains all the required steps for adapting your images to the new environment.
 
 === On OpenShift 3
@@ -754,7 +754,7 @@ spec:
     type: ImageChange
 --
 
-And an example, how it should look like on APPUiO Cloud:
+And an example, how it should look like on APPUiO:
 
 [source,yaml]
 --

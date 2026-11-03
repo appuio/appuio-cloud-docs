@@ -187,7 +187,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Login to APPUiO Cloud Registry
+    - name: Login to APPUiO Registry
       run: echo ${{ secrets.REGISTRY_PASSWORD }} | docker login --username ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ secrets.REGISTRY_URL }}
     - name: Build the latest Docker image
       run: docker build . --file Dockerfile --tag ${{ secrets.REGISTRY_URL }}/${{ secrets.OPENSHIFT_PROJECT }}/fortune-go:latest
@@ -198,7 +198,7 @@ jobs:
     needs: docker
     steps:
     - uses: actions/checkout@v1
-    - name: Login to APPUiO Cloud Project
+    - name: Login to APPUiO Project
       run: oc login --token=${{ secrets.REGISTRY_PASSWORD }} --server=${{ secrets.OPENSHIFT_URL }}
     - name: Select project
       run: oc project ${{ secrets.OPENSHIFT_PROJECT }}

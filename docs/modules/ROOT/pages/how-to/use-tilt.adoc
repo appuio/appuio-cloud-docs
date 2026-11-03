@@ -132,7 +132,7 @@ include::partial$url-length-warning.adoc[]
 
 The `Tiltfile` provides the information required for `tilt` to rebuild and redeploy your application as soon as you edit any file in your project.
 
-For APPUiO Cloud, you can use a `Tiltfile` similar to this one:
+For APPUiO, you can use a `Tiltfile` similar to this one:
 
 [source,python]
 --

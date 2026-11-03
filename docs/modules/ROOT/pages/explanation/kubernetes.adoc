@@ -1,6 +1,6 @@
 = Differences to Plain Kubernetes
 
-Even though OpenShift 4 strives to be as compatible with upstream Kubernetes as possible, there are some differences that need to be considered when deploying workloads to APPUiO Cloud.
+Even though OpenShift 4 strives to be as compatible with upstream Kubernetes as possible, there are some differences that need to be considered when deploying workloads to APPUiO.
 
 This page lists the main differences, and how to work around them.
 
@@ -82,9 +82,9 @@ spec:
 == Network Namespace Isolation
 
 [.lead]
-On most Kubernetes clusters, including OpenShift, all pods can communicate with each other through the clusters internal network. APPUiO Cloud by default, only allows this for pods within the same namespace. https://kubernetes.io/docs/concepts/services-networking/network-policies/[Network Policies] must be used to allow incomming trafic from other namespaces. Incomming trafic from ingress is always allowed.
+On most Kubernetes clusters, including OpenShift, all pods can communicate with each other through the clusters internal network. APPUiO by default, only allows this for pods within the same namespace. https://kubernetes.io/docs/concepts/services-networking/network-policies/[Network Policies] must be used to allow incomming trafic from other namespaces. Incomming trafic from ingress is always allowed.
 
-Upon Namespace/Project creation, APPUiO Cloud will provision some default NetworkPolicies that ensure that
+Upon Namespace/Project creation, APPUiO will provision some default NetworkPolicies that ensure that
 
 - containers within the same namespace can communicate with each other
 - containers can be accessed from infrastructure components (monitoring, IngressController, etc.)

@@ -1,20 +1,20 @@
-= Getting Started with APPUiO Cloud
+= Getting Started with APPUiO
 
-This tutorial describes your first steps with APPUiO Cloud, from signup to your first deployment.
+This tutorial describes your first steps with APPUiO, from signup to your first deployment.
 
 == Step 1: Create an Account
 
-To create your APPUiO Cloud account, open the https://appuio.cloud/register[APPUiO Cloud registration] page. Create your account signing up with your current Google, GitHub, or Microsoft account. The video below shows the registration process.
+To create your APPUiO account, open the https://appuio.cloud/register[APPUiO registration] page. Create your account signing up with your current Google, GitHub, or Microsoft account. The video below shows the registration process.
 
 video::GwP172nGp1g[youtube]
 
 == Step 2: Login
 
-Login to the https://portal.appuio.cloud/[APPUiO Cloud Portal] using your newly created account.
+Login to the https://portal.appuio.cloud/[APPUiO Portal] using your newly created account.
 
 == Step 3: Add Billing Information and Create an Organization
 
-The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Cloud Portal] is to add your https://portal.appuio.cloud/billingentities/$new?edit=y[billing information], and then to https://portal.appuio.cloud/organizations/$new[create an organization] for yourself and your team.
+The first thing you need to do in the https://portal.appuio.cloud/[APPUiO Portal] is to add your https://portal.appuio.cloud/billingentities/$new?edit=y[billing information], and then to https://portal.appuio.cloud/organizations/$new[create an organization] for yourself and your team.
 
 WARNING: If you don't https://portal.appuio.cloud/user[choose a default organization], you won't be able to create new projects in the OpenShift web console later.
 
@@ -22,7 +22,7 @@ image::getting-started/create-organization.png[]
 
 == Step 4: Choose a Zone
 
-In the home screen of the https://portal.appuio.cloud/[APPUiO Cloud Portal] select the link that corresponds to your preferred zone marked as "Console"
+In the home screen of the https://portal.appuio.cloud/[APPUiO Portal] select the link that corresponds to your preferred zone marked as "Console"
 
 image::getting-started/choose-zone.png[]
 
@@ -158,11 +158,11 @@ Select your preferred programming language to get started; you can either use th
 
 == Step 8: Learn More
 
-The APPUiO Cloud documentation consists of the following pieces:
+The APPUiO documentation consists of the following pieces:
 
 * The https://docs.appuio.cloud/[User documentation], precisely the one you are reading right now;
 * The https://kb.vshn.ch/appuio-cloud/[Technical documentation], available at the VSHN Knowledge Base, and containing important technical details of interest for DevOps engineers.
 * The https://products.docs.vshn.ch/products/appuio/cloud/[Product information], with feature and pricing descriptions.
-* The https://roadmap.appuio.cloud/[Roadmap], with a sneak peek into the work planned for future versions of APPUiO Cloud.
-* The https://discuss.appuio.cloud/[Discussions Forum], moderated by VSHN engineers and the community, where you can ask and answer questions about APPUiO Cloud.
+* The https://roadmap.appuio.cloud/[Roadmap], with a sneak peek into the work planned for future versions of APPUiO.
+* The https://discuss.appuio.cloud/[Discussions Forum], moderated by VSHN engineers and the community, where you can ask and answer questions about APPUiO.
 * And the https://community.appuio.ch/[Community Chat], for real-time conversations with other users and engineers.
