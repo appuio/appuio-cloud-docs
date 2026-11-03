@@ -1,6 +1,6 @@
 = Monitoring Applications
 
-This tutorial will guide you through the steps required to deploy an application on APPUiO Cloud, set up some alerts, and trigger those alerts through Pushover. We will also deploy Grafana and display some metrics from our application.
+This tutorial will guide you through the steps required to deploy an application on APPUiO, set up some alerts, and trigger those alerts through Pushover. We will also deploy Grafana and display some metrics from our application.
 
 == About the Application
 
@@ -48,10 +48,10 @@ For this tutorial, we will need an account at https://pushover.net/[Pushover].
 image::monitoring/tutorial/pushover-new-application.png[]
 
 . Download and configure the Pushover mobile app, or open the https://client.pushover.net/[Pushover web client] to receive notifications on your browser.
-. Clone the "Monitoring in APPUiO Cloud" demo project https://gitlab.com/vshn/demos/monitoring-in-appuio-cloud[on GitLab].
+. Clone the "Monitoring in APPUiO" demo project https://gitlab.com/vshn/demos/monitoring-in-appuio-cloud[on GitLab].
 . Copy the file `variables.example` and rename it `variables`.
 . Change the values in the file `variables` to contain the following items:
-.. The APPUiO Cloud region where you'll be working.
+.. The APPUiO region where you'll be working.
 .. The name of the projects where you'll deploy the Fortune application and Grafana.
 .. The Pushover user key and API keys, as shown on the Pushover user interface.
 +
@@ -63,11 +63,11 @@ GRAFANA_PROJECT=xxxxx-grafana
 PUSHOVER_USER_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 PUSHOVER_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 --
-<1> You can use other APPUiO Cloud Zones too. See https://portal.appuio.cloud/zones for a list of alternatives.
+<1> You can use other APPUiO Zones too. See https://portal.appuio.cloud/zones for a list of alternatives.
 
 == Deploy the Fortune in Go Application
 
-The first step is to deploy the Fortune in Go application on its APPUiO Cloud project. To make this happen, we require three familiar objects: a `Deployment`, a `Service`, and an `Ingress` object. The Deployment specifies the container to use: `registry.gitlab.com/vshn/applications/fortune-go:latest`.
+The first step is to deploy the Fortune in Go application on its APPUiO project. To make this happen, we require three familiar objects: a `Deployment`, a `Service`, and an `Ingress` object. The Deployment specifies the container to use: `registry.gitlab.com/vshn/applications/fortune-go:latest`.
 
 . Execute the following commands:
 +
@@ -79,7 +79,7 @@ oc process -f 1_deployment.yaml --param-file=variables | oc apply -f -
 --
 
 . After a few seconds, you should be able to open the corresponding route and interact with the application.
-. On the APPUiO Cloud console, select the "Developer" perspective, click on the "Observe" menu on the left, and then select the "Alerts" tab. This screen will display the alerts we will generate in the following step.
+. On the APPUiO console, select the "Developer" perspective, click on the "Observe" menu on the left, and then select the "Alerts" tab. This screen will display the alerts we will generate in the following step.
 
 == Generate and Receive Alerts
 
@@ -102,7 +102,7 @@ oc process -f 2_alerts.yaml --param-file=variables | oc apply -f -
 
 . Open the Fortune in Go application on your browser.
 . Press the kbd:[R] key for about 20 or 30 seconds while using the Fortune in Go application; your mobile or web Pushover clients should receive a notification in a minute or two.
-. During the interaction with the application, the Alert screen on the APPUiO Cloud console will display a message indicating that the alert has been triggered.
+. During the interaction with the application, the Alert screen on the APPUiO console will display a message indicating that the alert has been triggered.
 +
 image::monitoring/tutorial/console-monitoring-alerts-firing.png[]
 

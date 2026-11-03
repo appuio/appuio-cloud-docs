@@ -1,11 +1,11 @@
 name: user
-title: APPUiO Cloud for Users
+title: APPUiO for Users
 version: master
 start_page: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc
 asciidoc: 
   attributes:
-    product: APPUiO Cloud
+    product: APPUiO
     zone: APPUiO Zone
     idp: APPUiO IdP

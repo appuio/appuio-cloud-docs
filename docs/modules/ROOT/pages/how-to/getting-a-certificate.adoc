@@ -3,7 +3,7 @@
 https://letsencrypt.org/[Let’s Encrypt] is a certificate authority that provides free SSL/TLS certificates via an automated process. 
 Their certificates are accepted by most of today’s browsers.
 
-On APPUiO Cloud we provide you with a https://cert-manager.io/[cert-manager] setup which you can use to create, sign, install and renew certificates for your domains running on APPUiO Cloud.
+On APPUiO we provide you with a https://cert-manager.io/[cert-manager] setup which you can use to create, sign, install and renew certificates for your domains running on APPUiO.
 
 To create a certificate for a FQDN in your domain, you need to create a CNAME record in your domain's DNS pointing to your APPUiO Zone's well-defined `cname` record.
 
@@ -19,7 +19,7 @@ You can find the correct target domain in https://portal.appuio.cloud/zones[Zone
 
 [WARNING]
 ====
-Always create an `Ingress` object before pointing a DNS entry to APPUiO Cloud and always remove the corresponding DNS entry before deleting an `Ingress` object for a domain of yours. 
+Always create an `Ingress` object before pointing a DNS entry to APPUiO and always remove the corresponding DNS entry before deleting an `Ingress` object for a domain of yours. 
 Otherwise someone else could potentially create an `Ingress` object and a Let’s Encrypt certificate for your domain.
 ====
 

@@ -2,7 +2,7 @@
 
 Accessing a TCP or UDP service directly, not using the provided OpenShift router but via the route object is possible, thanks to services of type LoadBalancer.
 
-WARNING: The explanation below only works on the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] region of APPUiO Cloud.
+WARNING: The explanation below only works on the https://portal.appuio.cloud/zones/cloudscale-lpg-2[cloudscale.ch - LPG 2] region of APPUiO.
 
 Deploy a sample TCP service, in this case an https://gitlab.com/vshn/demos/demo-irc-openshift[IRC chat server]:
 

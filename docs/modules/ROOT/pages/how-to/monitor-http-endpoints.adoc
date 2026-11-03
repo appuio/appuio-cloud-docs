@@ -4,7 +4,7 @@ include::partial$needs-alert-receiver-setup.adoc[]
 
 == Prerequisites
 
-* Command Line Access to APPUiO Cloud
+* Command Line Access to APPUiO
 * Helm 3, https://helm.sh
 
 == Install Blackbox Exporter

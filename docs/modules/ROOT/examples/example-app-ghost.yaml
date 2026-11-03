@@ -51,7 +51,7 @@ spec:
             - name: GHOST_DATABASE_SSL_CA_FILE
               value: /srv/db-ca/ca.crt
             - name: GHOST_BLOG_TITLE
-              value: "APPUiO Cloud Demo"
+              value: "APPUiO Demo"
             - name: GHOST_ENABLE_HTTPS
               value: "yes"
           ports:

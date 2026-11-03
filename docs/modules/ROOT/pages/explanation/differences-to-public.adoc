@@ -6,8 +6,8 @@ This page lists the most notable differences.
 [IMPORTANT]
 ====
 This is only a summary for convenience and may not be complete.
-For the exact set of features, see the https://products.docs.vshn.ch/products/appuio/cloud/index.html[APPUiO Cloud Product Documentation].
-In case of differences, the APPUiO Cloud Product Documentation takes precedence.
+For the exact set of features, see the https://products.docs.vshn.ch/products/appuio/cloud/index.html[APPUiO Product Documentation].
+In case of differences, the APPUiO Product Documentation takes precedence.
 ====
 
 == Product
@@ -26,7 +26,7 @@ Community support is included by default, whereas additional support by VSHN can
 
 Persistent storage in APPUiO Public was provided via GlusterFS, which was also being backed up automatically by the underlying system.
 Users that needed to restore data could request a data restore via support.
-In APPUiO Cloud persistent volumes aren't automatically stored in backup.
+In APPUiO persistent volumes aren't automatically stored in backup.
 For having backups of persistent volumes we offer the latest version of https://k8up.io[K8up] on the {zone}s.
 
 == Technical
@@ -120,5 +120,5 @@ In APPUiO Public the timezone was set to `Europe/Zurich`.
 
 === Limited availability of logs
 
-APPUiO Cloud stores logs only for three days.
+APPUiO stores logs only for three days.
 It's also not possible to change the log retention for individual namespaces.

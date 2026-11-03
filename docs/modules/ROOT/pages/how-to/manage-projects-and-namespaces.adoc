@@ -1,6 +1,6 @@
 = Manage Projects and Namespaces
 
-This page explains the various mechanisms available to create OpenShift Projects in APPUiO Cloud.
+This page explains the various mechanisms available to create OpenShift Projects in APPUiO.
 
 In Red Hat OpenShift, projects and namespaces can be used interchangeably, except when listing them.
 Check the xref:how-to/list-namespaces.adoc[corresponding page] for more information.
@@ -82,6 +82,6 @@ $ oc get user "~" -ojsonpath="{.metadata.annotations['appuio\.io/default-organiz
 
 == More Information
 
-* https://kb.vshn.ch/appuio-cloud/references/architecture/namespace-ownership.html[Namespace Ownership] in the https://kb.vshn.ch/appuio-cloud/index.html[APPUiO Cloud for System Engineers Knowledge Base]
+* https://kb.vshn.ch/appuio-cloud/references/architecture/namespace-ownership.html[Namespace Ownership] in the https://kb.vshn.ch/appuio-cloud/index.html[APPUiO for System Engineers Knowledge Base]
 * xref:how-to/list-namespaces.adoc[List Namespaces]
 * xref:explanation/organizations-and-rbac.adoc[Organizations and RBAC]

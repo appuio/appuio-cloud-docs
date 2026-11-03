@@ -55,7 +55,7 @@ Pod security restrictions are managed at the namespace level, and are processed 
 The PSA admission controller will deny the creation of workloads (Pods, Deployments, etc.) if they don't adhere to the configured Pod Security Standard of the namespace.
 
 // NOTE
-// NOTE The text commented below describes a mechanism that is not yet enabled on APPUiO Cloud.
+// NOTE The text commented below describes a mechanism that is not yet enabled on APPUiO.
 // NOTE Please refer to APUB-347 for more information.
 // NOTE
 //
